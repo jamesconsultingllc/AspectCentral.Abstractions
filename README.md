@@ -1,0 +1,1 @@
+# JamesConsulting.Aspects.Abstractions
