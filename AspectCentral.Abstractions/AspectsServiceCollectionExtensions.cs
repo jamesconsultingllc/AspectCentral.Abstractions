@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectsServiceCollectionExtensions.cs" company="CBRE">
+// <copyright file="AspectsServiceCollectionExtensions.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // <summary>
@@ -50,23 +50,6 @@ namespace AspectCentral.Abstractions
                 throw new ArgumentNullException(nameof(aspectConfigurationProvider));
             serviceCollection.AddSingleton(aspectConfigurationProvider);
             return serviceCollection.RegisterAspectFactories().ConfigureAspects(aspectConfigurationProvider);
-        }
-
-        /// <summary>
-        ///     The add aspect support.
-        /// </summary>
-        /// <param name="serviceCollection">
-        ///     The service collection.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="IAspectRegistrationBuilder" />.
-        /// </returns>
-        public static IAspectRegistrationBuilder AddAspectSupport(this IServiceCollection serviceCollection)
-        {
-            var aspectConfigurationProvider = new InMemoryAspectConfigurationProvider();
-            serviceCollection.TryAddSingleton<IAspectConfigurationProvider>(aspectConfigurationProvider);
-            return new AspectRegistrationBuilder(serviceCollection.RegisterAspectFactories(),
-                aspectConfigurationProvider);
         }
 
         /// <summary>

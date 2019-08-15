@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfigurationEntry.cs" company="CBRE">
+// <copyright file="AspectConfigurationEntry.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>
@@ -40,7 +40,6 @@ namespace AspectCentral.Abstractions.Configuration
         {
             AspectFactoryType = aspectFactoryType ?? throw new ArgumentNullException(nameof(aspectFactoryType));
 
-            if (sortOrder <= 0) throw new ArgumentOutOfRangeException(nameof(sortOrder));
             if (aspectFactoryType.IsInterface || aspectFactoryType.IsAbstract || !Constants.InterfaceIAspectFactoryType.IsAssignableFrom(aspectFactoryType))
                 throw new ArgumentException($"Type must implement {nameof(IAspectFactory)}", nameof(aspectFactoryType));
 
@@ -144,7 +143,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </returns>
         public List<MethodInfo> GetMethodsToIntercept()
         {
-            return methodsToIntercept;
+            return methodsToIntercept.ToList();
         }
 
         /// <summary>
@@ -153,9 +152,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </param>
         public void RemoveMethodsToIntercept(params MethodInfo[] methodsToBeRemoved)
         {
-            if (methodsToBeRemoved == null) throw new ArgumentNullException(nameof(methodsToBeRemoved));
-            if (methodsToBeRemoved.Length == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(methodsToBeRemoved));
-
+            if (methodsToBeRemoved == null || methodsToBeRemoved.Length == 0) return;
             methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains);
         }
     }

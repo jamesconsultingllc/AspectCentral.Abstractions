@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BaseAspectFactory.cs" company="CBRE">
+// <copyright file="BaseAspectFactory.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>

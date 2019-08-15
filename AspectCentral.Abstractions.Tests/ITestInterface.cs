@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ITestInterface.cs" company="CBRE">
+// <copyright file="ITestInterface.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>

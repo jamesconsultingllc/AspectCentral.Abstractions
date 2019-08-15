@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MyTestInterface.cs" company="CBRE">
+// <copyright file="MyTestInterface.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>
@@ -17,11 +17,13 @@ namespace AspectCentral.Abstractions.Tests
     /// </summary>
     internal class MyTestInterface : ITestInterface
     {
+        public static readonly Type MyTestInterfaceType = typeof(MyTestInterface);
+        
         /// <inheritdoc />
         public async Task<MyUnitTestClass> GetClassByIdAsync(int id)
         {
             await Task.Delay(100).ConfigureAwait(false);
-            return new MyUnitTestClass(id, id.ToString());
+            return new MyUnitTestClass(id, $"testing {id}3");
         }
 
         /// <inheritdoc />

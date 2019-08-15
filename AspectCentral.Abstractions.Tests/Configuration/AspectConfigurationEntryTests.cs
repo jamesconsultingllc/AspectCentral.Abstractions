@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfigurationEntryTests.cs" company="CBRE">
+// <copyright file="AspectConfigurationEntryTests.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // <summary>
@@ -12,8 +12,6 @@ using System.Linq;
 using FluentAssertions;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
-using AspectCentral.Abstractions.Logging;
-using AspectCentral.Abstractions.Profiling;
 using JamesConsulting.Collections;
 using Xunit;
 
@@ -33,7 +31,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
 
         public AspectConfigurationEntryTests()
         {
-            instance = new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods);
+            instance = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
         }
 
         /// <summary>
@@ -42,7 +40,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorCreatesObjectSuccessfullyWhenTypeIsConcreteClassThatImplementsIAspectFactory()
         {
-            var aspectConfiguration = new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods);
+            var aspectConfiguration = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
             aspectConfiguration.Should().NotBeNull();
         }
 
@@ -52,7 +50,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenConcreteClassDoesNotImplementIAspectFactory()
         {
-            Assert.Throws<ArgumentException>(() => new AspectConfigurationEntry(GetType(), 1));
+            Assert.Throws<ArgumentException>("aspectFactoryType", () => new AspectConfigurationEntry(GetType(), 1));
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenTypeIsNotConcreteClass()
         {
-            Assert.Throws<ArgumentException>(() => new AspectConfigurationEntry(Constants.InterfaceIAspectFactoryType, 1));
+            Assert.Throws<ArgumentException>("aspectFactoryType",() => new AspectConfigurationEntry(Constants.InterfaceIAspectFactoryType, 1));
         }
 
         /// <summary>
@@ -70,7 +68,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new AspectConfigurationEntry(null, 1));
+            Assert.Throws<ArgumentNullException>("aspectFactoryType",() => new AspectConfigurationEntry(null, 1));
         }
 
         /// <summary>
@@ -79,8 +77,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldBeEqual()
         {
-            Assert.True(
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods) == new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods));
+            var result = instance == new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+            result.Should().BeTrue();
         }
 
         /// <summary>
@@ -89,8 +87,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldNotBeEqual()
         {
-            Assert.True(
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods) != new AspectConfigurationEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, 1, Methods));
+            var result = instance != new AspectConfigurationEntry(TestAspectFactory2.TestAspectFactory2Type, 1, Methods);
+            result.Should().BeTrue();
         }
 
         /// <summary>
@@ -99,11 +97,21 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldBeEqual()
         {
-            Assert.Equal(
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods),
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods));
+            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods)).Should().BeTrue();
         }
 
+        [Fact]
+        public void EqualsReferencesSameObjectShouldBeTrue()
+        {
+            instance.Equals(instance).Should().BeTrue();
+        }
+
+        [Fact]
+        public void EqualsOtherObjectIsNullShouldBeFalse()
+        {
+            instance.Equals(null).Should().BeFalse();
+        }
+        
         /// <summary>
         ///     The should not be equal.
         /// </summary>
@@ -111,14 +119,14 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void ShouldNotBeEqual()
         {
             Assert.NotEqual(
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods),
-                new AspectConfigurationEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, 1, Methods));
+                new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods),
+                new AspectConfigurationEntry(TestAspectFactory2.TestAspectFactory2Type, 1, Methods));
         }
 
         [Fact]
         public void ShouldNotBeEqualWhenOtherIsNull()
         {
-            new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods).Equals(null)
+            new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods).Equals(null)
                 .Should().BeFalse();
         }
 
@@ -131,24 +139,20 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void GetHashCodeValueShouldBeHashCodeOfFactoryType()
         {
-            new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods).GetHashCode()
-                .Should().Be(LoggingAspectFactory.LoggingAspectFactoryType.GetHashCode());
+            instance.GetHashCode()
+                .Should().Be(TestAspectFactory.TestAspectFactoryType.GetHashCode());
         }
 
         [Fact]
         public void AddMethodsToInterceptNullArgumentThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods)
-                    .AddMethodsToIntercept(null));
+            Assert.Throws<ArgumentNullException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept(null));
         }
         
         [Fact]
         public void AddMethodsToInterceptEmptyListThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() =>
-                new AspectConfigurationEntry(LoggingAspectFactory.LoggingAspectFactoryType, 1, Methods)
-                    .AddMethodsToIntercept(new MethodInfo[0]));
+            Assert.Throws<ArgumentException>("newMethodsToIntercept",() => instance.AddMethodsToIntercept(new MethodInfo[0]));
         }
 
         [Fact]
@@ -168,6 +172,12 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
             instance.GetMethodsToIntercept().IsEqualTo(Methods.Take(2));
+        }
+
+        [Fact]
+        public void RemoveMethodsToInterceptMethodsToBeRemovedIsNullReturns()
+        {
+            instance.RemoveMethodsToIntercept(null);
         }
     }
 }

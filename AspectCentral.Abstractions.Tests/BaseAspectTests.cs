@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BaseAspectTests.cs" company="CBRE">
+// <copyright file="BaseAspectTests.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // <summary>
@@ -10,8 +10,6 @@
 using System;
 using System.Threading.Tasks;
 using AspectCentral.Abstractions.Configuration;
-using AspectCentral.Abstractions.Logging;
-using AspectCentral.Abstractions.Profiling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -24,6 +22,7 @@ namespace AspectCentral.Abstractions.Tests
     /// </summary>
     public class BaseAspectTests
     {
+        public static readonly Type ITestInterfaceType = typeof(ITestInterface);
         /// <summary>
         ///     The instance.
         /// </summary>
@@ -48,7 +47,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public async Task TestCreatingTaskResultWhenMethodNotInvoked()
         {
-            var result = await instance.GetClassByIdAsync(1).ConfigureAwait(false);
+            var result = await instance.GetClassByIdAsync(12).ConfigureAwait(false);
             logger.Verify(x => x.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once());
             Assert.Equal(new MyUnitTestClass(12, "testing 123"), result);
         }
@@ -61,10 +60,10 @@ namespace AspectCentral.Abstractions.Tests
             loggerFactory = new Mock<ILoggerFactory>();
             logger = new Mock<ILogger>();
             loggerFactory.Setup(x => x.CreateLogger(typeof(MyTestInterface).FullName)).Returns(logger.Object);
-            var aspectConfigurationProvider = new InMemoryAspectConfigurationProvider();
-            var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(AspectRegistrationTests.IInterfaceType, AspectRegistrationTests.MyTestInterfaceType, ServiceLifetime.Transient));
-            aspectConfiguration.AddEntry(LoggingAspectFactory.LoggingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods());
-            aspectConfiguration.AddEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods());
+            var aspectConfigurationProvider = new Mock<IAspectConfigurationProvider>().Object;
+            var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType, MyTestInterface.MyTestInterfaceType, ServiceLifetime.Transient));
+            aspectConfiguration.AddEntry(TestAspectFactory.TestAspectFactoryType, ITestInterfaceType.GetMethods());
+            aspectConfiguration.AddEntry(TestAspectFactory2.TestAspectFactory2Type, ITestInterfaceType.GetMethods());
             aspectConfigurationProvider.AddEntry(aspectConfiguration);
             instance = BaseAspectTestClass<ITestInterface>.Create(new MyTestInterface(), typeof(MyTestInterface), loggerFactory.Object, aspectConfigurationProvider);
         }

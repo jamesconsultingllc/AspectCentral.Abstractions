@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0-alpha</Version>
     <Company>James Consulting LLC</Company>
     <Authors>Rudy James</Authors>
     <PackageProjectUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions/projects/1</PackageProjectUrl>

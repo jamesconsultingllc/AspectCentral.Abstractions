@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfiguration.cs" company="CBRE">
+// <copyright file="AspectConfiguration.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>
@@ -36,7 +36,6 @@ namespace AspectCentral.Abstractions.Configuration
         public AspectConfiguration(ServiceDescriptor serviceDescriptor)
         {
             if (serviceDescriptor == null) throw new ArgumentNullException(nameof(serviceDescriptor));
-            if (serviceDescriptor.ServiceType == null) throw new ArgumentNullException(nameof(serviceDescriptor), "The ServiceType property must be initialized");
             if (!serviceDescriptor.ServiceType.IsInterface) throw new ArgumentException("The ServiceType property must be an interface", nameof(serviceDescriptor));
 
             ServiceDescriptor = serviceDescriptor;
@@ -107,12 +106,15 @@ namespace AspectCentral.Abstractions.Configuration
         /// </param>
         public void AddEntry(Type aspectFactoryType, int? sortOrder, params MethodInfo[] methodsToIntercept)
         {
+            if (aspectFactoryType == null) throw new ArgumentNullException(nameof(aspectFactoryType));
             sortOrder = sortOrder ?? (aspectConfigurationEntries.Any() ? aspectConfigurationEntries.Max(x => x.SortOrder) + 1 : 1);
             var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectFactoryType == aspectFactoryType);
 
             if (methodsToIntercept == null || methodsToIntercept.Length == 0)
                 methodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
-
+            else
+                methodsToIntercept = methodsToIntercept.Where(x => x != null).ToArray();
+            
             if (aspectConfigurationEntry == null)
                 aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value, methodsToIntercept));
             else

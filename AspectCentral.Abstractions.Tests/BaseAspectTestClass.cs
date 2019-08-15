@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BaseAspectTestClass.cs" company="CBRE">
+// <copyright file="BaseAspectTestClass.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>
@@ -9,7 +9,6 @@
 
 using System;
 using AspectCentral.Abstractions.Configuration;
-using AspectCentral.Abstractions.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace AspectCentral.Abstractions.Tests
@@ -42,14 +41,14 @@ namespace AspectCentral.Abstractions.Tests
         /// <returns>
         /// The <see cref="T"/>.
         /// </returns>
-        public static T Create(T instance, Type type, ILoggerFactory loggerFactory, InMemoryAspectConfigurationProvider inMemoryAspectConfigurationProvider)
+        public static T Create(T instance, Type type, ILoggerFactory loggerFactory, IAspectConfigurationProvider inMemoryAspectConfigurationProvider)
         {
             object proxy = Create<T, BaseAspectTestClass<T>>();
             ((BaseAspectTestClass<T>)proxy).Instance = instance;
             ((BaseAspectTestClass<T>)proxy).ObjectType = type;
             ((BaseAspectTestClass<T>)proxy).AspectConfigurationProvider = inMemoryAspectConfigurationProvider;
             ((BaseAspectTestClass<T>)proxy).logger = loggerFactory.CreateLogger(type.FullName);
-            ((BaseAspectTestClass<T>)proxy).FactoryType = LoggingAspectFactory.LoggingAspectFactoryType;
+            ((BaseAspectTestClass<T>)proxy).FactoryType = TestAspectFactory.TestAspectFactoryType;
             return (T)proxy;
         }
 

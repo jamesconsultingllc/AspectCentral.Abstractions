@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MyUnitTestClass.cs" company="CBRE">
+// <copyright file="MyUnitTestClass.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>

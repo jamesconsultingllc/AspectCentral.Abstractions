@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAspectConfigurationProvider.cs" company="CBRE">
+// <copyright file="IAspectConfigurationProvider.cs" company="James Consulting LLC">
 //   
 // </copyright>
 // // <summary>
