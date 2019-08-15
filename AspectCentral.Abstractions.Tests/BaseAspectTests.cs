@@ -9,15 +9,19 @@
 
 using System;
 using System.Threading.Tasks;
+using AspectCentral.Abstractions.Configuration;
+using AspectCentral.Abstractions.Logging;
+using AspectCentral.Abstractions.Profiling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
 {
     /// <summary>
     ///     The generic base aspect tests.
     /// </summary>
-    [TestClass]
     public class BaseAspectTests
     {
         /// <summary>
@@ -41,19 +45,18 @@ namespace AspectCentral.Abstractions.Tests
         /// <returns>
         ///     The <see cref="Task" />.
         /// </returns>
-        [TestMethod]
+        [Fact]
         public async Task TestCreatingTaskResultWhenMethodNotInvoked()
         {
             var result = await instance.GetClassByIdAsync(1).ConfigureAwait(false);
             logger.Verify(x => x.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once());
-            Assert.AreEqual(new MyUnitTestClass(12, "testing 123"), result);
+            Assert.Equal(new MyUnitTestClass(12, "testing 123"), result);
         }
 
         /// <summary>
         ///     The test initialize.
         /// </summary>
-        [TestInitialize]
-        public void TestInitialize()
+        public BaseAspectTests()
         {
             loggerFactory = new Mock<ILoggerFactory>();
             logger = new Mock<ILogger>();

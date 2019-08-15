@@ -8,35 +8,37 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
+using AspectCentral.Abstractions.Profiling;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Profiling
 {
     /// <summary>
     ///     The profiling aspect registration builder extensions tests.
     /// </summary>
-    [TestClass]
     public class ProfilingAspectRegistrationBuilderExtensionsTests
     {
         /// <summary>
         ///     The add profiling aspect null builder throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddProfilingAspectNullBuilderThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddProfilingAspect());
+            Assert.Throws<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddProfilingAspect());
         }
 
         /// <summary>
         ///     The add profiling aspect registers all methods when no methods are given.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddProfilingAspectRegistersAllMethodsWhenNoMethodsAreGiven()
         {
             var builder = new ServiceCollection().AddAspectSupport().AddTransient<ITestInterface, MyTestInterface>().AddProfilingAspect();
 
             var aspects = builder.AspectConfigurationProvider.ConfigurationEntries.Last().GetAspects().ToArray();
-            Assert.AreEqual(ProfilingAspectFactory.ProfilingAspectFactoryType, aspects[0].AspectFactoryType);
+            Assert.Equal(ProfilingAspectFactory.ProfilingAspectFactoryType, aspects[0].AspectFactoryType);
         }
     }
 }

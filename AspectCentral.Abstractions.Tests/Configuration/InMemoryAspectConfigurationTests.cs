@@ -9,14 +9,17 @@
 
 using System;
 using System.Linq;
+using AspectCentral.Abstractions.Configuration;
+using AspectCentral.Abstractions.Logging;
+using AspectCentral.Abstractions.Profiling;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Configuration
 {
     /// <summary>
     ///     The in memory aspect configuration a tests.
     /// </summary>
-    [TestClass]
     public class InMemoryAspectConfigurationTests
     {
         /// <summary>
@@ -27,70 +30,69 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         ///     The add entry adds aspect configuration entry not previously added.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddEntryAddsAspectConfigurationEntryNotPreviouslyAdded()
         {
             var aspectConfigurationEntry =
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient));
             aspectConfigurationProvider.AddEntry(aspectConfigurationEntry);
-            Assert.AreEqual(1, aspectConfigurationProvider.ConfigurationEntries.Count);
+            Assert.Single(aspectConfigurationProvider.ConfigurationEntries);
         }
 
         /// <summary>
         ///     The add entry null aspect configuration entry throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddEntryNullAspectConfigurationEntryThrowsArgumentNullException()
         {
             AspectConfiguration aspectConfiguration = null;
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.AddEntry(aspectConfiguration));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.AddEntry(aspectConfiguration));
         }
 
         /// <summary>
         ///     The add entry removes existing entry and adds new entry.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddEntryRemovesExistingEntryAndAddsNewEntry()
         {
             var aspectConfigurationEntry =
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient));
             aspectConfigurationProvider.AddEntry(aspectConfigurationEntry);
             aspectConfigurationProvider.AddEntry(aspectConfigurationEntry);
-            Assert.AreEqual(1, aspectConfigurationProvider.ConfigurationEntries.Count);
+            Assert.Single(aspectConfigurationProvider.ConfigurationEntries);
         }
 
         /// <summary>
         ///     The get type aspect configuration contract type null throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetTypeAspectConfigurationContractTypeNullThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.GetTypeAspectConfiguration(null, null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.GetTypeAspectConfiguration(null, null));
         }
 
         /// <summary>
         ///     The get type aspect configuration implementation type null throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetTypeAspectConfigurationImplementationTypeNullThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.GetTypeAspectConfiguration(Constants.GenericConfiguredTaskAwaitable, null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.GetTypeAspectConfiguration(JamesConsulting.Constants.GenericConfiguredTaskAwaitable, null));
         }
 
         /// <summary>
         ///     The get type aspect returns null if not found.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void GetTypeAspectReturnsNullIfNotFound()
         {
-            Assert.IsNull(aspectConfigurationProvider.GetTypeAspectConfiguration(Constants.GenericConfiguredTaskAwaitable, Constants.InterfaceIAspectFactoryType));
+            Assert.Null(aspectConfigurationProvider.GetTypeAspectConfiguration(JamesConsulting.Constants.GenericConfiguredTaskAwaitable, Constants.InterfaceIAspectFactoryType));
         }
 
         /// <summary>
         ///     The initialize.
         /// </summary>
-        [TestInitialize]
-        public void Initialize()
+        public InMemoryAspectConfigurationTests()
         {
             aspectConfigurationProvider = new InMemoryAspectConfigurationProvider();
         }
@@ -98,14 +100,14 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         /// The should intercept returns false when aspect is not registered.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptReturnsFalseWhenAspectIsNotRegistered()
         {
             var method = AspectRegistrationTests.IInterfaceType.GetMethods().First();
             var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(AspectRegistrationTests.IInterfaceType, AspectRegistrationTests.MyTestInterfaceType, ServiceLifetime.Transient));
             aspectConfiguration.AddEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods());
             aspectConfigurationProvider.AddEntry(aspectConfiguration);
-            Assert.IsFalse(
+            Assert.False(
                 aspectConfigurationProvider.ShouldIntercept(
                     LoggingAspectFactory.LoggingAspectFactoryType,
                     AspectRegistrationTests.IInterfaceType,
@@ -116,7 +118,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         /// The should intercept returns false when method is not registered.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptReturnsFalseWhenMethodIsNotRegistered()
         {
             var method = AspectRegistrationTests.IInterfaceType.GetMethods().First();
@@ -124,7 +126,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             aspectConfiguration.AddEntry(LoggingAspectFactory.LoggingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods().Except(new[] { method }).ToArray());
             aspectConfiguration.AddEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods());
             aspectConfigurationProvider.AddEntry(aspectConfiguration);
-            Assert.IsFalse(
+            Assert.False(
                 aspectConfigurationProvider.ShouldIntercept(
                     LoggingAspectFactory.LoggingAspectFactoryType,
                     AspectRegistrationTests.IInterfaceType,
@@ -135,7 +137,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         /// The should intercept returns true.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptReturnsTrue()
         {
             var method = AspectRegistrationTests.IInterfaceType.GetMethods().First();
@@ -143,7 +145,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             aspectConfiguration.AddEntry(LoggingAspectFactory.LoggingAspectFactoryType, method);
             aspectConfiguration.AddEntry(ProfilingAspectFactory.ProfilingAspectFactoryType, AspectRegistrationTests.IInterfaceType.GetMethods());
             aspectConfigurationProvider.AddEntry(aspectConfiguration);
-            Assert.IsTrue(
+            Assert.True(
                 aspectConfigurationProvider.ShouldIntercept(
                     LoggingAspectFactory.LoggingAspectFactoryType,
                     AspectRegistrationTests.IInterfaceType,
@@ -154,37 +156,37 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         /// The should intercept throws argument null exception when factory type is null.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenFactoryTypeIsNull()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(null, null, null, null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(null, null, null, null));
         }
 
         /// <summary>
         /// The should intercept throws argument null exception when implementation type is null.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenImplementationTypeIsNull()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), GetType(), null, null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), GetType(), null, null));
         }
 
         /// <summary>
         /// The should intercept throws argument null exception when method info is null.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenMethodInfoIsNull()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), GetType(), GetType(), null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), GetType(), GetType(), null));
         }
 
         /// <summary>
         /// The should intercept throws argument null exception when service type is null.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenServiceTypeIsNull()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), null, null, null));
+            Assert.Throws<ArgumentNullException>(() => aspectConfigurationProvider.ShouldIntercept(GetType(), null, null, null));
         }
     }
 }

@@ -8,50 +8,55 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using AspectCentral.Abstractions.Configuration;
+using AspectCentral.Abstractions.Logging;
+using AspectCentral.Abstractions.Profiling;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Configuration
 {
     /// <summary>
     ///     The aspect configuration entry tests.
     /// </summary>
-    [TestClass]
     public class AspectConfigurationTests
     {
         /// <summary>
         ///     The constructor contract type is not interface throws argument exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ConstructorContractTypeIsNotInterfaceThrowsArgumentException()
         {
-            Assert.ThrowsException<ArgumentException>(() => new AspectConfiguration(new ServiceDescriptor(GetType(), GetType(), ServiceLifetime.Transient)));
+            Assert.Throws<ArgumentException>(() => new AspectConfiguration(new ServiceDescriptor(GetType(), GetType(), ServiceLifetime.Transient)));
         }
 
         /// <summary>
         ///     The constructor contract type null throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ConstructorContractTypeNullThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(null, null)));
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(null, null)));
         }
 
         /// <summary>
         ///     The constructor implementation type null throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ConstructorImplementationTypeNullThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, default(Type), ServiceLifetime.Transient)));
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, default(Type), ServiceLifetime.Transient)));
         }
 
         /// <summary>
         ///     The operator should be equal.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void OperatorShouldBeEqual()
         {
-            Assert.IsTrue(
+            Assert.True(
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient))
                 == new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)));
         }
@@ -59,10 +64,10 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         ///     The operator should not be equal.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void OperatorShouldNotBeEqual()
         {
-            Assert.IsTrue(
+            Assert.True(
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient))
                 != new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, ProfilingAspectFactory.ProfilingAspectFactoryType, ServiceLifetime.Transient)));
         }
@@ -70,10 +75,10 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         ///     The should be equal.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldBeEqual()
         {
-            Assert.AreEqual(
+            Assert.Equal(
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)),
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)));
         }
@@ -81,12 +86,56 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         /// <summary>
         ///     The should not be equal.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ShouldNotBeEqual()
         {
-            Assert.AreNotEqual(
+            Assert.NotEqual(
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)),
                 new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType, ProfilingAspectFactory.ProfilingAspectFactoryType, ServiceLifetime.Transient)));
+        }
+
+        [Fact]
+        public void EqualsOtherIsNullShouldBeFalse()
+        {
+            new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType,
+                    LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)).Equals(null).Should()
+                .BeFalse();
+        }
+
+        [Fact]
+        public void ConstructorThrowsArgumentNullExceptionWhenServiceDescriptorIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(null));
+        }
+        
+        [Fact]
+        public void ConstructorThrowsArgumentNullExceptionWhenServiceDescriptorServiceTypeIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(default(Type), null)));
+        } 
+        
+        [Fact]
+        public void ConstructorThrowsArgumentExceptionWhenServiceDescriptorServiceTypeIsNotInterface()
+        {
+            Assert.Throws<ArgumentException>(() => new AspectConfiguration(new ServiceDescriptor(typeof(MyTestInterface), new MyTestInterface())));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void AddNewEntrySortOrderLessThanOrEqualToZeroThrowsOutOfRangeException(int sortOrder)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new AspectConfiguration(new ServiceDescriptor(Constants.InterfaceIAspectFactoryType,
+                LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient)).AddEntry(LoggingAspectFactory.LoggingAspectFactoryType, sortOrder));
+        }
+
+        [Fact]
+        public void GetHashCodeShouldEqualServiceDescriptorHashCode()
+        {
+            var serviceDescriptor = new ServiceDescriptor(Constants.InterfaceIAspectFactoryType,
+                LoggingAspectFactory.LoggingAspectFactoryType, ServiceLifetime.Transient);
+            new AspectConfiguration(serviceDescriptor).GetHashCode().Should().Be(
+                serviceDescriptor.GetHashCode() * 397);
         }
     }
 }

@@ -50,6 +50,13 @@ namespace AspectCentral.Abstractions.Logging
         /// </returns>
         public static T Create(T instance, Type type, ILoggerFactory loggerFactory, IAspectConfigurationProvider aspectConfigurationProvider, Type loggingAspectFactoryType)
         {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (loggerFactory == null) throw new ArgumentNullException(nameof(loggerFactory));
+            if (aspectConfigurationProvider == null)
+                throw new ArgumentNullException(nameof(aspectConfigurationProvider));
+            if (loggingAspectFactoryType == null) throw new ArgumentNullException(nameof(loggingAspectFactoryType));
+            
             object proxy = Create<T, LoggingAspect<T>>();
             ((LoggingAspect<T>)proxy).Instance = instance;
             ((LoggingAspect<T>)proxy).ObjectType = type;

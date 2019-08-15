@@ -56,6 +56,13 @@ namespace AspectCentral.Abstractions.Profiling
         /// </returns>
         public static T Create(T instance, Type type, ILoggerFactory loggerFactory, IAspectConfigurationProvider aspectConfigurationProvider, Type profilingAspectFactoryType)
         {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (loggerFactory == null) throw new ArgumentNullException(nameof(loggerFactory));
+            if (aspectConfigurationProvider == null)
+                throw new ArgumentNullException(nameof(aspectConfigurationProvider));
+            if (profilingAspectFactoryType == null) throw new ArgumentNullException(nameof(profilingAspectFactoryType));
+            
             object proxy = Create<T, ProfilingAspect<T>>();
             ((ProfilingAspect<T>)proxy).Instance = instance;
             ((ProfilingAspect<T>)proxy).ObjectType = type;

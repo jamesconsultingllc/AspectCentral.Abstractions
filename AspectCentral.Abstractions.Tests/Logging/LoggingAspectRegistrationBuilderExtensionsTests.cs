@@ -8,37 +8,39 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
+using AspectCentral.Abstractions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Logging
 {
     /// <summary>
     /// The logging aspect registration builder extensions tests.
     /// </summary>
-    [TestClass]
     public class LoggingAspectRegistrationBuilderExtensionsTests
     {
         /// <summary>
         /// The add logging aspect null builder throws argument null exception.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddLoggingAspectNullBuilderThrowsArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddLoggingAspect());
+            Assert.Throws<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddLoggingAspect());
         }
 
         /// <summary>
         /// The add logging aspect registers all methods when no methods are given.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AddLoggingAspectRegistersAllMethodsWhenNoMethodsAreGiven()
         {
             var builder = new ServiceCollection().AddAspectSupport().AddTransient<ITestInterface, MyTestInterface>().AddLoggingAspect();
 
             var aspects = builder.AspectConfigurationProvider.ConfigurationEntries[0].GetAspects().ToArray();
-            Assert.AreEqual(typeof(MyTestInterface), builder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType);
-            Assert.AreEqual(1, aspects.Length);
-            Assert.AreEqual(LoggingAspectFactory.LoggingAspectFactoryType, aspects[0].AspectFactoryType);
+            Assert.Equal(typeof(MyTestInterface), builder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType);
+            Assert.Single(aspects);
+            Assert.Equal(LoggingAspectFactory.LoggingAspectFactoryType, aspects[0].AspectFactoryType);
         }
     }
 }
