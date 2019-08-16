@@ -32,7 +32,7 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets or sets the factory type
         /// </summary>
-        public Type FactoryType { get; set; }
+        protected Type FactoryType { get; set; }
 
         /// <summary>
         ///     Gets or sets the aspect configuration provider
@@ -71,8 +71,8 @@ namespace AspectCentral.Abstractions
             var resultType = methodInfo.ReturnType.GetGenericArguments()[0];
             var taskSource = Activator.CreateInstance(JamesConsulting.Constants.TaskCompletionSourceType.MakeGenericType(resultType));
             var setRetResultMethodInfo = taskSource.GetType().GetMethod("SetResult", BindingFlags.Instance | BindingFlags.Public);
-            setRetResultMethodInfo.Invoke(taskSource, new[] { value });
-            return taskSource.GetType().GetProperty("Task").GetValue(taskSource);
+            setRetResultMethodInfo?.Invoke(taskSource, new[] { value });
+            return taskSource.GetType().GetProperty("Task")?.GetValue(taskSource);
         }
 
         /// <summary>
@@ -90,23 +90,6 @@ namespace AspectCentral.Abstractions
         protected virtual AspectContext GenerateAspectContext(MethodInfo targetMethod, object[] args)
         {
             return new AspectContext(targetMethod, args) { InvocationString = GenerateMethodNameWithArguments(targetMethod, args, out var implementationMethod), InstanceMethod = implementationMethod};
-        }
-
-        /// <summary>
-        /// The generate method name with arguments.
-        /// </summary>
-        /// <param name="targetMethod">
-        /// The target method.
-        /// </param>
-        /// <param name="args">
-        /// The args.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        protected string GenerateMethodNameWithArguments(MethodInfo targetMethod, object[] args)
-        {
-            return GenerateMethodNameWithArguments(targetMethod, args, out _);
         }
 
         /// <summary>
