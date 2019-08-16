@@ -156,18 +156,6 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         }
 
         [Fact]
-        public void RemoveMethodsToInterceptThrowsArgumentNullExceptionWhenMethodsToBeRemovedIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => instance.RemoveMethodsToIntercept(null));
-        }
-        
-        [Fact]
-        public void RemoveMethodsToInterceptThrowsArgumentExceptionWhenMethodsToBeRemovedIsEmpty()
-        {
-            Assert.Throws<ArgumentException>(() => instance.RemoveMethodsToIntercept(new MethodInfo[0]));
-        }
-
-        [Fact]
         public void RemoveMethodsToInterceptRemovesGivenMethods()
         {
             instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
