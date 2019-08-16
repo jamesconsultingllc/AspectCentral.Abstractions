@@ -1,39 +1,35 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IAspectFactory.cs" company="James Consulting LLC">
-//   Copyright © 2019. All rights reserved.
+//   
 // </copyright>
 // <summary>
 //   The AspectFactory interface.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace AspectCentral.Abstractions
 {
-    using System;
-
     /// <summary>
     ///     The AspectFactory interface.
     /// </summary>
     public interface IAspectFactory
     {
         /// <summary>
-        /// Wraps the given object instance an aspect
+        /// The create.
         /// </summary>
         /// <param name="instance">
-        /// The object that will be intercepted.
+        /// The instance.
         /// </param>
-        /// <param name="instanceType">
-        /// The instance Type.
-        /// </param>
-        /// <param name="serviceProvider">
-        /// The service Provider.
+        /// <param name="implementationType">
+        /// The implementation type.
         /// </param>
         /// <typeparam name="T">
-        /// The interface that will be wrapped by the aspect
         /// </typeparam>
         /// <returns>
-        /// The <see cref="T"/> the given instance wrapped by the aspect.
+        /// The <see cref="T"/>.
         /// </returns>
-        T Create<T>(T instance, Type instanceType, IServiceProvider serviceProvider);
+        T Create<T>(T instance, Type implementationType);
     }
 }
