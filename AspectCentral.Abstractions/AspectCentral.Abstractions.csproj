@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions</RepositoryUrl>
     <PackageTags>AOP, aspect oriented programming, interceptors, DispatchProxy</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
