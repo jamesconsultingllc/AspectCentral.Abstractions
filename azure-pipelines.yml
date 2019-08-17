@@ -15,7 +15,7 @@ pool:
 steps:
 - task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'James Consulting'
+    SonarCloud: 'Aspect Central'
     organization: 'james-consulting-llc'
     scannerMode: 'MSBuild'
     projectKey: '$(SonarKey)'
