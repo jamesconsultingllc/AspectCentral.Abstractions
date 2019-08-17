@@ -19,7 +19,7 @@ namespace AspectCentral.Abstractions.Configuration
     /// <summary>
     ///     The aspect configuration entry.
     /// </summary>
-    public class AspectConfiguration : IEquatable<AspectConfiguration>
+    public sealed class AspectConfiguration : IEquatable<AspectConfiguration>
     {
         /// <summary>
         ///     Gets or sets the factory type with methods to intercept.
@@ -157,6 +157,17 @@ namespace AspectCentral.Abstractions.Configuration
             {
                 return (ServiceDescriptor != null ? ServiceDescriptor.GetHashCode() : 0) * 397;
             }
+        }
+        
+        /// <summary>
+        /// Determines if the given method should be intercepted by the aspect
+        /// </summary>
+        /// <param name="factoryType"></param>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
+        {
+            return aspectConfigurationEntries.Any(x => x.AspectFactoryType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
         }
     }
 }

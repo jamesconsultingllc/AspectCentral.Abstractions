@@ -18,7 +18,7 @@ namespace AspectCentral.Abstractions.Configuration
     /// <summary>
     ///     The aspect configuration.
     /// </summary>
-    public class AspectConfigurationEntry : IEquatable<AspectConfigurationEntry>
+    public class AspectConfigurationEntry : IEqualityComparer<AspectConfigurationEntry>
     {
         /// <summary>
         ///     Gets or sets the methods to intercept.
@@ -58,7 +58,11 @@ namespace AspectCentral.Abstractions.Configuration
         /// </summary>
         public int SortOrder { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(AspectConfigurationEntry other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -79,7 +83,10 @@ namespace AspectCentral.Abstractions.Configuration
         /// </returns>
         public static bool operator ==(AspectConfigurationEntry left, AspectConfigurationEntry right)
         {
-            return Equals(left, right);
+            if (ReferenceEquals(left, right)) return true;
+            if (ReferenceEquals(left, null)) return false;
+            if (ReferenceEquals(right, null)) return false;
+            return left.Equals(right);
         }
 
         /// <summary>
@@ -95,7 +102,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </returns>
         public static bool operator !=(AspectConfigurationEntry left, AspectConfigurationEntry right)
         {
-            return !Equals(left, right);
+            return !(left == right);
         }
 
         /// <summary>
@@ -133,7 +140,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return AspectFactoryType.GetHashCode();
+            return GetHashCode(this);
         }
 
         /// <summary>
@@ -156,5 +163,19 @@ namespace AspectCentral.Abstractions.Configuration
             if (methodsToBeRemoved == null || methodsToBeRemoved.Length == 0) return;
             methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains);
         }
+
+        public virtual bool Equals(AspectConfigurationEntry x, AspectConfigurationEntry y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            if (x.GetType() != y.GetType()) return false;
+            return x.AspectFactoryType == y.AspectFactoryType;
+        }
+
+        public virtual int GetHashCode(AspectConfigurationEntry obj)
+        {
+            return (obj.AspectFactoryType != null ? obj.AspectFactoryType.GetHashCode() : 0);
+        }       
     }
 }

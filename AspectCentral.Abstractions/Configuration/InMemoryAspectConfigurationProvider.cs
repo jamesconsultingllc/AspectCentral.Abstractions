@@ -65,7 +65,7 @@ namespace AspectCentral.Abstractions.Configuration
             if (aspectConfiguration == null)
                 return false;
 
-            return aspectConfiguration.GetAspects().Any(x => x.AspectFactoryType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
+            return aspectConfiguration.ShouldIntercept(factoryType, methodInfo);
         }
     }
 }

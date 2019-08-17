@@ -163,10 +163,56 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         }
 
         [Fact]
-        public void ShouldNotBeEqualWhenOtherIsNull()
+        public void ShouldNotBeEqualWhenOtherIsNullShouldBeFalse()
         {
             new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods).Equals(null)
                 .Should().BeFalse();
+        }
+
+        [Fact]
+        public void EqualityComparerEqualsReferenceEqualsShouldBeTrue()
+        {
+            instance.Equals(instance, instance).Should().BeTrue();
+        }
+        
+        [Fact]
+        public void EqualityComparerEqualsXEqualsNullShouldBeFalse()
+        {
+            instance.Equals(null, instance).Should().BeFalse();
+        }
+        
+        [Fact]
+        public void EqualityComparerEqualsYEqualsNullShouldBeFalse()
+        {
+            instance.Equals(instance,null).Should().BeFalse();
+        }
+
+        [Fact]
+        public void EqualityComparerEqualsShouldBeTrue()
+        {
+            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods), 
+                new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods)).Should().BeTrue();
+        }
+
+        [Fact] public void EqualityComparerEqualsShouldBeFalseWhenNotEqual()
+        {
+            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods), 
+                new AspectConfigurationEntry(TestAspectFactory2.Type, 1, Methods)).Should().BeFalse();
+        }
+
+        [Fact]
+        public void EqualityComparerEqualsReturnsFalseWhenObjectsAreNotOfTheSameType()
+        {
+            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods), 
+                new TestConfigurationEntry(TestAspectFactory2.Type, 1, Methods)).Should().BeFalse();
+        }
+
+        class TestConfigurationEntry : AspectConfigurationEntry
+        {
+            /// <inheritdoc />
+            internal TestConfigurationEntry(Type aspectFactoryType, int sortOrder, params MethodInfo[] methodsToIntercept) : base(aspectFactoryType, sortOrder, methodsToIntercept)
+            {
+            }
         }
     }
 }

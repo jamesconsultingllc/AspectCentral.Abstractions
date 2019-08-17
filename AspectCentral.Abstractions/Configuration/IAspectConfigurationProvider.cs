@@ -52,6 +52,7 @@ namespace AspectCentral.Abstractions.Configuration
         void LoadConfiguration();
 
         /// <summary>
+        /// Determines if the given method should be intercepted by the aspect
         /// </summary>
         /// <param name="factoryType">
         /// </param>
