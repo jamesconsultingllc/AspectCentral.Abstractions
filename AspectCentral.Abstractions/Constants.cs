@@ -14,6 +14,7 @@ namespace AspectCentral.Abstractions
 {
     public static class Constants
     {
-        public static readonly Type InterfaceIAspectFactoryType = typeof(IAspectFactory);
+        // ReSharper disable once InconsistentNaming
+        public static readonly Type IAspectFactoryType = typeof(IAspectFactory);
     }
 }

@@ -1,5 +1,5 @@
 ﻿//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectsServiceCollectionExtensions.cs" company="James Consulting LLC">
+//  <copyright file="ServiceCollectionExtensions.cs" company="James Consulting LLC">
 //    Copyright (c) 2019 All Rights Reserved
 //  </copyright>
 //  <author>Rudy James</author>
@@ -20,13 +20,13 @@ namespace AspectCentral.Abstractions
     /// <summary>
     ///     The aspects service collection extensions.
     /// </summary>
-    public static class AspectsServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         /// <summary>
         ///     The create factory method info.
         /// </summary>
         private static readonly MethodInfo CreateFactoryMethodInfo =
-            typeof(AspectsServiceCollectionExtensions).GetMethod("CreateFactory",
+            typeof(ServiceCollectionExtensions).GetMethod("CreateFactory",
                 BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace AspectCentral.Abstractions
             var types = from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
                 where !type.IsAbstract && !type.IsInterface &&
-                      Constants.InterfaceIAspectFactoryType.IsAssignableFrom(type)
+                      Constants.IAspectFactoryType.IsAssignableFrom(type)
                 select type;
 
             foreach (var type in types) serviceCollection.TryAddSingleton(type);

@@ -1,5 +1,5 @@
 //  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectsServiceCollectionExtensionsTests.cs" company="James Consulting LLC">
+//  <copyright file="ServiceCollectionExtensionsTests.cs" company="James Consulting LLC">
 //    Copyright (c) 2019 All Rights Reserved
 //  </copyright>
 //  <author>Rudy James</author>
@@ -19,12 +19,12 @@ using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
 {
-    public class AspectsServiceCollectionExtensionsTests
+    public class ServiceCollectionExtensionsTests
     {
         private readonly ServiceCollection serviceCollection;
         private readonly Mock<IAspectConfigurationProvider> aspectConfigurationProviderMock;
 
-        public AspectsServiceCollectionExtensionsTests()
+        public ServiceCollectionExtensionsTests()
         {
             serviceCollection = new ServiceCollection();
             aspectConfigurationProviderMock = new Mock<IAspectConfigurationProvider>();
@@ -74,7 +74,7 @@ namespace AspectCentral.Abstractions.Tests
         public void EnsureServicesAreProperlyResolvedWithFactory()
         {
             var configuration = new AspectConfiguration(ServiceDescriptor.Describe(typeof(ITestInterface), typeof(MyTestInterface), ServiceLifetime.Transient));
-            configuration.AddEntry(TestAspectFactory.TestAspectFactoryType);
+            configuration.AddEntry(TestAspectFactory.Type);
             aspectConfigurationProviderMock.Setup(x => x.GetTypeAspectConfiguration(typeof(ITestInterface), typeof(MyTestInterface))).Returns(configuration);
             serviceCollection.AddLogging();
             serviceCollection.TryAddTransient<ITestInterface, MyTestInterface>();

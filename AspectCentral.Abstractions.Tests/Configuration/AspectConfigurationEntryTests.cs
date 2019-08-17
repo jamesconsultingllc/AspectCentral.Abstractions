@@ -25,7 +25,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
     {
         public AspectConfigurationEntryTests()
         {
-            instance = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+            instance = new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorCreatesObjectSuccessfullyWhenTypeIsConcreteClassThatImplementsIAspectFactory()
         {
-            var aspectConfiguration = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+            var aspectConfiguration = new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods);
             aspectConfiguration.Should().NotBeNull();
         }
 
@@ -72,7 +72,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenTypeIsNotConcreteClass()
         {
-            Assert.Throws<ArgumentException>("aspectFactoryType", () => new AspectConfigurationEntry(Constants.InterfaceIAspectFactoryType, 1));
+            Assert.Throws<ArgumentException>("aspectFactoryType", () => new AspectConfigurationEntry(Constants.IAspectFactoryType, 1));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void GetHashCodeValueShouldBeHashCodeOfFactoryType()
         {
             instance.GetHashCode()
-                .Should().Be(TestAspectFactory.TestAspectFactoryType.GetHashCode());
+                .Should().Be(TestAspectFactory.Type.GetHashCode());
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldBeEqual()
         {
-            var result = instance == new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+            var result = instance == new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods);
             result.Should().BeTrue();
         }
 
@@ -119,7 +119,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldNotBeEqual()
         {
-            var result = instance != new AspectConfigurationEntry(TestAspectFactory2.TestAspectFactory2Type, 1, Methods);
+            var result = instance != new AspectConfigurationEntry(TestAspectFactory2.Type, 1, Methods);
             result.Should().BeTrue();
         }
 
@@ -142,7 +142,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldBeEqual()
         {
-            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods)).Should().BeTrue();
+            instance.Equals(new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods)).Should().BeTrue();
         }
 
         [Fact]
@@ -158,14 +158,14 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void ShouldNotBeEqual()
         {
             Assert.NotEqual(
-                new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods),
-                new AspectConfigurationEntry(TestAspectFactory2.TestAspectFactory2Type, 1, Methods));
+                new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods),
+                new AspectConfigurationEntry(TestAspectFactory2.Type, 1, Methods));
         }
 
         [Fact]
         public void ShouldNotBeEqualWhenOtherIsNull()
         {
-            new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods).Equals(null)
+            new AspectConfigurationEntry(TestAspectFactory.Type, 1, Methods).Equals(null)
                 .Should().BeFalse();
         }
     }

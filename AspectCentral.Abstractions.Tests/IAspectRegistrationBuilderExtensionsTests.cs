@@ -36,7 +36,7 @@ namespace AspectCentral.Abstractions.Tests
         public void AddAspectCallsAddAspectWhenArgumentsAreValid()
         {
             mockIAspectRegistrationBuilder.Object.AddAspect<TestAspectFactory>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddAspect(TestAspectFactory.TestAspectFactoryType, null, new MethodInfo[0]), Times.Once);
+            mockIAspectRegistrationBuilder.Verify(x => x.AddAspect(TestAspectFactory.Type, null, new MethodInfo[0]), Times.Once);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace AspectCentral.Abstractions.Tests
         public void AddScopedCallsAddServiceWhenArgumentsAreValid()
         {
             mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.MyTestInterfaceType, ServiceLifetime.Scoped), Times.Once);
+            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Scoped), Times.Once);
         }
         
         [Fact]
@@ -81,7 +81,7 @@ namespace AspectCentral.Abstractions.Tests
         public void AddSingletonCallsAddServiceWhenArgumentsAreValid()
         {
             mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.MyTestInterfaceType, ServiceLifetime.Singleton), Times.Once);
+            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Singleton), Times.Once);
         }
         
         [Fact]
@@ -113,7 +113,7 @@ namespace AspectCentral.Abstractions.Tests
         public void AddTransientCallsAddServiceWhenArgumentsAreValid()
         {
             mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.MyTestInterfaceType, ServiceLifetime.Transient), Times.Once);
+            mockIAspectRegistrationBuilder.Verify(x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Transient), Times.Once);
         }
         
         [Fact]

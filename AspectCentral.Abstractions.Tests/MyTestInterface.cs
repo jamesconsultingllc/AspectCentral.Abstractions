@@ -18,7 +18,7 @@ namespace AspectCentral.Abstractions.Tests
     /// </summary>
     internal class MyTestInterface : ITestInterface
     {
-        public static readonly Type MyTestInterfaceType = typeof(MyTestInterface);
+        public static readonly Type Type = typeof(MyTestInterface);
 
         /// <inheritdoc />
         public async Task<MyUnitTestClass> GetClassByIdAsync(int id)

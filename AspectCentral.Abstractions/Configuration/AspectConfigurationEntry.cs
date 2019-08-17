@@ -41,7 +41,7 @@ namespace AspectCentral.Abstractions.Configuration
         {
             AspectFactoryType = aspectFactoryType ?? throw new ArgumentNullException(nameof(aspectFactoryType));
 
-            if (aspectFactoryType.IsInterface || aspectFactoryType.IsAbstract || !Constants.InterfaceIAspectFactoryType.IsAssignableFrom(aspectFactoryType))
+            if (aspectFactoryType.IsInterface || aspectFactoryType.IsAbstract || !Constants.IAspectFactoryType.IsAssignableFrom(aspectFactoryType))
                 throw new ArgumentException($"Type must implement {nameof(IAspectFactory)}", nameof(aspectFactoryType));
 
             SortOrder = sortOrder;

@@ -94,30 +94,24 @@ namespace AspectCentral.Abstractions.Configuration
         /// <param name="aspectFactoryType">
         ///     The aspect factory type.
         /// </param>
-        /// <param name="methodsToIntercept">
-        ///     The methods to intercept.
-        /// </param>
-        public void AddEntry(Type aspectFactoryType, params MethodInfo[] methodsToIntercept)
-        {
-            AddEntry(aspectFactoryType, null, methodsToIntercept);
-        }
-
-        /// <summary>
-        ///     The add entry.
-        /// </summary>
-        /// <param name="aspectFactoryType">
-        ///     The aspect factory type.
-        /// </param>
         /// <param name="sortOrder">
         ///     The sort Order.
         /// </param>
         /// <param name="methodsToIntercept">
         ///     The methods to intercept. Defaults to all methods in interface if none specified
         /// </param>
-        public void AddEntry(Type aspectFactoryType, int? sortOrder, params MethodInfo[] methodsToIntercept)
+        public void AddEntry(Type aspectFactoryType, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
         {
             if (aspectFactoryType == null) throw new ArgumentNullException(nameof(aspectFactoryType));
-            sortOrder = sortOrder ?? (aspectConfigurationEntries.Any() ? aspectConfigurationEntries.Max(x => x.SortOrder) + 1 : 1);
+
+            if (!sortOrder.HasValue)
+            {
+                if (aspectConfigurationEntries.Count == 0)
+                    sortOrder = 1;
+                else
+                    sortOrder = aspectConfigurationEntries.Max(x => x.SortOrder) + 1;
+            }
+
             var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectFactoryType == aspectFactoryType);
 
             if (methodsToIntercept == null || methodsToIntercept.Length == 0)

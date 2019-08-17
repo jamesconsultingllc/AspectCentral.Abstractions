@@ -16,7 +16,7 @@ namespace AspectCentral.Abstractions.Tests
 {
     public class TestAspectFactory : BaseAspectFactory
     {
-        public static readonly Type TestAspectFactoryType = typeof(TestAspectFactory);
+        public static readonly Type Type = typeof(TestAspectFactory);
 
         public override T Create<T>(T instance, Type implementationType, params object[] args)
         {
@@ -31,7 +31,7 @@ namespace AspectCentral.Abstractions.Tests
 
     public class TestAspectFactory2 : BaseAspectFactory
     {
-        public static readonly Type TestAspectFactory2Type = typeof(TestAspectFactory2);
+        public static readonly Type Type = typeof(TestAspectFactory2);
 
         public override T Create<T>(T instance, Type implementationType, params object[] args)
         {
