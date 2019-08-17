@@ -5,7 +5,7 @@
     <Company>James Consulting LLC</Company>
     <Authors>Rudy James</Authors>
     <PackageProjectUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions/projects/1</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2019</Copyright>
     <RepositoryUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions</RepositoryUrl>
     <PackageTags>AOP, aspect oriented programming, interceptors, DispatchProxy</PackageTags>
