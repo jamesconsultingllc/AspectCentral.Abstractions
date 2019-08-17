@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAspectRegistrationBuilderExtensions.cs" company="James Consulting LLC">
-//   
-// </copyright>
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="IAspectRegistrationBuilderExtensions.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
 //  <summary>
-//   The i aspect registration builder extensions.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
@@ -14,30 +15,31 @@ using Microsoft.Extensions.DependencyInjection;
 namespace AspectCentral.Abstractions
 {
     /// <summary>
-    /// The i aspect registration builder extensions.
+    ///     The extension methods for <see cref="IAspectRegistrationBuilder"/> 
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class IAspectRegistrationBuilderExtensions
     {
         /// <summary>
-        /// The add aspect.
+        ///     The add aspect.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="sortOrder">
-        /// The sort order.
+        ///     The sort order.
         /// </param>
         /// <param name="methodsToIntercept">
-        /// The methods to intercept.
+        ///     The methods to intercept.
         /// </param>
         /// <typeparam name="T">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder, params MethodInfo[] methodsToIntercept)
+        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
             where T : IAspectFactory
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
@@ -46,17 +48,17 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add scoped.
+        ///     The add scoped.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -68,18 +70,18 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add scoped.
+        ///     The add scoped.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -92,17 +94,17 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add singleton.
+        ///     The add singleton.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -114,18 +116,18 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add singleton.
+        ///     The add singleton.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -138,17 +140,17 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add transient.
+        ///     The add transient.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -160,18 +162,18 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add transient.
+        ///     The add transient.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>

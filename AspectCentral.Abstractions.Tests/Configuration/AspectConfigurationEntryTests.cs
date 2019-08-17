@@ -1,17 +1,18 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfigurationEntryTests.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// <summary>
-//   The aspect configuration tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectConfigurationEntryTests.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Linq;
-using FluentAssertions;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
+using FluentAssertions;
 using JamesConsulting.Collections;
 using Xunit;
 
@@ -22,6 +23,11 @@ namespace AspectCentral.Abstractions.Tests.Configuration
     /// </summary>
     public class AspectConfigurationEntryTests
     {
+        public AspectConfigurationEntryTests()
+        {
+            instance = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+        }
+
         /// <summary>
         ///     The methods.
         /// </summary>
@@ -29,9 +35,16 @@ namespace AspectCentral.Abstractions.Tests.Configuration
 
         private readonly AspectConfigurationEntry instance;
 
-        public AspectConfigurationEntryTests()
+        [Fact]
+        public void AddMethodsToInterceptEmptyListThrowsArgumentException()
         {
-            instance = new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods);
+            Assert.Throws<ArgumentException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept());
+        }
+
+        [Fact]
+        public void AddMethodsToInterceptNullArgumentThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept(null));
         }
 
         /// <summary>
@@ -59,7 +72,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenTypeIsNotConcreteClass()
         {
-            Assert.Throws<ArgumentException>("aspectFactoryType",() => new AspectConfigurationEntry(Constants.InterfaceIAspectFactoryType, 1));
+            Assert.Throws<ArgumentException>("aspectFactoryType", () => new AspectConfigurationEntry(Constants.InterfaceIAspectFactoryType, 1));
         }
 
         /// <summary>
@@ -68,7 +81,26 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>("aspectFactoryType",() => new AspectConfigurationEntry(null, 1));
+            Assert.Throws<ArgumentNullException>("aspectFactoryType", () => new AspectConfigurationEntry(null, 1));
+        }
+
+        [Fact]
+        public void EqualsOtherObjectIsNullShouldBeFalse()
+        {
+            instance.Equals(null).Should().BeFalse();
+        }
+
+        [Fact]
+        public void EqualsReferencesSameObjectShouldBeTrue()
+        {
+            instance.Equals(instance).Should().BeTrue();
+        }
+
+        [Fact]
+        public void GetHashCodeValueShouldBeHashCodeOfFactoryType()
+        {
+            instance.GetHashCode()
+                .Should().Be(TestAspectFactory.TestAspectFactoryType.GetHashCode());
         }
 
         /// <summary>
@@ -91,6 +123,19 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             result.Should().BeTrue();
         }
 
+        [Fact]
+        public void RemoveMethodsToInterceptMethodsToBeRemovedIsNullReturns()
+        {
+            instance.RemoveMethodsToIntercept(null);
+        }
+
+        [Fact]
+        public void RemoveMethodsToInterceptRemovesGivenMethods()
+        {
+            instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
+            instance.GetMethodsToIntercept().IsEqualTo(Methods.Take(2));
+        }
+
         /// <summary>
         ///     The should be equal.
         /// </summary>
@@ -101,17 +146,11 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         }
 
         [Fact]
-        public void EqualsReferencesSameObjectShouldBeTrue()
+        public void ShouldBeTrueWhenReferencingSameObject()
         {
             instance.Equals(instance).Should().BeTrue();
         }
 
-        [Fact]
-        public void EqualsOtherObjectIsNullShouldBeFalse()
-        {
-            instance.Equals(null).Should().BeFalse();
-        }
-        
         /// <summary>
         ///     The should not be equal.
         /// </summary>
@@ -128,44 +167,6 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             new AspectConfigurationEntry(TestAspectFactory.TestAspectFactoryType, 1, Methods).Equals(null)
                 .Should().BeFalse();
-        }
-
-        [Fact]
-        public void ShouldBeTrueWhenReferencingSameObject()
-        {
-            instance.Equals(instance).Should().BeTrue();
-        }
-
-        [Fact]
-        public void GetHashCodeValueShouldBeHashCodeOfFactoryType()
-        {
-            instance.GetHashCode()
-                .Should().Be(TestAspectFactory.TestAspectFactoryType.GetHashCode());
-        }
-
-        [Fact]
-        public void AddMethodsToInterceptNullArgumentThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept(null));
-        }
-        
-        [Fact]
-        public void AddMethodsToInterceptEmptyListThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>("newMethodsToIntercept",() => instance.AddMethodsToIntercept(new MethodInfo[0]));
-        }
-
-        [Fact]
-        public void RemoveMethodsToInterceptRemovesGivenMethods()
-        {
-            instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
-            instance.GetMethodsToIntercept().IsEqualTo(Methods.Take(2));
-        }
-
-        [Fact]
-        public void RemoveMethodsToInterceptMethodsToBeRemovedIsNullReturns()
-        {
-            instance.RemoveMethodsToIntercept(null);
         }
     }
 }

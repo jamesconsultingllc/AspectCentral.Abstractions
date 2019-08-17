@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfiguration.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The aspect configuration entry.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectConfiguration.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,10 @@ namespace AspectCentral.Abstractions.Configuration
         private readonly List<AspectConfigurationEntry> aspectConfigurationEntries = new List<AspectConfigurationEntry>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AspectConfiguration"/> class.
+        ///     Initializes a new instance of the <see cref="AspectConfiguration" /> class.
         /// </summary>
         /// <param name="serviceDescriptor">
-        /// The service Descriptor.
+        ///     The service Descriptor.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -45,6 +46,15 @@ namespace AspectCentral.Abstractions.Configuration
         ///     Gets the service descriptor.
         /// </summary>
         public ServiceDescriptor ServiceDescriptor { get; }
+
+        /// <inheritdoc />
+        public bool Equals(AspectConfiguration other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType && ServiceDescriptor.ImplementationType == other.ServiceDescriptor.ImplementationType
+                                                                                        && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory;
+        }
 
         /// <summary>
         ///     The ==.
@@ -79,13 +89,13 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <summary>
-        /// The add entry.
+        ///     The add entry.
         /// </summary>
         /// <param name="aspectFactoryType">
-        /// The aspect factory type.
+        ///     The aspect factory type.
         /// </param>
         /// <param name="methodsToIntercept">
-        /// The methods to intercept.
+        ///     The methods to intercept.
         /// </param>
         public void AddEntry(Type aspectFactoryType, params MethodInfo[] methodsToIntercept)
         {
@@ -93,16 +103,16 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <summary>
-        /// The add entry.
+        ///     The add entry.
         /// </summary>
         /// <param name="aspectFactoryType">
-        /// The aspect factory type.
+        ///     The aspect factory type.
         /// </param>
         /// <param name="sortOrder">
-        /// The sort Order.
+        ///     The sort Order.
         /// </param>
         /// <param name="methodsToIntercept">
-        /// The methods to intercept. Defaults to all methods in interface if none specified
+        ///     The methods to intercept. Defaults to all methods in interface if none specified
         /// </param>
         public void AddEntry(Type aspectFactoryType, int? sortOrder, params MethodInfo[] methodsToIntercept)
         {
@@ -114,7 +124,7 @@ namespace AspectCentral.Abstractions.Configuration
                 methodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
             else
                 methodsToIntercept = methodsToIntercept.Where(x => x != null).ToArray();
-            
+
             if (aspectConfigurationEntry == null)
                 aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value, methodsToIntercept));
             else
@@ -122,26 +132,17 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <summary>
-        /// The equals.
+        ///     The equals.
         /// </summary>
         /// <param name="obj">
-        /// The obj.
+        ///     The obj.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public override bool Equals(object obj)
         {
             return Equals(obj as AspectConfiguration);
-        }
-
-        /// <inheritdoc />
-        public bool Equals(AspectConfiguration other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType && ServiceDescriptor.ImplementationType == other.ServiceDescriptor.ImplementationType
-                                                                                        && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory;
         }
 
         /// <summary>

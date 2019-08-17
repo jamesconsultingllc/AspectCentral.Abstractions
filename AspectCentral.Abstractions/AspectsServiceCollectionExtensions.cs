@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectsServiceCollectionExtensions.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// <summary>
-//   The aspects service collection extensions.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectsServiceCollectionExtensions.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Linq;
@@ -48,7 +49,7 @@ namespace AspectCentral.Abstractions
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
             if (aspectConfigurationProvider == null)
                 throw new ArgumentNullException(nameof(aspectConfigurationProvider));
-            serviceCollection.AddSingleton(aspectConfigurationProvider);
+            serviceCollection.TryAddSingleton(aspectConfigurationProvider);
             return serviceCollection.RegisterAspectFactories().ConfigureAspects(aspectConfigurationProvider);
         }
 
@@ -79,8 +80,7 @@ namespace AspectCentral.Abstractions
 
                     if (aspectConfiguration == null) continue;
 
-                    serviceCollection.TryAdd(new ServiceDescriptor(service.ImplementationType,
-                        service.ImplementationType, service.Lifetime));
+                    serviceCollection.TryAdd(ServiceDescriptor.Describe(service.ImplementationType, service.ImplementationType, service.Lifetime));
                     serviceCollection[index] = new ServiceDescriptor(service.ServiceType,
                         serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), service.Lifetime);
                 }

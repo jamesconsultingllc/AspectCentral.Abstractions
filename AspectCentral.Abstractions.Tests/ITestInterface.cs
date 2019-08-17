@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ITestInterface.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The Interface interface.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="ITestInterface.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System.Threading.Tasks;
 
@@ -17,45 +18,52 @@ namespace AspectCentral.Abstractions.Tests
     internal interface ITestInterface
     {
         /// <summary>
-        /// The get class by id.
+        ///     The get class by id.
         /// </summary>
         /// <param name="id">
-        /// The id.
+        ///     The id.
         /// </param>
         /// <returns>
-        /// The <see cref="Task"/>.
+        ///     The <see cref="Task" />.
         /// </returns>
         Task<MyUnitTestClass> GetClassByIdAsync(int id);
 
         /// <summary>
-        /// The test.
+        ///     The test.
         /// </summary>
         /// <param name="x">
-        /// The x.
+        ///     The x.
         /// </param>
         /// <param name="y">
-        /// The y.
+        ///     The y.
         /// </param>
         /// <param name="myUnitTestClass">
-        /// The my class.
+        ///     The my class.
         /// </param>
         void Test(int x, string y, MyUnitTestClass myUnitTestClass);
 
         /// <summary>
-        /// The test async.
+        ///     The test async.
         /// </summary>
         /// <param name="x">
-        /// The x.
+        ///     The x.
         /// </param>
         /// <param name="y">
-        /// The y.
+        ///     The y.
         /// </param>
         /// <param name="myUnitTestClass">
-        /// The my class.
+        ///     The my class.
         /// </param>
         /// <returns>
-        /// The <see cref="Task"/>.
+        ///     The <see cref="Task" />.
         /// </returns>
         Task TestAsync(int x, string y, MyUnitTestClass myUnitTestClass);
+
+        /// <summary>
+        /// Gets the <typeparam name=""></typeparam>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        MyUnitTestClass GetClassById(int id);
     }
 }

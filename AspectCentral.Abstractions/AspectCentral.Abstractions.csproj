@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Company>James Consulting LLC</Company>
     <Authors>Rudy James</Authors>
     <PackageProjectUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions/projects/1</PackageProjectUrl>
@@ -10,6 +10,7 @@
     <RepositoryUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions</RepositoryUrl>
     <PackageTags>AOP, aspect oriented programming, interceptors, DispatchProxy</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

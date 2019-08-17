@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BaseAspectFactory.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The base aspect factory.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="BaseAspectFactory.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using AspectCentral.Abstractions.Configuration;
@@ -29,10 +30,10 @@ namespace AspectCentral.Abstractions
         protected readonly ILoggerFactory LoggerFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseAspectFactory"/> class.
+        ///     Initializes a new instance of the <see cref="BaseAspectFactory" /> class.
         /// </summary>
         /// <param name="loggerFactory">
-        /// The logger factory.
+        ///     The logger factory.
         /// </param>
         /// <param name="aspectConfigurationProvider">
         /// </param>
@@ -43,6 +44,6 @@ namespace AspectCentral.Abstractions
         }
 
         /// <inheritdoc />
-        public abstract T Create<T>(T instance, Type implementationType);
+        public abstract T Create<T>(T instance, Type implementationType, params object[] args);
     }
 }

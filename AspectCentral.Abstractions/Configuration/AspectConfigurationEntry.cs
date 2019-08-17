@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectConfigurationEntry.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The aspect configuration.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectConfigurationEntry.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -25,16 +26,16 @@ namespace AspectCentral.Abstractions.Configuration
         private List<MethodInfo> methodsToIntercept;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AspectConfigurationEntry"/> class.
+        ///     Initializes a new instance of the <see cref="AspectConfigurationEntry" /> class.
         /// </summary>
         /// <param name="aspectFactoryType">
-        /// The aspect factory type.
+        ///     The aspect factory type.
         /// </param>
         /// <param name="sortOrder">
-        /// The sort Order.
+        ///     The sort Order.
         /// </param>
         /// <param name="methodsToIntercept">
-        /// The methods To Intercept.
+        ///     The methods To Intercept.
         /// </param>
         internal AspectConfigurationEntry(Type aspectFactoryType, int sortOrder, params MethodInfo[] methodsToIntercept)
         {
@@ -56,6 +57,14 @@ namespace AspectCentral.Abstractions.Configuration
         ///     Gets or sets the sort order.
         /// </summary>
         public int SortOrder { get; }
+
+        /// <inheritdoc />
+        public bool Equals(AspectConfigurationEntry other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return AspectFactoryType == other.AspectFactoryType;
+        }
 
         /// <summary>
         ///     The ==.
@@ -90,10 +99,10 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <summary>
-        /// The add methods to intercept.
+        ///     The add methods to intercept.
         /// </summary>
         /// <param name="newMethodsToIntercept">
-        /// The methods to intercept.
+        ///     The methods to intercept.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// </exception>
@@ -107,22 +116,14 @@ namespace AspectCentral.Abstractions.Configuration
             methodsToIntercept = methodsToIntercept.Union(newMethodsToIntercept).ToList();
         }
 
-        /// <inheritdoc />
-        public bool Equals(AspectConfigurationEntry other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return AspectFactoryType == other.AspectFactoryType;
-        }
-
         /// <summary>
-        /// The equals.
+        ///     The equals.
         /// </summary>
         /// <param name="obj">
-        /// The obj.
+        ///     The obj.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public override bool Equals(object obj)
         {

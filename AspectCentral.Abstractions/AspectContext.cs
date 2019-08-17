@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectContext.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// <summary>
-//   The aspect context.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectContext.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
@@ -19,13 +20,13 @@ namespace AspectCentral.Abstractions
     public class AspectContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AspectContext"/> class.
+        ///     Initializes a new instance of the <see cref="AspectContext" /> class.
         /// </summary>
         /// <param name="targetMethod">
-        /// The target method.
+        ///     The target method.
         /// </param>
         /// <param name="parameterValues">
-        /// The parameter values.
+        ///     The parameter values.
         /// </param>
         public AspectContext(MethodInfo targetMethod, object[] parameterValues)
         {
