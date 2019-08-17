@@ -26,8 +26,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
     {
         public AspectConfigurationTests()
         {
-            instance = new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType,
-                TestAspectFactory.Type, ServiceLifetime.Transient));
+            instance = new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType,
+                MyTestInterface.Type, ServiceLifetime.Transient));
         }
 
         private readonly AspectConfiguration instance;
@@ -35,7 +35,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddEntryAddsAllMethodsWhenMethodsToInterceptIsEmptyArray()
         {
-            instance.AddEntry(TestAspectFactory.Type, 0);
+            instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
                 .IsEqualTo(MyTestInterface.Type.GetMethods());
         }
@@ -43,7 +43,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddEntryAddsAllMethodsWhenMethodsToInterceptIsNull()
         {
-            instance.AddEntry(TestAspectFactory.Type, 0);
+            instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
                 .IsEqualTo(MyTestInterface.Type.GetMethods());
         }
@@ -51,8 +51,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddEntryAddsMethodsToExistingConfigurationEntry()
         {
-            instance.AddEntry(TestAspectFactory.Type, 0, MyTestInterface.Type.GetMethods().Skip(1).ToArray());
-            instance.AddEntry(TestAspectFactory.Type, 0, MyTestInterface.Type.GetMethods().Take(1).ToArray());
+            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Skip(1).ToArray());
+            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Take(1).ToArray());
             instance.GetAspects().First().GetMethodsToIntercept()
                 .IsEqualTo(MyTestInterface.Type.GetMethods());
         }
@@ -60,7 +60,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddEntryAddsRemovesNullMethodInfoEntries()
         {
-            instance.AddEntry(TestAspectFactory.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.AddEntry(MyTestInterface.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
             instance.GetAspects().First().GetMethodsToIntercept()
                 .IsEqualTo(MyTestInterface.Type.GetMethods());
         }
@@ -68,22 +68,22 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddEntryNullSortOrderWithNoEntriesShouldBeOne()
         {
-            instance.AddEntry(TestAspectFactory.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.AddEntry(MyTestInterface.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
             instance.GetAspects().First().SortOrder.Should().Be(1);
         }
         
         [Fact]
         public void AddEntryNullSortOrderWithNoEntriesShouldBeTheMaxSortOrderPlus1()
         {
-            instance.AddEntry(TestAspectFactory.Type, 3, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.AddEntry(TestAspectFactory2.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First(x => x.AspectFactoryType == TestAspectFactory2.Type).SortOrder.Should().Be(4);
+            instance.AddEntry(MyTestInterface.Type, 3, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.AddEntry(MyUnitTestClass.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.GetAspects().First(x => x.AspectFactoryType == MyUnitTestClass.Type).SortOrder.Should().Be(4);
         }
 
         [Fact]
         public void AddEntryCreatesNewConfigurationEntry()
         {
-            instance.AddEntry(TestAspectFactory.Type, 0, MyTestInterface.Type.GetMethods());
+            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods());
             var aspect = instance.GetAspects().First();
             aspect.SortOrder.Should().Be(0);
                 aspect.GetMethodsToIntercept().Count.Should()
@@ -120,7 +120,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorImplementationTypeNullThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType, default(Type), ServiceLifetime.Transient)));
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(GetType(), default(Type), ServiceLifetime.Transient)));
         }
 
         [Fact]
@@ -150,8 +150,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void GetHashCodeShouldEqualServiceDescriptorHashCode()
         {
-            var serviceDescriptor = new ServiceDescriptor(Constants.IAspectFactoryType,
-                TestAspectFactory.Type, ServiceLifetime.Transient);
+            var serviceDescriptor = new ServiceDescriptor(ITestInterfaceType,
+                MyTestInterface.Type, ServiceLifetime.Transient);
             new AspectConfiguration(serviceDescriptor).GetHashCode().Should().Be(
                 serviceDescriptor.GetHashCode() * 397);
         }
@@ -162,10 +162,12 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldBeEqual()
         {
-            var config2 = new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType, TestAspectFactory.Type, ServiceLifetime.Transient));
+            var config2 = new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType, MyTestInterface.Type, ServiceLifetime.Transient));
             var result = instance == config2;
             result.Should().BeTrue();
         }
+
+        private static readonly Type ITestInterfaceType = typeof(ITestInterface);
 
         /// <summary>
         ///     The operator should not be equal.
@@ -173,7 +175,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void OperatorShouldNotBeEqual()
         {
-            var config2 = new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType, TestAspectFactory2.Type, ServiceLifetime.Transient));
+            var config2 = new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType, MyTestInterface2.Type, ServiceLifetime.Transient));
             var result = instance != config2;
             result.Should().BeTrue();
         }
@@ -184,7 +186,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldBeEqual()
         {
-            instance.Equals(new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType, TestAspectFactory.Type, ServiceLifetime.Transient))).Should().BeTrue();
+            instance.Equals(new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType, MyTestInterface.Type, ServiceLifetime.Transient))).Should().BeTrue();
         }
 
         /// <summary>
@@ -193,7 +195,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldNotBeEqual()
         {
-            instance.Equals(new AspectConfiguration(new ServiceDescriptor(Constants.IAspectFactoryType, TestAspectFactory2.Type, ServiceLifetime.Transient))).Should().BeFalse();
+            instance.Equals(new AspectConfiguration(new ServiceDescriptor(ITestInterfaceType, MyTestInterface2.Type, ServiceLifetime.Transient))).Should().BeFalse();
         }
     }
 }

@@ -83,25 +83,25 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenServiceTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>("serviceType", () => inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, null, null, null));
+            Assert.Throws<ArgumentNullException>("serviceType", () => inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, null, null, null));
         }
         
         [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenImplementationTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>("implementationType", () => inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), null, null));
+            Assert.Throws<ArgumentNullException>("implementationType", () => inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), null, null));
         }
         
         [Fact]
         public void ShouldInterceptThrowsArgumentNullExceptionWhenMethodInfoIsNull()
         {
-            Assert.Throws<ArgumentNullException>("methodInfo", () => inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), MyTestInterface.Type, null));
+            Assert.Throws<ArgumentNullException>("methodInfo", () => inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), MyTestInterface.Type, null));
         }
 
         [Fact]
         public void ShouldInterceptReturnsFalseWhenRegistrationNotFound()
         {
-            inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
+            inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
         }
         
         [Fact]
@@ -109,16 +109,16 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             var configuration = new AspectConfiguration(ServiceDescriptor.Scoped(typeof(ITestInterface), MyTestInterface.Type));
             inMemoryAspectConfigurationProvider.AddEntry(configuration);
-            inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
+            inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
         }
         
         [Fact]
         public void ShouldInterceptReturnsFalseWhenRegistrationFoundButNoMatchingAspectRegistered()
         {
             var configuration = new AspectConfiguration(ServiceDescriptor.Scoped(typeof(ITestInterface), MyTestInterface.Type));
-            configuration.AddEntry(TestAspectFactory.Type);
+            configuration.AddEntry(MyTestInterface.Type);
             inMemoryAspectConfigurationProvider.AddEntry(configuration);
-            inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory2.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
+            inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface2.Type, typeof(ITestInterface), MyTestInterface.Type, MyTestInterface.Type.GetMethods().First()).Should().BeFalse();
         }
         
         [Fact]
@@ -126,9 +126,9 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             var methods = typeof(ITestInterface).GetMethods();
             var configuration = new AspectConfiguration(ServiceDescriptor.Scoped(typeof(ITestInterface), MyTestInterface.Type));
-            configuration.AddEntry(TestAspectFactory.Type, methodsToIntercept: methods.First());
+            configuration.AddEntry(MyTestInterface.Type, methodsToIntercept: methods.First());
             inMemoryAspectConfigurationProvider.AddEntry(configuration);
-            inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), MyTestInterface.Type, methods.Last()).Should().BeFalse();
+            inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), MyTestInterface.Type, methods.Last()).Should().BeFalse();
         }
         
         [Fact]
@@ -136,9 +136,9 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             var methods = typeof(ITestInterface).GetMethods();
             var configuration = new AspectConfiguration(ServiceDescriptor.Scoped(typeof(ITestInterface), MyTestInterface.Type));
-            configuration.AddEntry(TestAspectFactory.Type, methodsToIntercept: methods.First());
+            configuration.AddEntry(MyTestInterface.Type, methodsToIntercept: methods.First());
             inMemoryAspectConfigurationProvider.AddEntry(configuration);
-            inMemoryAspectConfigurationProvider.ShouldIntercept(TestAspectFactory.Type, typeof(ITestInterface), MyTestInterface.Type, methods.First()).Should().BeTrue();
+            inMemoryAspectConfigurationProvider.ShouldIntercept(MyTestInterface.Type, typeof(ITestInterface), MyTestInterface.Type, methods.First()).Should().BeTrue();
         }
     }
 }

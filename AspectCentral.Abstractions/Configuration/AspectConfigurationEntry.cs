@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JamesConsulting.Reflection;
 
 namespace AspectCentral.Abstractions.Configuration
 {
@@ -41,8 +42,8 @@ namespace AspectCentral.Abstractions.Configuration
         {
             AspectFactoryType = aspectFactoryType ?? throw new ArgumentNullException(nameof(aspectFactoryType));
 
-            if (aspectFactoryType.IsInterface || aspectFactoryType.IsAbstract || !Constants.IAspectFactoryType.IsAssignableFrom(aspectFactoryType))
-                throw new ArgumentException($"Type must implement {nameof(IAspectFactory)}", nameof(aspectFactoryType));
+            if (!aspectFactoryType.IsConcreteClass())
+                throw new ArgumentException($"Type must be a concrete class", nameof(aspectFactoryType));
 
             SortOrder = sortOrder;
             this.methodsToIntercept = methodsToIntercept == null ? new List<MethodInfo>() : new List<MethodInfo>(methodsToIntercept);

@@ -8,6 +8,8 @@
 //  </summary>
 //  ----------------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace AspectCentral.Abstractions.Tests
 {
     /// <summary>
@@ -39,6 +41,8 @@ namespace AspectCentral.Abstractions.Tests
         ///     Gets or sets the y.
         /// </summary>
         public string Y { get; }
+
+        public static readonly Type Type = typeof(MyUnitTestClass);
 
         /// <summary>
         ///     The ==.

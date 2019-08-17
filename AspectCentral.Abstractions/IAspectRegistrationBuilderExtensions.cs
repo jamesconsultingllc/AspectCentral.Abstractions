@@ -21,33 +21,6 @@ namespace AspectCentral.Abstractions
     public static class IAspectRegistrationBuilderExtensions
     {
         /// <summary>
-        ///     The add aspect.
-        /// </summary>
-        /// <param name="aspectRegistrationBuilder">
-        ///     The aspect registration builder.
-        /// </param>
-        /// <param name="sortOrder">
-        ///     The sort order.
-        /// </param>
-        /// <param name="methodsToIntercept">
-        ///     The methods to intercept.
-        /// </param>
-        /// <typeparam name="T">
-        /// </typeparam>
-        /// <returns>
-        ///     The <see cref="IAspectRegistrationBuilder" />.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// </exception>
-        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
-            where T : IAspectFactory
-        {
-            if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
-            aspectRegistrationBuilder.AddAspect(typeof(T), sortOrder, methodsToIntercept);
-            return aspectRegistrationBuilder;
-        }
-
-        /// <summary>
         ///     The add scoped.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">

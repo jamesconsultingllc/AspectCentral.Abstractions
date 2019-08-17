@@ -26,19 +26,7 @@ namespace AspectCentral.Abstractions.Tests
             mockIAspectRegistrationBuilder = new Mock<IAspectRegistrationBuilder>();
         }
         
-        [Fact]
-        public void AddAspectThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddAspect<TestAspectFactory>());
-        }
-
-        [Fact]
-        public void AddAspectCallsAddAspectWhenArgumentsAreValid()
-        {
-            mockIAspectRegistrationBuilder.Object.AddAspect<TestAspectFactory>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddAspect(TestAspectFactory.Type, null, new MethodInfo[0]), Times.Once);
-        }
-
+        
         [Fact]
         public void AddScopedThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
