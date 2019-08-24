@@ -112,7 +112,7 @@ namespace AspectCentral.Abstractions.Configuration
                     sortOrder = aspectConfigurationEntries.Max(x => x.SortOrder) + 1;
             }
 
-            var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectFactoryType == aspectFactoryType);
+            var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectType == aspectFactoryType);
 
             if (methodsToIntercept == null || methodsToIntercept.Length == 0)
                 methodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
@@ -158,16 +158,16 @@ namespace AspectCentral.Abstractions.Configuration
                 return (ServiceDescriptor != null ? ServiceDescriptor.GetHashCode() : 0) * 397;
             }
         }
-        
+
         /// <summary>
-        /// Determines if the given method should be intercepted by the aspect
+        ///     Determines if the given method should be intercepted by the aspect
         /// </summary>
         /// <param name="factoryType"></param>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
         {
-            return aspectConfigurationEntries.Any(x => x.AspectFactoryType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
+            return aspectConfigurationEntries.Any(x => x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
         }
     }
 }

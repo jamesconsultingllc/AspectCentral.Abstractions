@@ -32,6 +32,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
 
         private readonly AspectConfiguration instance;
 
+        private static readonly Type ITestInterfaceType = typeof(ITestInterface);
+
         [Fact]
         public void AddEntryAddsAllMethodsWhenMethodsToInterceptIsEmptyArray()
         {
@@ -64,21 +66,6 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance.GetAspects().First().GetMethodsToIntercept()
                 .IsEqualTo(MyTestInterface.Type.GetMethods());
         }
-        
-        [Fact]
-        public void AddEntryNullSortOrderWithNoEntriesShouldBeOne()
-        {
-            instance.AddEntry(MyTestInterface.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First().SortOrder.Should().Be(1);
-        }
-        
-        [Fact]
-        public void AddEntryNullSortOrderWithNoEntriesShouldBeTheMaxSortOrderPlus1()
-        {
-            instance.AddEntry(MyTestInterface.Type, 3, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.AddEntry(MyUnitTestClass.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First(x => x.AspectFactoryType == MyUnitTestClass.Type).SortOrder.Should().Be(4);
-        }
 
         [Fact]
         public void AddEntryCreatesNewConfigurationEntry()
@@ -86,8 +73,23 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods());
             var aspect = instance.GetAspects().First();
             aspect.SortOrder.Should().Be(0);
-                aspect.GetMethodsToIntercept().Count.Should()
+            aspect.GetMethodsToIntercept().Count.Should()
                 .Be(MyTestInterface.Type.GetMethods().Length);
+        }
+
+        [Fact]
+        public void AddEntryNullSortOrderWithNoEntriesShouldBeOne()
+        {
+            instance.AddEntry(MyTestInterface.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.GetAspects().First().SortOrder.Should().Be(1);
+        }
+
+        [Fact]
+        public void AddEntryNullSortOrderWithNoEntriesShouldBeTheMaxSortOrderPlus1()
+        {
+            instance.AddEntry(MyTestInterface.Type, 3, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.AddEntry(MyUnitTestClass.Type, null, MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+            instance.GetAspects().First(x => x.AspectType == MyUnitTestClass.Type).SortOrder.Should().Be(4);
         }
 
         [Fact]
@@ -166,8 +168,6 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             var result = instance == config2;
             result.Should().BeTrue();
         }
-
-        private static readonly Type ITestInterfaceType = typeof(ITestInterface);
 
         /// <summary>
         ///     The operator should not be equal.

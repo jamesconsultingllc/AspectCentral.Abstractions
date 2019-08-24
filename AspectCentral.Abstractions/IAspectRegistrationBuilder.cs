@@ -45,7 +45,7 @@ namespace AspectCentral.Abstractions
         /// <returns>
         ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder AddAspect(Type aspectFactory, int? sortOrder = null, params MethodInfo[] methodsToIntercept);
+        IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null, params MethodInfo[] methodsToIntercept);
 
         /// <summary>
         ///     The add service.
