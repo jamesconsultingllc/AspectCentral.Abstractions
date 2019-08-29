@@ -14,6 +14,7 @@ using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
 using JamesConsulting.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace AspectCentral.Abstractions
 {
@@ -45,12 +46,8 @@ namespace AspectCentral.Abstractions
         /// <inheritdoc />
         public IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
         {
-            if (aspectType == null) throw new ArgumentNullException(nameof(aspectType));
-            if (!aspectType.IsConcreteClass())
-                throw new ArgumentException(
-                    $"The {nameof(aspectType)} must be a concrete class",
-                    nameof(aspectType));
-
+            ValidateAddAspect(aspectType);
+            
             if (AspectConfigurationProvider.ConfigurationEntries.Count == 0)
                 throw new InvalidOperationException("A service must be registered to apply an aspect to.");
             AspectConfigurationProvider.ConfigurationEntries.Last()
@@ -58,10 +55,54 @@ namespace AspectCentral.Abstractions
             return this;
         }
 
-        /// <inheritdoc />
-        public abstract IAspectRegistrationBuilder AddService(Type service, Type implementation, ServiceLifetime serviceLifetime);
+        public IAspectRegistrationBuilder AddService(Type service, Type implementation, ServiceLifetime serviceLifetime)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (implementation == null) throw new ArgumentNullException(nameof(implementation));
+            if (!implementation.IsConcreteClass() || !service.IsAssignableFrom(implementation))
+                throw new ArgumentException(
+                    $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");
+
+            var aspectConfiguration =
+                new AspectConfiguration(new ServiceDescriptor(service, implementation, serviceLifetime));
+            Services.TryAdd(new ServiceDescriptor(implementation, implementation, serviceLifetime));
+            Services.Add(new ServiceDescriptor(service,
+                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
+            var serviceDescriptor = new ServiceDescriptor(service, implementation, serviceLifetime);
+            AspectConfigurationProvider.AddEntry(aspectConfiguration);
+            Services.TryAdd(serviceDescriptor);
+            return this;
+        }
 
         /// <inheritdoc />
-        public abstract IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory, ServiceLifetime serviceLifetime);
+        public IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory,
+            ServiceLifetime serviceLifetime)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
+            var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(service, factory, serviceLifetime));
+            AspectConfigurationProvider.AddEntry(aspectConfiguration);
+            Services.Add(new ServiceDescriptor(service,
+                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
+            return this;
+        }
+        
+        /// <inheritdoc />
+        public abstract object InvokeCreateFactory(IServiceProvider serviceProvider, AspectConfiguration aspectConfiguration);
+
+        /// <summary>
+        /// Validates that the type given is not null and is a concrete class
+        /// </summary>
+        /// <param name="aspectType">The aspect type</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="aspectType"/> is null</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="aspectType"/> represents and interface or abstract class</exception>
+        public virtual void ValidateAddAspect(Type aspectType)
+        {
+            if (aspectType == null) throw new ArgumentNullException(nameof(aspectType));
+            if (!aspectType.IsConcreteClass())
+                throw new ArgumentException(
+                    $"The {nameof(aspectType)} must be a concrete class",
+                    nameof(aspectType));
+        }
     }
 }

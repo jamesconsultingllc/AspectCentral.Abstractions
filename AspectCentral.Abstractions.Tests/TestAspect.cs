@@ -8,12 +8,15 @@
 //  </summary>
 //  ----------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Reflection;
 
 namespace AspectCentral.Abstractions.Tests
 {
     public class TestAspect : IAspect
     {
+        public static readonly Type Type = typeof(TestAspect);
+        
         /// <inheritdoc />
         public AspectContext GenerateAspectContext(MethodInfo targetMethod, object[] args)
         {

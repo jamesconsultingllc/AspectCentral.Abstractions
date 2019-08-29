@@ -33,8 +33,8 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     The add aspect.
         /// </summary>
-        /// <param name="aspectFactory">
-        ///     The aspect factory.
+        /// <param name="aspectType">
+        ///     The aspect type.
         /// </param>
         /// <param name="sortOrder">
         ///     The sort order.
@@ -80,5 +80,13 @@ namespace AspectCentral.Abstractions
         ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory, ServiceLifetime serviceLifetime);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="aspectConfiguration"></param>
+        /// <returns></returns>
+        object InvokeCreateFactory(IServiceProvider serviceProvider, AspectConfiguration aspectConfiguration);
     }
 }
