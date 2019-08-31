@@ -155,5 +155,11 @@ namespace AspectCentral.Abstractions.Tests
         {
             Assert.Throws<ArgumentNullException>(() => new TestAspectRegistrationBuilder(null, null));
         }
+
+        [Fact]
+        public void ValidateAddAspectThrowsExceptionWhenTypeIsNotAConcreteClass()
+        {
+            Assert.Throws<ArgumentException>("aspectType", () => aspectRegistrationBuilder.ValidateAddAspect(typeof(ITestInterface)));
+        }
     }
 }

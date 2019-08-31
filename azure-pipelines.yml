@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 variables:
   SonarKey: 'jamesconsultingllc_AspectCentral.Abstractions'
-  Version: '1.0.0-alpha6'
+  Version: '1.0.0-alpha7'
   buildConfiguration: 'Release'
 trigger:
 - master
