@@ -20,6 +20,43 @@ namespace AspectCentral.Abstractions
     public static class IServiceCollectionExtensions
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="aspectConfigurationProvider"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IAspectRegistrationBuilder AddAspectSupport<T>(this IServiceCollection serviceCollection, IAspectConfigurationProvider aspectConfigurationProvider = null) 
+            where T : IAspectRegistrationBuilder
+        {
+            return AddAspectSupport(serviceCollection, typeof(T), aspectConfigurationProvider);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="type"></param>
+        /// <param name="aspectConfigurationProvider"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static IAspectRegistrationBuilder AddAspectSupport(this IServiceCollection serviceCollection, Type type,
+            IAspectConfigurationProvider aspectConfigurationProvider = null)
+        {
+            if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
+            if (!typeof(IAspectRegistrationBuilder).IsAssignableFrom(type)) throw  new ArgumentException(nameof(type), $"Parameter {nameof(type)} must implement {typeof(IAspectRegistrationBuilder)}");
+
+            aspectConfigurationProvider = aspectConfigurationProvider ?? new InMemoryAspectConfigurationProvider();
+            
+            serviceCollection.TryAddSingleton(aspectConfigurationProvider);
+            var builder = (IAspectRegistrationBuilder) Activator.CreateInstance(type, RegisterAspects(serviceCollection, type),
+                aspectConfigurationProvider);
+            serviceCollection.TryAddSingleton<IAspectRegistrationBuilder>(builder);
+            return builder;
+        }
+        
+        /// <summary>
         ///     The register aspect factories.
         /// </summary>
         /// <param name="serviceCollection">
@@ -30,9 +67,20 @@ namespace AspectCentral.Abstractions
         /// </returns>
         public static IServiceCollection RegisterAspects<T>(this IServiceCollection serviceCollection)
         {
+            return RegisterAspects(serviceCollection, typeof(T));
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="baseType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IServiceCollection RegisterAspects(this IServiceCollection serviceCollection, Type baseType)
+        {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
             
-            var baseType = typeof(T);
             var types = from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
                 where !type.IsAbstract && !type.IsInterface &&
