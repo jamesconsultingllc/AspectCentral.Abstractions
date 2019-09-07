@@ -10,6 +10,7 @@
 
 using System;
 using System.Linq;
+using AspectCentral.Abstractions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -39,6 +40,42 @@ namespace AspectCentral.Abstractions
                 select type;
 
             foreach (var type in types) serviceCollection.TryAddSingleton(type);
+
+            return serviceCollection;
+        }
+        
+        /// <summary>
+        ///     The configure aspects.
+        /// </summary>
+        /// <param name="serviceCollection">
+        ///     The service collection.
+        /// </param>
+        /// <param name="aspectConfigurationProvider">
+        ///     The aspect configuration provider.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="IServiceCollection" />.
+        /// </returns>
+        public static IServiceCollection ConfigureAspects(this IServiceCollection serviceCollection,
+            IAspectConfigurationProvider aspectConfigurationProvider)
+        {
+            for (var index = 0; index < serviceCollection.Count; index++)
+            {
+                var service = serviceCollection[index];
+
+                if (service.ServiceType.IsInterface && service.ImplementationType != null)
+                {
+                    var aspectConfiguration =
+                        aspectConfigurationProvider.GetTypeAspectConfiguration(service.ServiceType,
+                            service.ImplementationType);
+
+                    if (aspectConfiguration == null) continue;
+
+                    serviceCollection.TryAdd(ServiceDescriptor.Describe(service.ImplementationType, service.ImplementationType, service.Lifetime));
+                    serviceCollection[index] = new ServiceDescriptor(service.ServiceType,
+                        serviceProvider => serviceProvider.GetService<IAspectRegistrationBuilder>().InvokeCreateFactory(serviceProvider, aspectConfiguration), service.Lifetime);
+                }
+            }
 
             return serviceCollection;
         }
