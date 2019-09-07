@@ -8,9 +8,10 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2019</Copyright>
     <RepositoryUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions</RepositoryUrl>
-    <PackageTags>AOP, aspect oriented programming, interceptors, DispatchProxy</PackageTags>
+    <PackageTags>AOP, aspect oriented programming, interceptors</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <LangVersion>latest</LangVersion>
+    <ProjectGuid>15BF13FC-7EE0-4507-A08C-FB531D2B5A11</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,10 +9,8 @@
 //  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace AspectCentral.Abstractions
 {
@@ -31,10 +29,12 @@ namespace AspectCentral.Abstractions
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder = null, params MethodInfo[] methodsToIntercept) where T : IAspect
+        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
         {
+            var type = typeof(T);
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
-            return aspectRegistrationBuilder.AddAspect(typeof(T), sortOrder, methodsToIntercept);
+            if (type.GetCustomAttribute(typeof(AspectAttribute), true) == null) throw new ArgumentException("The given type T must be decorated with the AspectAttribute or inherit from a type decorated with it");
+            return aspectRegistrationBuilder.AddAspect(type, sortOrder, methodsToIntercept);
         }
         
         /// <summary>

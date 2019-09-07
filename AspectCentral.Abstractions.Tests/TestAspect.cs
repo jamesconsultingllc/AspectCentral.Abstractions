@@ -13,7 +13,8 @@ using System.Reflection;
 
 namespace AspectCentral.Abstractions.Tests
 {
-    public class TestAspect : IAspect
+    [Aspect]
+    public class TestAspect
     {
         public static readonly Type Type = typeof(TestAspect);
         

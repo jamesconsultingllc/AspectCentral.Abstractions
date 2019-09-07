@@ -62,10 +62,10 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddServiceSuccess()
         {
-            aspectRegistrationBuilder.AddService(typeof(IAspect), TestAspect.Type, ServiceLifetime.Scoped);
+            aspectRegistrationBuilder.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Scoped);
             aspectRegistrationBuilder.Services.Count.Should().Be(2);
             aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries.Count.Should().Be(1);
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType.Should().Be(TestAspect.Type);
+            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType.Should().Be(MyTestInterface.Type);
         }
 
         /// <summary>
@@ -102,8 +102,8 @@ namespace AspectCentral.Abstractions.Tests
         public void AddServiceWithFactorySuccess()
         {
             aspectRegistrationBuilder.AddService(
-                typeof(IAspect),
-                provider => new TestAspect(), 
+                typeof(ITestInterface),
+                provider => new MyTestInterface(), 
                 ServiceLifetime.Scoped);
             aspectRegistrationBuilder.Services.Count.Should().Be(1);
             aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries.Count.Should().Be(1);
@@ -117,7 +117,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddServiceWithFactoryThrowsArgumentNullExceptionWhenImplementationIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddService(typeof(IAspect), default(Func<IServiceProvider, object>), ServiceLifetime.Scoped));
+            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddService(typeof(ITestInterface), default(Func<IServiceProvider, object>), ServiceLifetime.Scoped));
         }
 
         /// <summary>

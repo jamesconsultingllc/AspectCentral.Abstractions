@@ -1,5 +1,5 @@
 //  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="Constants.cs" company="James Consulting LLC">
+//  <copyright file="AspectAttribute.cs" company="James Consulting LLC">
 //    Copyright (c) 2019 All Rights Reserved
 //  </copyright>
 //  <author>Rudy James</author>
@@ -12,9 +12,9 @@ using System;
 
 namespace AspectCentral.Abstractions
 {
-    public static class Constants
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    public class AspectAttribute : Attribute
     {
-        // ReSharper disable once InconsistentNaming
-        public static readonly Type IAspectType = typeof(IAspect);
+        
     }
 }

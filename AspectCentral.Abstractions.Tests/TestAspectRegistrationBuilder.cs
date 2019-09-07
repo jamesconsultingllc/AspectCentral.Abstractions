@@ -24,7 +24,7 @@ namespace AspectCentral.Abstractions.Tests
         /// <inheritdoc />
         public override object InvokeCreateFactory(IServiceProvider serviceProvider, AspectConfiguration aspectConfiguration)
         {
-            throw new NotImplementedException();
+            return serviceProvider.GetService(aspectConfiguration.ServiceDescriptor.ServiceType);
         }
     }
 }

@@ -123,9 +123,15 @@ namespace AspectCentral.Abstractions.Tests
         }
         
         [Fact]
-        public void AddTransientWithFactoryThrowsArgumentNullExceptionWhenFactoryIsNull()
+        public void AddTransientWithFactoryThrowsArgumentNullExceptionWhenAFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>("factory", () => mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(null));
+            Assert.Throws<ArgumentNullException>("factory",() => mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(null));
+        }
+        
+        [Fact]
+        public void AddTransientWithFactoryThrowsArgumentExceptionWhenTypeDoesNotHaveAspectAttribute()
+        {
+            Assert.Throws<ArgumentException>(() => mockIAspectRegistrationBuilder.Object.AddAspect<MyTestInterface>());
         }
         
         [Fact]

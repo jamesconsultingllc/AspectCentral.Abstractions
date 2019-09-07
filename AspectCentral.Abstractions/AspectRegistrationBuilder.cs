@@ -35,6 +35,8 @@ namespace AspectCentral.Abstractions
             Services = services ?? throw new ArgumentNullException(nameof(services));
             AspectConfigurationProvider = aspectConfigurationProvider ??
                                           throw new ArgumentNullException(nameof(aspectConfigurationProvider));
+            
+            aspectConfigurationProvider.ConfigurationEntries.ForEach(RegisterAspectConfiguration);
         }
 
         /// <inheritdoc />
@@ -63,15 +65,19 @@ namespace AspectCentral.Abstractions
                 throw new ArgumentException(
                     $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");
 
-            var aspectConfiguration =
-                new AspectConfiguration(new ServiceDescriptor(service, implementation, serviceLifetime));
-            Services.TryAdd(new ServiceDescriptor(implementation, implementation, serviceLifetime));
-            Services.Add(new ServiceDescriptor(service,
-                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
-            var serviceDescriptor = new ServiceDescriptor(service, implementation, serviceLifetime);
+            var aspectConfiguration = new AspectConfiguration(ServiceDescriptor.Describe(service, implementation, serviceLifetime));
+            RegisterAspectConfiguration(aspectConfiguration);
             AspectConfigurationProvider.AddEntry(aspectConfiguration);
-            Services.TryAdd(serviceDescriptor);
             return this;
+        }
+
+        private void RegisterAspectConfiguration(AspectConfiguration aspectConfiguration)
+        {
+            Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType, 
+                aspectConfiguration.ServiceDescriptor.ImplementationType, aspectConfiguration.ServiceDescriptor.Lifetime));
+            Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
+                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), aspectConfiguration.ServiceDescriptor.Lifetime));
+            Services.TryAdd(aspectConfiguration.ServiceDescriptor);
         }
 
         /// <inheritdoc />
