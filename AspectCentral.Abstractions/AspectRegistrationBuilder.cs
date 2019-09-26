@@ -73,8 +73,17 @@ namespace AspectCentral.Abstractions
 
         private void RegisterAspectConfiguration(AspectConfiguration aspectConfiguration)
         {
-            Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType, 
-                aspectConfiguration.ServiceDescriptor.ImplementationType, aspectConfiguration.ServiceDescriptor.Lifetime));
+            if (aspectConfiguration.ServiceDescriptor.ImplementationType == null)
+            {
+                Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType,
+                    aspectConfiguration.ServiceDescriptor.ImplementationType, aspectConfiguration.ServiceDescriptor.Lifetime));
+            }
+            else
+            {
+                Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType,
+                    aspectConfiguration.ServiceDescriptor.ImplementationType, aspectConfiguration.ServiceDescriptor.Lifetime));
+            }
+
             Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
                 serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), aspectConfiguration.ServiceDescriptor.Lifetime));
             Services.TryAdd(aspectConfiguration.ServiceDescriptor);
