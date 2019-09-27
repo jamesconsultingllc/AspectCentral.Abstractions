@@ -80,7 +80,7 @@ namespace AspectCentral.Abstractions
         {
             try
             {
-                return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                return (from assembly in AppDomain.CurrentDomain.GetAssemblies().Union(AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies())
                     from type in assembly.GetTypes()
                     select type).ToArray();
             }
