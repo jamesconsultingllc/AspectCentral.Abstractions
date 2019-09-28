@@ -25,19 +25,6 @@ namespace AspectCentral.Abstractions
         /// 
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="aspectConfigurationProvider"></param>
-        /// <typeparam name="T">Type of the aspect registration builder</typeparam>
-        /// <returns></returns>
-        public static IAspectRegistrationBuilder AddAspectSupport<T>(this IServiceCollection serviceCollection, IAspectConfigurationProvider aspectConfigurationProvider = null)
-            where T : IAspectRegistrationBuilder
-        {
-            return AddAspectSupport(serviceCollection, typeof(T), aspectConfigurationProvider);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serviceCollection"></param>
         /// <param name="aspectRegistrationBuilderType"></param>
         /// <param name="aspectConfigurationProvider"></param>
         /// <returns></returns>

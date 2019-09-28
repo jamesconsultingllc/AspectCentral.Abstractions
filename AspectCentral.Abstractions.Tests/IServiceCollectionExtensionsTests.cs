@@ -42,11 +42,11 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         [Fact]
-        public void AddAspectSupportThrowsArgumentNullExceptionWhenServiceCollectionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>("serviceCollection",() => default(IServiceCollection).AddAspectSupport<TestAspectRegistrationBuilder>());
-        }
-        
+                public void AddAspectSupportThrowsArgumentNullExceptionWhenServiceCollectionIsNull()
+                {
+                    Assert.Throws<ArgumentNullException>("serviceCollection",() => default(IServiceCollection).AddAspectSupport(typeof(TestAspectRegistrationBuilder)));
+                }
+                
         [Fact]
         public void AddAspectSupportThrowsArgumentNullExceptionWhenAspectRegistrationBuilderTypeIsNull()
         {
@@ -66,7 +66,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             var configuration = new InMemoryAspectConfigurationProvider();
             configuration.AddEntry(new AspectConfiguration(ServiceDescriptor.Describe(typeof(ITestInterface), typeof(MyTestInterface), ServiceLifetime.Transient)));
-            var builder = serviceCollection.AddAspectSupport<TestAspectRegistrationBuilder>(configuration);
+            var builder = serviceCollection.AddAspectSupport(typeof(TestAspectRegistrationBuilder), configuration);
             builder.Services.Count.Should().Be(5);
             builder.Services.Count(x => x.ServiceType == typeof(ITestInterface)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(MyTestInterface)).Should().Be(1);
@@ -78,7 +78,8 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddAspectSupportSucceeds()
         {
-            var builder = serviceCollection.AddAspectSupport<TestAspectRegistrationBuilder>();
+            var builder = serviceCollection.AddAspectSupport(typeof(TestAspectRegistrationBuilder));
+            serviceCollection.TryAddSingleton<TestAspect>();
             builder.Services.Count.Should().Be(3);
             builder.Services.Count(x => x.ServiceType == typeof(IAspectRegistrationBuilder)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(TestAspect)).Should().Be(1);
