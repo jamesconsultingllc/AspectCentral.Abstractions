@@ -79,8 +79,9 @@ namespace AspectCentral.Abstractions.Tests
         public void AddAspectSupportSucceeds()
         {
             var builder = serviceCollection.AddAspectSupport<TestAspectRegistrationBuilder>();
-            builder.Services.Count.Should().Be(2);
+            builder.Services.Count.Should().Be(3);
             builder.Services.Count(x => x.ServiceType == typeof(IAspectRegistrationBuilder)).Should().Be(1);
+            builder.Services.Count(x => x.ServiceType == typeof(TestAspect)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(IAspectConfigurationProvider)).Should().Be(1);
         }
     }
