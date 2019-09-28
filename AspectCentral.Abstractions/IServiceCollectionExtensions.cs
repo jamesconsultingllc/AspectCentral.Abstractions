@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
+using JamesConsulting.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -68,7 +69,7 @@ namespace AspectCentral.Abstractions
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
 
             var types = from type in LoadedTypes()
-                where !type.IsAbstract && !type.IsInterface && type.GetCustomAttribute(typeof(AspectAttribute), true) != null
+                where type.IsConcreteClass() && type.GetCustomAttribute(typeof(AspectAttribute), true) != null
                 select type;
 
             foreach (var type in types) serviceCollection.TryAddSingleton(type);
@@ -80,7 +81,7 @@ namespace AspectCentral.Abstractions
         {
             try
             {
-                return (from assembly in AppDomain.CurrentDomain.GetAssemblies().Union(AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies())
+                return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                     from type in assembly.GetTypes()
                     select type).ToArray();
             }

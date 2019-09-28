@@ -13,6 +13,7 @@ using System.Linq;
 using AspectCentral.Abstractions.Configuration;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
@@ -58,15 +59,7 @@ namespace AspectCentral.Abstractions.Tests
             Assert.Throws<ArgumentException>("aspectRegistrationBuilderType",() => serviceCollection.AddAspectSupport(this.GetType()));
         }
         
-        [Fact]
-        public void AddAspectSupportSucceeds()
-        {
-            var builder = serviceCollection.AddAspectSupport<TestAspectRegistrationBuilder>();
-            builder.Services.Count.Should().Be(3);
-            builder.Services.Count(x => x.ServiceType == typeof(IAspectRegistrationBuilder)).Should().Be(1);
-            builder.Services.Count(x => x.ServiceType == typeof(TestAspect)).Should().Be(1);
-            builder.Services.Count(x => x.ServiceType == typeof(IAspectConfigurationProvider)).Should().Be(1);
-        }
+        
 
         [Fact]
         public void AddAspectSupportWithPreLoadedConfiguration()
@@ -79,6 +72,15 @@ namespace AspectCentral.Abstractions.Tests
             builder.Services.Count(x => x.ServiceType == typeof(MyTestInterface)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(IAspectRegistrationBuilder)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(TestAspect)).Should().Be(1);
+            builder.Services.Count(x => x.ServiceType == typeof(IAspectConfigurationProvider)).Should().Be(1);
+        }
+        
+        [Fact]
+        public void AddAspectSupportSucceeds()
+        {
+            var builder = serviceCollection.AddAspectSupport<TestAspectRegistrationBuilder>();
+            builder.Services.Count.Should().Be(2);
+            builder.Services.Count(x => x.ServiceType == typeof(IAspectRegistrationBuilder)).Should().Be(1);
             builder.Services.Count(x => x.ServiceType == typeof(IAspectConfigurationProvider)).Should().Be(1);
         }
     }
