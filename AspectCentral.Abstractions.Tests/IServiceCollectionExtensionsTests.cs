@@ -37,8 +37,13 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void RegisterAspectsSucceeds()
         {
-            serviceCollection.RegisterAspects();
+            do
+            {
+                serviceCollection.RegisterAspects();
+            } while (serviceCollection.Count == 0);
+
             serviceCollection.Count.Should().Be(1);
+            serviceCollection[0].ServiceType.Should().Be<TestAspect>();
         }
 
         [Fact]
