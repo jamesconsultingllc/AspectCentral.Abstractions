@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
     <Company>James Consulting LLC</Company>
     <Authors>Rudy James</Authors>
     <PackageProjectUrl>https://github.com/jamesconsultingllc/AspectCentral.Abstractions/projects/1</PackageProjectUrl>
@@ -13,6 +12,7 @@
     <LangVersion>latest</LangVersion>
     <ProjectGuid>15BF13FC-7EE0-4507-A08C-FB531D2B5A11</ProjectGuid>
     <Nullable>enable</Nullable>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
