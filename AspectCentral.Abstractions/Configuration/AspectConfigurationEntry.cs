@@ -19,7 +19,7 @@ namespace AspectCentral.Abstractions.Configuration
     /// <summary>
     ///     The aspect configuration.
     /// </summary>
-    public class AspectConfigurationEntry : IEqualityComparer<AspectConfigurationEntry>
+    public class AspectConfigurationEntry : IEqualityComparer<AspectConfigurationEntry?>
     {
         /// <summary>
         ///     Gets or sets the methods to intercept.
@@ -46,7 +46,9 @@ namespace AspectCentral.Abstractions.Configuration
                 throw new ArgumentException("Type must be a concrete class", nameof(aspectType));
 
             SortOrder = sortOrder;
-            this.methodsToIntercept = methodsToIntercept == null ? new List<MethodInfo>() : new List<MethodInfo>(methodsToIntercept);
+            this.methodsToIntercept = methodsToIntercept == null
+                ? new List<MethodInfo>()
+                : new List<MethodInfo>(methodsToIntercept);
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </summary>
         public int SortOrder { get; }
 
-        public virtual bool Equals(AspectConfigurationEntry x, AspectConfigurationEntry y)
+        public virtual bool Equals(AspectConfigurationEntry? x, AspectConfigurationEntry? y)
         {
             if (ReferenceEquals(x, y)) return true;
             if (ReferenceEquals(x, null)) return false;
@@ -68,16 +70,16 @@ namespace AspectCentral.Abstractions.Configuration
             return x.AspectType == y.AspectType;
         }
 
-        public virtual int GetHashCode(AspectConfigurationEntry obj)
+        public virtual int GetHashCode(AspectConfigurationEntry? obj)
         {
-            return obj.AspectType != null ? obj.AspectType.GetHashCode() : 0;
+            return obj?.AspectType != null ? obj.AspectType.GetHashCode() : 0;
         }
 
         /// <summary>
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(AspectConfigurationEntry other)
+        public bool Equals(AspectConfigurationEntry? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -99,8 +101,7 @@ namespace AspectCentral.Abstractions.Configuration
         {
             if (ReferenceEquals(left, right)) return true;
             if (ReferenceEquals(left, null)) return false;
-            if (ReferenceEquals(right, null)) return false;
-            return left.Equals(right);
+            return !ReferenceEquals(right, null) && left.Equals(right);
         }
 
         /// <summary>
@@ -132,7 +133,8 @@ namespace AspectCentral.Abstractions.Configuration
         public void AddMethodsToIntercept(params MethodInfo[] newMethodsToIntercept)
         {
             if (newMethodsToIntercept == null) throw new ArgumentNullException(nameof(newMethodsToIntercept));
-            if (newMethodsToIntercept.Length == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(newMethodsToIntercept));
+            if (newMethodsToIntercept.Length == 0)
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(newMethodsToIntercept));
 
             methodsToIntercept = methodsToIntercept.Union(newMethodsToIntercept).ToList();
         }
@@ -175,7 +177,7 @@ namespace AspectCentral.Abstractions.Configuration
         public void RemoveMethodsToIntercept(params MethodInfo[] methodsToBeRemoved)
         {
             if (methodsToBeRemoved == null || methodsToBeRemoved.Length == 0) return;
-            methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains);
+            methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains!);
         }
     }
 }

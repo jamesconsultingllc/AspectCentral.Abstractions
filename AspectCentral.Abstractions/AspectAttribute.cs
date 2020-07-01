@@ -12,9 +12,8 @@ using System;
 
 namespace AspectCentral.Abstractions
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class AspectAttribute : Attribute
     {
-        
     }
 }

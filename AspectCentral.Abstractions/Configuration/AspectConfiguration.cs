@@ -19,12 +19,13 @@ namespace AspectCentral.Abstractions.Configuration
     /// <summary>
     ///     The aspect configuration entry.
     /// </summary>
-    public sealed class AspectConfiguration : IEquatable<AspectConfiguration>
+    public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
     {
         /// <summary>
         ///     Gets or sets the factory type with methods to intercept.
         /// </summary>
-        private readonly List<AspectConfigurationEntry> aspectConfigurationEntries = new List<AspectConfigurationEntry>();
+        private readonly List<AspectConfigurationEntry> aspectConfigurationEntries =
+            new List<AspectConfigurationEntry>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AspectConfiguration" /> class.
@@ -37,7 +38,8 @@ namespace AspectCentral.Abstractions.Configuration
         public AspectConfiguration(ServiceDescriptor serviceDescriptor)
         {
             if (serviceDescriptor == null) throw new ArgumentNullException(nameof(serviceDescriptor));
-            if (!serviceDescriptor.ServiceType.IsInterface) throw new ArgumentException("The ServiceType property must be an interface", nameof(serviceDescriptor));
+            if (!serviceDescriptor.ServiceType.IsInterface)
+                throw new ArgumentException("The ServiceType property must be an interface", nameof(serviceDescriptor));
 
             ServiceDescriptor = serviceDescriptor;
         }
@@ -48,12 +50,18 @@ namespace AspectCentral.Abstractions.Configuration
         public ServiceDescriptor ServiceDescriptor { get; }
 
         /// <inheritdoc />
-        public bool Equals(AspectConfiguration other)
+        public bool Equals(AspectConfiguration? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType && ServiceDescriptor.ImplementationType == other.ServiceDescriptor.ImplementationType
-                                                                                        && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory;
+            return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType && ServiceDescriptor
+                                                                                            .ImplementationType ==
+                                                                                        other.ServiceDescriptor
+                                                                                            .ImplementationType
+                                                                                        && ServiceDescriptor
+                                                                                            .ImplementationFactory ==
+                                                                                        other.ServiceDescriptor
+                                                                                            .ImplementationFactory;
         }
 
         /// <summary>
@@ -120,7 +128,8 @@ namespace AspectCentral.Abstractions.Configuration
                 methodsToIntercept = methodsToIntercept.Where(x => x != null).ToArray();
 
             if (aspectConfigurationEntry == null)
-                aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value, methodsToIntercept));
+                aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
+                    methodsToIntercept));
             else
                 aspectConfigurationEntry.AddMethodsToIntercept(methodsToIntercept);
         }
@@ -145,7 +154,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <returns>
         ///     The <see cref="IOrderedEnumerable{AspectConfigurationEntry}" />.
         /// </returns>
-        public IOrderedEnumerable<AspectConfigurationEntry> GetAspects()
+        public IEnumerable<AspectConfigurationEntry> GetAspects()
         {
             return aspectConfigurationEntries.OrderByDescending(x => x.SortOrder);
         }
@@ -167,7 +176,8 @@ namespace AspectCentral.Abstractions.Configuration
         /// <returns></returns>
         public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
         {
-            return aspectConfigurationEntries.Any(x => x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
+            return aspectConfigurationEntries.Any(x =>
+                x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
         }
     }
 }

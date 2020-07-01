@@ -38,7 +38,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         private class TestConfigurationEntry : AspectConfigurationEntry
         {
             /// <inheritdoc />
-            internal TestConfigurationEntry(Type aspectType, int sortOrder, params MethodInfo[] methodsToIntercept) : base(aspectType, sortOrder, methodsToIntercept)
+            internal TestConfigurationEntry(Type aspectType, int sortOrder, params MethodInfo[] methodsToIntercept) :
+                base(aspectType, sortOrder, methodsToIntercept)
             {
             }
         }
@@ -71,7 +72,8 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenTypeIsNotConcreteClass()
         {
-            Assert.Throws<ArgumentException>("aspectType", () => new AspectConfigurationEntry(typeof(ITestInterface), 1));
+            Assert.Throws<ArgumentException>("aspectType",
+                () => new AspectConfigurationEntry(typeof(ITestInterface), 1));
         }
 
         /// <summary>

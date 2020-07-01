@@ -9,7 +9,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace AspectCentral.Abstractions.Configuration
@@ -39,12 +38,14 @@ namespace AspectCentral.Abstractions.Configuration
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
             return ConfigurationEntries.Find(
-                x => x.ServiceDescriptor.ServiceType == contractType && x.ServiceDescriptor.ImplementationType == implementationType
-                     || x.ServiceDescriptor.ServiceType == contractType && x.ServiceDescriptor.ImplementationFactory != null);
+                x => x.ServiceDescriptor.ServiceType == contractType &&
+                     x.ServiceDescriptor.ImplementationType == implementationType
+                     || x.ServiceDescriptor.ServiceType == contractType &&
+                     x.ServiceDescriptor.ImplementationFactory != null);
         }
 
         /// <summary>
-        /// Throws <exception cref="NotImplementedException"></exception>
+        ///     Throws <exception cref="NotImplementedException"></exception>
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         public void LoadConfiguration()
@@ -62,10 +63,7 @@ namespace AspectCentral.Abstractions.Configuration
 
             var aspectConfiguration = GetTypeAspectConfiguration(serviceType, implementationType);
 
-            if (aspectConfiguration == null)
-                return false;
-
-            return aspectConfiguration.ShouldIntercept(factoryType, methodInfo);
+            return aspectConfiguration != null && aspectConfiguration.ShouldIntercept(factoryType, methodInfo);
         }
     }
 }

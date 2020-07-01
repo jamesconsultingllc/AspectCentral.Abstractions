@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+// ReSharper disable UnusedMemberInSuper.Global
+
 namespace AspectCentral.Abstractions.Configuration
 {
     /// <summary>
@@ -52,7 +54,7 @@ namespace AspectCentral.Abstractions.Configuration
         void LoadConfiguration();
 
         /// <summary>
-        /// Determines if the given method should be intercepted by the aspect
+        ///     Determines if the given method should be intercepted by the aspect
         /// </summary>
         /// <param name="factoryType">
         /// </param>

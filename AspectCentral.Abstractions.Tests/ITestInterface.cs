@@ -60,7 +60,8 @@ namespace AspectCentral.Abstractions.Tests
         Task TestAsync(int x, string y, MyUnitTestClass myUnitTestClass);
 
         /// <summary>
-        /// Gets the <typeparam name=""></typeparam>
+        ///     Gets the
+        ///     <typeparam name=""></typeparam>
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

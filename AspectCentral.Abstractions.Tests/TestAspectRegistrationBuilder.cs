@@ -17,12 +17,14 @@ namespace AspectCentral.Abstractions.Tests
     public class TestAspectRegistrationBuilder : AspectRegistrationBuilder
     {
         /// <inheritdoc />
-        public TestAspectRegistrationBuilder(IServiceCollection services, IAspectConfigurationProvider aspectConfigurationProvider) : base(services, aspectConfigurationProvider)
+        public TestAspectRegistrationBuilder(IServiceCollection services,
+            IAspectConfigurationProvider aspectConfigurationProvider) : base(services, aspectConfigurationProvider)
         {
         }
 
         /// <inheritdoc />
-        public override object InvokeCreateFactory(IServiceProvider serviceProvider, AspectConfiguration aspectConfiguration)
+        public override object InvokeCreateFactory(IServiceProvider serviceProvider,
+            AspectConfiguration aspectConfiguration)
         {
             return serviceProvider.GetService(aspectConfiguration.ServiceDescriptor.ServiceType);
         }

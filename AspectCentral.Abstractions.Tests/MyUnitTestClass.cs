@@ -17,6 +17,8 @@ namespace AspectCentral.Abstractions.Tests
     /// </summary>
     internal class MyUnitTestClass
     {
+        public static readonly Type Type = typeof(MyUnitTestClass);
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="MyUnitTestClass" /> class.
         /// </summary>
@@ -41,8 +43,6 @@ namespace AspectCentral.Abstractions.Tests
         ///     Gets or sets the y.
         /// </summary>
         public string Y { get; }
-
-        public static readonly Type Type = typeof(MyUnitTestClass);
 
         /// <summary>
         ///     The ==.

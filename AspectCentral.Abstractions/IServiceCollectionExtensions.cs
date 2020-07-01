@@ -9,6 +9,7 @@
 //  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
@@ -22,7 +23,6 @@ namespace AspectCentral.Abstractions
     public static class IServiceCollectionExtensions
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="aspectRegistrationBuilderType"></param>
@@ -30,15 +30,21 @@ namespace AspectCentral.Abstractions
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public static IAspectRegistrationBuilder AddAspectSupport(this IServiceCollection serviceCollection, Type aspectRegistrationBuilderType, IAspectConfigurationProvider aspectConfigurationProvider = null)
+        public static IAspectRegistrationBuilder AddAspectSupport(this IServiceCollection serviceCollection,
+            Type aspectRegistrationBuilderType, IAspectConfigurationProvider aspectConfigurationProvider = null)
         {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
-            if (aspectRegistrationBuilderType == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilderType));
-            if (!typeof(IAspectRegistrationBuilder).IsAssignableFrom(aspectRegistrationBuilderType)) throw new ArgumentException($"Parameter {nameof(aspectRegistrationBuilderType)} must implement {typeof(IAspectRegistrationBuilder)}", nameof(aspectRegistrationBuilderType));
+            if (aspectRegistrationBuilderType == null)
+                throw new ArgumentNullException(nameof(aspectRegistrationBuilderType));
+            if (!typeof(IAspectRegistrationBuilder).IsAssignableFrom(aspectRegistrationBuilderType))
+                throw new ArgumentException(
+                    $"Parameter {nameof(aspectRegistrationBuilderType)} must implement {typeof(IAspectRegistrationBuilder)}",
+                    nameof(aspectRegistrationBuilderType));
 
-            aspectConfigurationProvider = aspectConfigurationProvider ?? new InMemoryAspectConfigurationProvider();
+            aspectConfigurationProvider ??= new InMemoryAspectConfigurationProvider();
 
-            var builder = (IAspectRegistrationBuilder) Activator.CreateInstance(aspectRegistrationBuilderType, serviceCollection.RegisterAspects(),
+            var builder = (IAspectRegistrationBuilder) Activator.CreateInstance(aspectRegistrationBuilderType,
+                serviceCollection.RegisterAspects(),
                 aspectConfigurationProvider);
             serviceCollection.TryAddSingleton(aspectConfigurationProvider);
             serviceCollection.TryAddSingleton(builder);
@@ -46,12 +52,11 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IServiceCollection RegisterAspects(this IServiceCollection serviceCollection)
+        private static IServiceCollection RegisterAspects(this IServiceCollection serviceCollection)
         {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
 
@@ -64,7 +69,7 @@ namespace AspectCentral.Abstractions
             return serviceCollection;
         }
 
-        private static Type[] LoadedTypes()
+        private static IEnumerable<Type> LoadedTypes()
         {
             try
             {
@@ -74,7 +79,7 @@ namespace AspectCentral.Abstractions
             }
             catch (ReflectionTypeLoadException reflectionTypeLoadException)
             {
-                return reflectionTypeLoadException.Types.Where(x => x != null).ToArray();
+                return reflectionTypeLoadException.Types.Where(x => x != null);
             }
         }
     }

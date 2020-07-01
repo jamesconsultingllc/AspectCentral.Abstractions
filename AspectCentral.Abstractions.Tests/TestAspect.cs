@@ -17,7 +17,7 @@ namespace AspectCentral.Abstractions.Tests
     public class TestAspect
     {
         public static readonly Type Type = typeof(TestAspect);
-        
+
         /// <inheritdoc />
         public AspectContext GenerateAspectContext(MethodInfo targetMethod, object[] args)
         {
@@ -25,9 +25,10 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         /// <inheritdoc />
-        public string GenerateMethodNameWithArguments(MethodInfo targetMethod, object[] args, out MethodInfo implementationMethod)
+        public string GenerateMethodNameWithArguments(MethodInfo targetMethod, object[] args,
+            out MethodInfo implementationMethod)
         {
-            implementationMethod = default(MethodInfo);
+            implementationMethod = default;
             return targetMethod.ToString();
         }
 

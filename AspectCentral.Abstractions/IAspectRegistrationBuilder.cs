@@ -12,6 +12,9 @@ using System;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+// ReSharper disable UnusedMember.Global
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace AspectCentral.Abstractions
 {
@@ -45,7 +48,8 @@ namespace AspectCentral.Abstractions
         /// <returns>
         ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null, params MethodInfo[] methodsToIntercept);
+        IAspectRegistrationBuilder AddAspect(Type? aspectType, int? sortOrder = null,
+            params MethodInfo[] methodsToIntercept);
 
         /// <summary>
         ///     The add service.
@@ -62,7 +66,7 @@ namespace AspectCentral.Abstractions
         /// <returns>
         ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder AddService(Type service, Type implementation, ServiceLifetime serviceLifetime);
+        IAspectRegistrationBuilder AddService(Type service, Type? implementation, ServiceLifetime serviceLifetime);
 
         /// <summary>
         ///     The add service.
@@ -79,10 +83,10 @@ namespace AspectCentral.Abstractions
         /// <returns>
         ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory, ServiceLifetime serviceLifetime);
-        
+        IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory,
+            ServiceLifetime serviceLifetime);
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="aspectConfiguration"></param>
