@@ -1,11 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MyUnitTestClass.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The my class.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="MyUnitTestClass.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
+
+using System;
 
 namespace AspectCentral.Abstractions.Tests
 {
@@ -14,14 +17,16 @@ namespace AspectCentral.Abstractions.Tests
     /// </summary>
     internal class MyUnitTestClass
     {
+        public static readonly Type Type = typeof(MyUnitTestClass);
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="MyUnitTestClass"/> class.
+        ///     Initializes a new instance of the <see cref="MyUnitTestClass" /> class.
         /// </summary>
         /// <param name="x">
-        /// The x.
+        ///     The x.
         /// </param>
         /// <param name="y">
-        /// The y.
+        ///     The y.
         /// </param>
         public MyUnitTestClass(int? x, string y)
         {
@@ -72,13 +77,13 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         /// <summary>
-        /// The equals.
+        ///     The equals.
         /// </summary>
         /// <param name="obj">
-        /// The obj.
+        ///     The obj.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -106,13 +111,13 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         /// <summary>
-        /// The equals.
+        ///     The equals.
         /// </summary>
         /// <param name="other">
-        /// The other.
+        ///     The other.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         protected bool Equals(MyUnitTestClass other)
         {

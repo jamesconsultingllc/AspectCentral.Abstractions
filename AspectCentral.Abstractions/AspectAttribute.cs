@@ -1,5 +1,5 @@
 //  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AssemblyInformation.cs" company="James Consulting LLC">
+//  <copyright file="AspectAttribute.cs" company="James Consulting LLC">
 //    Copyright (c) 2019 All Rights Reserved
 //  </copyright>
 //  <author>Rudy James</author>
@@ -8,6 +8,12 @@
 //  </summary>
 //  ----------------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
+using System;
 
-[assembly: InternalsVisibleTo("AspectCentral.Abstractions.Tests")]
+namespace AspectCentral.Abstractions
+{
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    public class AspectAttribute : Attribute
+    {
+    }
+}

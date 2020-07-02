@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AspectContext.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// <summary>
-//   The aspect context.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="AspectContext.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
@@ -19,15 +20,15 @@ namespace AspectCentral.Abstractions
     public class AspectContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AspectContext"/> class.
+        ///     Initializes a new instance of the <see cref="AspectContext" /> class.
         /// </summary>
         /// <param name="targetMethod">
-        /// The target method.
+        ///     The target method.
         /// </param>
         /// <param name="parameterValues">
-        /// The parameter values.
+        ///     The parameter values.
         /// </param>
-        public AspectContext(MethodInfo targetMethod, object[] parameterValues)
+        public AspectContext(MethodInfo? targetMethod, object[]? parameterValues)
         {
             TargetMethod = targetMethod ?? throw new ArgumentNullException(nameof(targetMethod));
             ParameterValues = parameterValues;
@@ -37,7 +38,7 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets or sets the invocation string.
         /// </summary>
-        public string InvocationString { get; set; }
+        public string? InvocationString { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether invoke method.
@@ -47,7 +48,7 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets or sets the method type.
         /// </summary>
-        public MethodTypeOptions MethodType { get; set; }
+        public MethodTypeOptions MethodType { get; private set; }
 
         /// <summary>
         ///     Gets the parameter values.
@@ -57,7 +58,7 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets or sets the return value.
         /// </summary>
-        public object ReturnValue { get; set; }
+        public object? ReturnValue { get; set; }
 
         /// <summary>
         ///     Gets the target method.
@@ -67,15 +68,21 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets the target method.
         /// </summary>
-        public MethodInfo InstanceMethod { get; set; }
+        public MethodInfo? InstanceMethod { get; set; }
 
         /// <summary>
         ///     The set method type.
         /// </summary>
         private void SetMethodType()
         {
-            if (TargetMethod.IsAsync()) MethodType = TargetMethod.IsAsyncWithResult() ? MethodTypeOptions.AsyncFunction : MethodTypeOptions.AsyncAction;
-            else MethodType = TargetMethod.HasReturnValue() ? MethodTypeOptions.SyncFunction : MethodTypeOptions.SyncAction;
+            if (TargetMethod.IsAsync())
+                MethodType = TargetMethod.IsAsyncWithResult()
+                    ? MethodTypeOptions.AsyncFunction
+                    : MethodTypeOptions.AsyncAction;
+            else
+                MethodType = TargetMethod.HasReturnValue()
+                    ? MethodTypeOptions.SyncFunction
+                    : MethodTypeOptions.SyncAction;
         }
     }
 }

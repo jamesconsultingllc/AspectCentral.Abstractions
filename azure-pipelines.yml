@@ -4,13 +4,13 @@
 # https://aka.ms/yaml
 variables:
   SonarKey: 'jamesconsultingllc_AspectCentral.Abstractions'
-  Version: '1.0.0-alpha1'
+  Version: '1.0.0-alpha900008'
   buildConfiguration: 'Release'
 trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2019'
 
 steps:
 - task: SonarCloudPrepare@1

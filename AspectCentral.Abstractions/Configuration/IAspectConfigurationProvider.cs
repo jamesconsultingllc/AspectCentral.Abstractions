@@ -1,15 +1,18 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAspectConfigurationProvider.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The AspectConfigurationEntry interface.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="IAspectConfigurationProvider.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace AspectCentral.Abstractions.Configuration
 {
@@ -24,24 +27,24 @@ namespace AspectCentral.Abstractions.Configuration
         List<AspectConfiguration> ConfigurationEntries { get; }
 
         /// <summary>
-        /// The add entry.
+        ///     The add entry.
         /// </summary>
         /// <param name="aspectConfiguration">
-        /// The aspect configuration entry.
+        ///     The aspect configuration entry.
         /// </param>
         void AddEntry(AspectConfiguration aspectConfiguration);
 
         /// <summary>
-        /// The get type aspect configuration.
+        ///     The get type aspect configuration.
         /// </summary>
         /// <param name="contractType">
-        /// The contract type.
+        ///     The contract type.
         /// </param>
         /// <param name="implementationType">
-        /// The implementation type.
+        ///     The implementation type.
         /// </param>
         /// <returns>
-        /// The <see cref="AspectConfiguration"/>.
+        ///     The <see cref="AspectConfiguration" />.
         /// </returns>
         AspectConfiguration GetTypeAspectConfiguration(Type contractType, Type implementationType);
 
@@ -51,6 +54,7 @@ namespace AspectCentral.Abstractions.Configuration
         void LoadConfiguration();
 
         /// <summary>
+        ///     Determines if the given method should be intercepted by the aspect
         /// </summary>
         /// <param name="factoryType">
         /// </param>
@@ -61,7 +65,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <param name="methodInfo">
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         bool ShouldIntercept(Type factoryType, Type serviceType, Type implementationType, MethodInfo methodInfo);
     }

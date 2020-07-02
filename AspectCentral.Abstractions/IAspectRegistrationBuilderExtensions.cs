@@ -1,11 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAspectRegistrationBuilderExtensions.cs" company="James Consulting LLC">
-//   
-// </copyright>
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="IAspectRegistrationBuilderExtensions.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
 //  <summary>
-//   The i aspect registration builder extensions.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
@@ -14,53 +15,48 @@ using Microsoft.Extensions.DependencyInjection;
 namespace AspectCentral.Abstractions
 {
     /// <summary>
-    /// The i aspect registration builder extensions.
+    ///     The extension methods for <see cref="IAspectRegistrationBuilder" />
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class IAspectRegistrationBuilderExtensions
     {
         /// <summary>
-        /// The add aspect.
+        ///     Registers the aspect of Type {type:T}
         /// </summary>
-        /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
-        /// </param>
-        /// <param name="sortOrder">
-        /// The sort order.
-        /// </param>
-        /// <param name="methodsToIntercept">
-        /// The methods to intercept.
-        /// </param>
-        /// <typeparam name="T">
-        /// </typeparam>
-        /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// </exception>
-        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder, int? sortOrder, params MethodInfo[] methodsToIntercept)
-            where T : IAspectFactory
+        /// <param name="aspectRegistrationBuilder"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="methodsToIntercept"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder,
+            int? sortOrder = null, params MethodInfo[] methodsToIntercept)
         {
+            var type = typeof(T);
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
-            aspectRegistrationBuilder.AddAspect(typeof(T), sortOrder, methodsToIntercept);
-            return aspectRegistrationBuilder;
+            if (type.GetCustomAttribute(typeof(AspectAttribute), true) == null)
+                throw new ArgumentException(
+                    "The given type T must be decorated with the AspectAttribute or inherit from a type decorated with it");
+            return aspectRegistrationBuilder.AddAspect(type, sortOrder, methodsToIntercept);
         }
 
         /// <summary>
-        /// The add scoped.
+        ///     The add scoped.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddScoped<TService, TImplementation>(this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
+        public static IAspectRegistrationBuilder AddScoped<TService, TImplementation>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             aspectRegistrationBuilder.AddService(typeof(TService), typeof(TImplementation), ServiceLifetime.Scoped);
@@ -68,22 +64,23 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add scoped.
+        ///     The add scoped.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddScoped<TService>(this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
+        public static IAspectRegistrationBuilder AddScoped<TService>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -92,21 +89,22 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add singleton.
+        ///     The add singleton.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddSingleton<TService, TImplementation>(this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
+        public static IAspectRegistrationBuilder AddSingleton<TService, TImplementation>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             aspectRegistrationBuilder.AddService(typeof(TService), typeof(TImplementation), ServiceLifetime.Singleton);
@@ -114,22 +112,23 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add singleton.
+        ///     The add singleton.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddSingleton<TService>(this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
+        public static IAspectRegistrationBuilder AddSingleton<TService>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -138,21 +137,22 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add transient.
+        ///     The add transient.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <typeparam name="TImplementation">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddTransient<TService, TImplementation>(this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
+        public static IAspectRegistrationBuilder AddTransient<TService, TImplementation>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder) where TImplementation : TService
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             aspectRegistrationBuilder.AddService(typeof(TService), typeof(TImplementation), ServiceLifetime.Transient);
@@ -160,22 +160,23 @@ namespace AspectCentral.Abstractions
         }
 
         /// <summary>
-        /// The add transient.
+        ///     The add transient.
         /// </summary>
         /// <param name="aspectRegistrationBuilder">
-        /// The aspect registration builder.
+        ///     The aspect registration builder.
         /// </param>
         /// <param name="factory">
-        /// The factory.
+        ///     The factory.
         /// </param>
         /// <typeparam name="TService">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// </exception>
-        public static IAspectRegistrationBuilder AddTransient<TService>(this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
+        public static IAspectRegistrationBuilder AddTransient<TService>(
+            this IAspectRegistrationBuilder aspectRegistrationBuilder, Func<IServiceProvider, object> factory)
         {
             if (aspectRegistrationBuilder == null) throw new ArgumentNullException(nameof(aspectRegistrationBuilder));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
