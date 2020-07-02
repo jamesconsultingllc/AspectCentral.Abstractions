@@ -101,7 +101,6 @@ namespace AspectCentral.Abstractions
             Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
                 serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration),
                 aspectConfiguration.ServiceDescriptor.Lifetime));
-       //     Services.TryAdd(aspectConfiguration.ServiceDescriptor);
         }
 
         /// <summary>
