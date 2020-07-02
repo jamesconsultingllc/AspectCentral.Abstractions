@@ -6,6 +6,7 @@ variables:
   SonarKey: 'jamesconsultingllc_AspectCentral.Abstractions'
   Version: '1.0.0-alpha900008'
   buildConfiguration: 'Release'
+
 trigger:
 - master
 
@@ -53,4 +54,3 @@ steps:
     TargetFolder: '$(build.artifactstagingdirectory)'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
-
