@@ -1,59 +1,96 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAspectRegistrationBuilder.cs" company="James Consulting LLC">
-//   Copyright © 2019. All rights reserved.
-// </copyright>
-// <summary>
-//   The AspectRegistrationBuilder interface.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿//  ----------------------------------------------------------------------------------------------------------------------
+//  <copyright file="IAspectRegistrationBuilder.cs" company="James Consulting LLC">
+//    Copyright (c) 2019 All Rights Reserved
+//  </copyright>
+//  <author>Rudy James</author>
+//  <summary>
+// 
+//  </summary>
+//  ----------------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.Reflection;
+using AspectCentral.Abstractions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+// ReSharper disable UnusedMember.Global
+
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace AspectCentral.Abstractions
 {
-    using Microsoft.Extensions.DependencyInjection;
-
     /// <summary>
-    /// The AspectRegistrationBuilder interface.
+    ///     The AspectRegistrationBuilder interface.
     /// </summary>
-    /// <typeparam name="TContract">
-    /// The object interface to intercept
-    /// </typeparam>
-    /// <typeparam name="TImplementation">
-    /// The interface implementation type
-    /// </typeparam>
-    public interface IAspectRegistrationBuilder<TContract, TImplementation>
-        where TImplementation : TContract
+    public interface IAspectRegistrationBuilder
     {
         /// <summary>
-        /// Gets the services.
+        ///     Gets the aspect configuration provider.
+        /// </summary>
+        IAspectConfigurationProvider AspectConfigurationProvider { get; }
+
+        /// <summary>
+        ///     Gets the services.
         /// </summary>
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// The add factory.
+        ///     The add aspect.
         /// </summary>
-        /// <param name="factory">
-        /// The factory.
+        /// <param name="aspectType">
+        ///     The aspect type.
+        /// </param>
+        /// <param name="sortOrder">
+        ///     The sort order.
+        /// </param>
+        /// <param name="methodsToIntercept">
+        ///     The methods to intercept.
         /// </param>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder{TContract, TImplementation}"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder<TContract, TImplementation> AddFactory(IAspectFactory factory);
+        IAspectRegistrationBuilder AddAspect(Type? aspectType, int? sortOrder = null,
+            params MethodInfo[] methodsToIntercept);
 
         /// <summary>
-        /// The add factory.
+        ///     The add service.
         /// </summary>
-        /// <typeparam name="T">
-        /// The IAspectFactory implementation to register
-        /// </typeparam>
+        /// <param name="service">
+        ///     The service.
+        /// </param>
+        /// <param name="implementation">
+        ///     The implementation.
+        /// </param>
+        /// <param name="serviceLifetime">
+        ///     The service lifetime.
+        /// </param>
         /// <returns>
-        /// The <see cref="IAspectRegistrationBuilder{TContract, TImplementation}"/>.
+        ///     The <see cref="IAspectRegistrationBuilder" />.
         /// </returns>
-        IAspectRegistrationBuilder<TContract, TImplementation> AddFactory<T>()
-            where T : IAspectFactory, new();
+        IAspectRegistrationBuilder AddService(Type service, Type? implementation, ServiceLifetime serviceLifetime);
 
         /// <summary>
-        /// Wraps the object with the registered aspects
+        ///     The add service.
         /// </summary>
-        void Build();
+        /// <param name="service">
+        ///     The service.
+        /// </param>
+        /// <param name="factory">
+        ///     The factory.
+        /// </param>
+        /// <param name="serviceLifetime">
+        ///     The service lifetime.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="IAspectRegistrationBuilder" />.
+        /// </returns>
+        IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory,
+            ServiceLifetime serviceLifetime);
+
+        /// <summary>
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="aspectConfiguration"></param>
+        /// <returns></returns>
+        object InvokeCreateFactory(IServiceProvider serviceProvider, AspectConfiguration aspectConfiguration);
     }
 }
