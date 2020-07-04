@@ -1,4 +1,5 @@
 # Starter pipeline
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -14,12 +15,11 @@ pool:
   vmImage: 'windows-2019'
 
 steps:
-- task: SonarCloudPrepare@1
+- task: SonarQubePrepare@4
   inputs:
-    SonarCloud: 'Aspect Central'
-    organization: 'james-consulting-llc'
+    SonarQube: 'My SonarQube'
     scannerMode: 'MSBuild'
-    projectKey: '$(SonarKey)'
+    projectKey: 'jamesconsultingllc_AspectCentral.Abstractions'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
@@ -43,8 +43,8 @@ steps:
     versioningScheme: 'byEnvVar'
     versionEnvVar: Version
     arguments: '--configuration $(buildConfiguration)'
-- task: SonarCloudAnalyze@1
-- task: SonarCloudPublish@1
+- task: SonarQubeAnalyze@4
+- task: SonarQubePublish@4
   inputs:
     pollingTimeoutSec: '300'
 - task: CopyFiles@2
