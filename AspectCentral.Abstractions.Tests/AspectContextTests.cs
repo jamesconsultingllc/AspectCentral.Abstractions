@@ -28,7 +28,7 @@ namespace AspectCentral.Abstractions.Tests
             context.InvocationString.Should().Be("test");
             context.InvokeMethod.Should().BeFalse();
             context.TargetMethod.Should().BeSameAs(methodInfo);
-            context.ParameterValues.Should().BeEquivalentTo(1);
+            context.ParameterValues.Length.Should().Be(1);
             context.ReturnValue.Should().Be("oh");
         }
 
@@ -37,7 +37,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             var methodInfo = MyTestInterface.Type.GetMethod(nameof(MyTestInterface.TestAsync));
             var context = new AspectContext(methodInfo, new object[] {1, "y", new MyUnitTestClass(1, "y")});
-            context.MethodType.Should().BeEquivalentTo(MethodTypeOptions.AsyncAction);
+            context.MethodType.Should().Be(MethodTypeOptions.AsyncAction);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             var methodInfo = MyTestInterface.Type.GetMethod(nameof(MyTestInterface.GetClassByIdAsync));
             var context = new AspectContext(methodInfo, new object[] {1});
-            context.MethodType.Should().BeEquivalentTo(MethodTypeOptions.AsyncFunction);
+            context.MethodType.Should().Be(MethodTypeOptions.AsyncFunction);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             var methodInfo = MyTestInterface.Type.GetMethod(nameof(MyTestInterface.Test));
             var context = new AspectContext(methodInfo, new object[] {1, "y", new MyUnitTestClass(1, "y")});
-            context.MethodType.Should().BeEquivalentTo(MethodTypeOptions.SyncAction);
+            context.MethodType.Should().Be(MethodTypeOptions.SyncAction);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             var methodInfo = MyTestInterface.Type.GetMethod(nameof(MyTestInterface.GetClassById));
             var context = new AspectContext(methodInfo, new object[] {1});
-            context.MethodType.Should().BeEquivalentTo(MethodTypeOptions.SyncFunction);
+            context.MethodType.Should().Be(MethodTypeOptions.SyncFunction);
         }
 
         [Fact]
