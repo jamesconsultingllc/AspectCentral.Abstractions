@@ -12,11 +12,11 @@
     <LangVersion>latest</LangVersion>
     <ProjectGuid>15BF13FC-7EE0-4507-A08C-FB531D2B5A11</ProjectGuid>
     <Nullable>enable</Nullable>
-    <TargetFrameworks>net5.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JamesConsulting" Version="1.0.0-beta001" />
+    <PackageReference Include="JamesConsulting" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
   </ItemGroup>
 

@@ -13,7 +13,6 @@ using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
 using FluentAssertions;
-using JamesConsulting.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -39,7 +38,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
-                .IsEqualTo(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(MyTestInterface.Type.GetMethods());
         }
 
         [Fact]
@@ -47,7 +46,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
-                .IsEqualTo(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(MyTestInterface.Type.GetMethods());
         }
 
         [Fact]
@@ -56,7 +55,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Skip(1).ToArray());
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Take(1).ToArray());
             instance.GetAspects().First().GetMethodsToIntercept()
-                .IsEqualTo(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(MyTestInterface.Type.GetMethods());
         }
 
         [Fact]
@@ -65,7 +64,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance.AddEntry(MyTestInterface.Type, null,
                 MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
             instance.GetAspects().First().GetMethodsToIntercept()
-                .IsEqualTo(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(MyTestInterface.Type.GetMethods());
         }
 
         [Fact]
