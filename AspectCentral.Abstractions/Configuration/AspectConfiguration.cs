@@ -73,7 +73,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <returns>
         ///     The <see cref="bool" />.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as AspectConfiguration);
         }

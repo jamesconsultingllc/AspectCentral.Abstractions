@@ -172,7 +172,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void RemoveMethodsToInterceptRemovesGivenMethods()
         {
             instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
-            instance.GetMethodsToIntercept().SequenceEqual(Methods.Take(2));
+            instance.GetMethodsToIntercept().SequenceEqual(Methods.Take(2)).Should().BeTrue();
         }
 
         /// <summary>

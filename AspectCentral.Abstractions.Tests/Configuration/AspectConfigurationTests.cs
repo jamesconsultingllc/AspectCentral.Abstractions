@@ -38,7 +38,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(ITestInterfaceType.GetMethods()).Should().BeTrue();
         }
 
         [Fact]
@@ -46,16 +46,16 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0);
             instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(ITestInterfaceType.GetMethods()).Should().BeTrue();
         }
 
         [Fact]
         public void AddEntryAddsMethodsToExistingConfigurationEntry()
         {
-            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Skip(1).ToArray());
-            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().Take(1).ToArray());
-            instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(MyTestInterface.Type.GetMethods());
+            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().OrderBy(x => x.Name).Skip(1).ToArray());
+            instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().OrderBy(x => x.Name).Take(1).ToArray());
+            instance.GetAspects().First().GetMethodsToIntercept().OrderBy(x => x.Name)
+                .SequenceEqual(MyTestInterface.Type.GetMethods().OrderBy(x => x.Name)).Should().BeTrue();
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance.AddEntry(MyTestInterface.Type, null,
                 MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
             instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(MyTestInterface.Type.GetMethods());
+                .SequenceEqual(MyTestInterface.Type.GetMethods()).Should().BeTrue();
         }
 
         [Fact]
