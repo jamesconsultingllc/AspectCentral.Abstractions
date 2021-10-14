@@ -22,10 +22,11 @@ steps:
     scannerMode: 'MSBuild'    
     projectKey: 'jamesconsultingllc_AspectCentral.Abstractions'
     projectVersion: '2.0'
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'restore'
-    feedsToUse: 'select'    
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
