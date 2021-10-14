@@ -63,6 +63,20 @@ namespace AspectCentral.Abstractions.Configuration
                                                                                         other.ServiceDescriptor
                                                                                             .ImplementationFactory;
         }
+        
+        /// <summary>
+        ///     The equals.
+        /// </summary>
+        /// <param name="obj">
+        ///     The obj.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as AspectConfiguration);
+        }
 
         /// <summary>
         ///     The ==.
@@ -135,26 +149,12 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <summary>
-        ///     The equals.
-        /// </summary>
-        /// <param name="obj">
-        ///     The obj.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as AspectConfiguration);
-        }
-
-        /// <summary>
         ///     The get aspects.
         /// </summary>
         /// <returns>
         ///     The <see cref="IOrderedEnumerable{AspectConfigurationEntry}" />.
         /// </returns>
-        public IEnumerable<AspectConfigurationEntry> GetAspects()
+        public IOrderedEnumerable<AspectConfigurationEntry> GetAspects()
         {
             return aspectConfigurationEntries.OrderByDescending(x => x.SortOrder);
         }

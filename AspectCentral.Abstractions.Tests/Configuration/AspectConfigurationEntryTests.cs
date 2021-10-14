@@ -13,7 +13,6 @@ using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
 using FluentAssertions;
-using JamesConsulting.Collections;
 using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Configuration
@@ -173,7 +172,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void RemoveMethodsToInterceptRemovesGivenMethods()
         {
             instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
-            instance.GetMethodsToIntercept().IsEqualTo(Methods.Take(2));
+            instance.GetMethodsToIntercept().SequenceEqual(Methods.Take(2));
         }
 
         /// <summary>
