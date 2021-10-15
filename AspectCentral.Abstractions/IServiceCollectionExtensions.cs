@@ -31,7 +31,7 @@ namespace AspectCentral.Abstractions
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         public static IAspectRegistrationBuilder AddAspectSupport(this IServiceCollection serviceCollection,
-            Type aspectRegistrationBuilderType, IAspectConfigurationProvider aspectConfigurationProvider = null)
+            Type aspectRegistrationBuilderType, IAspectConfigurationProvider? aspectConfigurationProvider = null)
         {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
             if (aspectRegistrationBuilderType == null)
@@ -45,7 +45,7 @@ namespace AspectCentral.Abstractions
 
             var builder = (IAspectRegistrationBuilder) Activator.CreateInstance(aspectRegistrationBuilderType,
                 serviceCollection.RegisterAspects(),
-                aspectConfigurationProvider);
+                aspectConfigurationProvider)!;
             serviceCollection.TryAddSingleton(aspectConfigurationProvider);
             serviceCollection.TryAddSingleton(builder);
             return builder;
@@ -75,11 +75,11 @@ namespace AspectCentral.Abstractions
             {
                 return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                     from type in assembly.GetTypes()
-                    select type).ToArray();
+                    select type);
             }
             catch (ReflectionTypeLoadException reflectionTypeLoadException)
             {
-                return reflectionTypeLoadException.Types.Where(x => x != null);
+                return reflectionTypeLoadException.Types.Where(x => x is not null);
             }
         }
     }

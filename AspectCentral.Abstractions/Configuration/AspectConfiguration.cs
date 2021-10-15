@@ -24,8 +24,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <summary>
         ///     Gets or sets the factory type with methods to intercept.
         /// </summary>
-        private readonly List<AspectConfigurationEntry> aspectConfigurationEntries =
-            new List<AspectConfigurationEntry>();
+        private readonly List<AspectConfigurationEntry> aspectConfigurationEntries = new();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AspectConfiguration" /> class.
@@ -105,7 +104,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </param>
         /// <returns>
         /// </returns>
-        public static bool operator !=(AspectConfiguration left, AspectConfiguration right)
+        public static bool operator !=(AspectConfiguration? left, AspectConfiguration? right)
         {
             return !Equals(left, right);
         }
@@ -122,7 +121,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <param name="methodsToIntercept">
         ///     The methods to intercept. Defaults to all methods in interface if none specified
         /// </param>
-        public void AddEntry(Type aspectFactoryType, int? sortOrder = null, params MethodInfo[] methodsToIntercept)
+        public void AddEntry(Type aspectFactoryType, int? sortOrder = null, params MethodInfo?[]? methodsToIntercept)
         {
             if (aspectFactoryType == null) throw new ArgumentNullException(nameof(aspectFactoryType));
 
@@ -136,16 +135,18 @@ namespace AspectCentral.Abstractions.Configuration
 
             var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectType == aspectFactoryType);
 
+            MethodInfo[] resolvedMethodsToIntercept;
+            
             if (methodsToIntercept == null || methodsToIntercept.Length == 0)
-                methodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
+                resolvedMethodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
             else
-                methodsToIntercept = methodsToIntercept.Where(x => x != null).ToArray();
+                resolvedMethodsToIntercept = methodsToIntercept.Where(x => x is not null).ToArray();
 
-            if (aspectConfigurationEntry == null)
+            if (aspectConfigurationEntry is null)
                 aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
-                    methodsToIntercept));
+                    resolvedMethodsToIntercept));
             else
-                aspectConfigurationEntry.AddMethodsToIntercept(methodsToIntercept);
+                aspectConfigurationEntry.AddMethodsToIntercept(resolvedMethodsToIntercept);
         }
 
         /// <summary>
@@ -164,7 +165,7 @@ namespace AspectCentral.Abstractions.Configuration
         {
             unchecked
             {
-                return (ServiceDescriptor != null ? ServiceDescriptor.GetHashCode() : 0) * 397;
+                return ServiceDescriptor.GetHashCode() * 397;
             }
         }
 

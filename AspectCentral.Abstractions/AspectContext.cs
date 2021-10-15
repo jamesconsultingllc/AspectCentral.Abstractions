@@ -53,7 +53,7 @@ namespace AspectCentral.Abstractions
         /// <summary>
         ///     Gets the parameter values.
         /// </summary>
-        public object[] ParameterValues { get; }
+        public object[]? ParameterValues { get; }
 
         /// <summary>
         ///     Gets or sets the return value.

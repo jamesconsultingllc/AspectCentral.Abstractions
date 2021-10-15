@@ -19,12 +19,12 @@ namespace AspectCentral.Abstractions.Configuration
     public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
     {
         /// <inheritdoc />
-        public List<AspectConfiguration> ConfigurationEntries { get; } = new List<AspectConfiguration>();
+        public List<AspectConfiguration> ConfigurationEntries { get; } = new();
 
         /// <inheritdoc />
         public void AddEntry(AspectConfiguration aspectConfiguration)
         {
-            if (aspectConfiguration == null) throw new ArgumentNullException(nameof(aspectConfiguration));
+            if (aspectConfiguration is null) throw new ArgumentNullException(nameof(aspectConfiguration));
 
             if (ConfigurationEntries.Contains(aspectConfiguration))
                 ConfigurationEntries.Remove(aspectConfiguration);
@@ -33,7 +33,7 @@ namespace AspectCentral.Abstractions.Configuration
         }
 
         /// <inheritdoc />
-        public AspectConfiguration GetTypeAspectConfiguration(Type contractType, Type implementationType)
+        public AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType)
         {
             if (contractType == null) throw new ArgumentNullException(nameof(contractType));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));

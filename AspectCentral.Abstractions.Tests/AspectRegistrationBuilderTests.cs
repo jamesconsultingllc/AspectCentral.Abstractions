@@ -33,7 +33,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddAspectThrowsArgumentNullExceptionWhenAspectFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddAspect(default, default));
+            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddAspect(default));
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace AspectCentral.Abstractions.Tests
         public void AddAspectThrowsInvalidOperationExceptionWhenServicesHaveBeenRegistered()
         {
             Assert.Throws<InvalidOperationException>(
-                () => aspectRegistrationBuilder.AddAspect(TestAspect.Type, default));
+                () => aspectRegistrationBuilder.AddAspect(TestAspect.Type));
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddAspectWithFactorySuccess()
         {
-            aspectRegistrationBuilder.AddService(typeof(ITestInterface), serviceProvider => new MyTestInterface(),
+            aspectRegistrationBuilder.AddService(typeof(ITestInterface), _ => new MyTestInterface(),
                     ServiceLifetime.Scoped)
                 .AddAspect(TestAspect.Type, null, typeof(MyTestInterface).GetMethods());
             var aspects = aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].GetAspects();
@@ -112,7 +112,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             aspectRegistrationBuilder.AddService(
                 typeof(ITestInterface),
-                provider => new MyTestInterface(),
+                _ => new MyTestInterface(),
                 ServiceLifetime.Scoped);
             aspectRegistrationBuilder.Services.Count.Should().Be(1);
             aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries.Count.Should().Be(1);
