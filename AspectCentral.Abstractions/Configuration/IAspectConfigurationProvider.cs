@@ -46,7 +46,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <returns>
         ///     The <see cref="AspectConfiguration" />.
         /// </returns>
-        AspectConfiguration GetTypeAspectConfiguration(Type contractType, Type implementationType);
+        AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType);
 
         /// <summary>
         ///     The load configuration.

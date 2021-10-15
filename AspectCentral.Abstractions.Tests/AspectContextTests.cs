@@ -28,7 +28,7 @@ namespace AspectCentral.Abstractions.Tests
             context.InvocationString.Should().Be("test");
             context.InvokeMethod.Should().BeFalse();
             context.TargetMethod.Should().BeSameAs(methodInfo);
-            context.ParameterValues.Length.Should().Be(1);
+            context.ParameterValues!.Length.Should().Be(1);
             context.ReturnValue.Should().Be("oh");
         }
 

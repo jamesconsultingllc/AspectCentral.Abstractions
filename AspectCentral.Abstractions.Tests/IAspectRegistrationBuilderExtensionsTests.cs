@@ -56,7 +56,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddScopedWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface>(serviceProvider => new MyTestInterface());
+            mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface>(_ => new MyTestInterface());
             mockIAspectRegistrationBuilder.Verify(
                 x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),
                     ServiceLifetime.Scoped), Times.Once);
@@ -94,7 +94,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddSingletonWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface>(serviceProvider =>
+            mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface>(_ =>
                 new MyTestInterface());
             mockIAspectRegistrationBuilder.Verify(
                 x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),
@@ -133,7 +133,7 @@ namespace AspectCentral.Abstractions.Tests
         [Fact]
         public void AddTransientWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(serviceProvider =>
+            mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(_ =>
                 new MyTestInterface());
             mockIAspectRegistrationBuilder.Verify(
                 x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),

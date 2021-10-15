@@ -38,7 +38,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <param name="methodsToIntercept">
         ///     The methods To Intercept.
         /// </param>
-        internal AspectConfigurationEntry(Type aspectType, int sortOrder, params MethodInfo[] methodsToIntercept)
+        internal AspectConfigurationEntry(Type aspectType, int sortOrder, params MethodInfo[]? methodsToIntercept)
         {
             AspectType = aspectType ?? throw new ArgumentNullException(nameof(aspectType));
 
@@ -97,7 +97,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// </param>
         /// <returns>
         /// </returns>
-        public static bool operator ==(AspectConfigurationEntry left, AspectConfigurationEntry right)
+        public static bool operator ==(AspectConfigurationEntry? left, AspectConfigurationEntry? right)
         {
             if (ReferenceEquals(left, right)) return true;
             if (ReferenceEquals(left, null)) return false;
@@ -148,7 +148,7 @@ namespace AspectCentral.Abstractions.Configuration
         /// <returns>
         ///     The <see cref="bool" />.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as AspectConfigurationEntry);
         }
@@ -174,10 +174,10 @@ namespace AspectCentral.Abstractions.Configuration
         /// </summary>
         /// <param name="methodsToBeRemoved">
         /// </param>
-        public void RemoveMethodsToIntercept(params MethodInfo[] methodsToBeRemoved)
+        public void RemoveMethodsToIntercept(params MethodInfo[]? methodsToBeRemoved)
         {
             if (methodsToBeRemoved == null || methodsToBeRemoved.Length == 0) return;
-            methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains!);
+            methodsToIntercept.RemoveAll(methodsToBeRemoved.Contains);
         }
     }
 }

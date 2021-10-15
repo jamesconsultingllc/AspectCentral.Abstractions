@@ -50,7 +50,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
                 new AspectConfiguration(ServiceDescriptor.Scoped(typeof(ITestInterface), MyTestInterface.Type));
             inMemoryAspectConfigurationProvider.AddEntry(configuration);
             inMemoryAspectConfigurationProvider.GetTypeAspectConfiguration(configuration.ServiceDescriptor.ServiceType,
-                configuration.ServiceDescriptor.ImplementationType).Should().NotBeNull();
+                configuration.ServiceDescriptor.ImplementationType!).Should().NotBeNull();
         }
 
         [Fact]

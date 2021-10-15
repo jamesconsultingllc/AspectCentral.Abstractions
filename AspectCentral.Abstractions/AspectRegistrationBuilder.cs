@@ -46,7 +46,7 @@ namespace AspectCentral.Abstractions
         public IServiceCollection Services { get; }
 
         /// <inheritdoc />
-        public IAspectRegistrationBuilder AddAspect(Type? aspectType, int? sortOrder = null,
+        public IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null,
             params MethodInfo[] methodsToIntercept)
         {
             ValidateAddAspect(aspectType);
@@ -58,7 +58,7 @@ namespace AspectCentral.Abstractions
             return this;
         }
 
-        public IAspectRegistrationBuilder AddService(Type service, Type? implementation,
+        public IAspectRegistrationBuilder AddService(Type service, Type implementation,
             ServiceLifetime serviceLifetime)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
