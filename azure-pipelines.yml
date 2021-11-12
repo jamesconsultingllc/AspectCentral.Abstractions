@@ -7,7 +7,7 @@ variables:
   - group: 'Code Signing'
 
 trigger:
-- master
+  - master
 
 pool:
   vmImage: 'windows-latest'
@@ -15,15 +15,16 @@ pool:
 steps:
 - task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'James Consulting'
+    SonarCloud: 'Aspect Central'
     organization: 'james-consulting-llc'
     scannerMode: 'MSBuild'    
     projectKey: 'jamesconsultingllc_AspectCentral.Abstractions'
     projectVersion: '2.0'
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'restore'
-    feedsToUse: 'select'    
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
