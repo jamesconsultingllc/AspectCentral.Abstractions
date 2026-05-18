@@ -1,26 +1,12 @@
-﻿//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectConfigurationTests.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Configuration
 {
-    /// <summary>
-    ///     The aspect configuration entry tests.
-    /// </summary>
     public class AspectConfigurationTests
     {
         public AspectConfigurationTests()
@@ -37,16 +23,16 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         public void AddEntryAddsAllMethodsWhenMethodsToInterceptIsEmptyArray()
         {
             instance.AddEntry(MyTestInterface.Type, 0);
-            instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(TypeOfITestInterface.GetMethods()).Should().BeTrue();
+            Assert.True(instance.GetAspects().First().GetMethodsToIntercept()
+                .SequenceEqual(TypeOfITestInterface.GetMethods()));
         }
 
         [Fact]
         public void AddEntryAddsAllMethodsWhenMethodsToInterceptIsNull()
         {
             instance.AddEntry(MyTestInterface.Type, 0);
-            instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(TypeOfITestInterface.GetMethods()).Should().BeTrue();
+            Assert.True(instance.GetAspects().First().GetMethodsToIntercept()
+                .SequenceEqual(TypeOfITestInterface.GetMethods()));
         }
 
         [Fact]
@@ -54,17 +40,17 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().OrderBy(x => x.Name).Skip(1).ToArray());
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods().OrderBy(x => x.Name).Take(1).ToArray());
-            instance.GetAspects().First().GetMethodsToIntercept().OrderBy(x => x.Name)
-                .SequenceEqual(MyTestInterface.Type.GetMethods().OrderBy(x => x.Name)).Should().BeTrue();
+            Assert.True(instance.GetAspects().First().GetMethodsToIntercept().OrderBy(x => x.Name)
+                .SequenceEqual(MyTestInterface.Type.GetMethods().OrderBy(x => x.Name)));
         }
 
         [Fact]
         public void AddEntryAddsRemovesNullMethodInfoEntries()
         {
             instance.AddEntry(MyTestInterface.Type, null,
-                MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First().GetMethodsToIntercept()
-                .SequenceEqual(MyTestInterface.Type.GetMethods()).Should().BeTrue();
+                MyTestInterface.Type.GetMethods().Concat(new[] { default(MethodInfo)! }).ToArray());
+            Assert.True(instance.GetAspects().First().GetMethodsToIntercept()
+                .SequenceEqual(MyTestInterface.Type.GetMethods()));
         }
 
         [Fact]
@@ -72,38 +58,34 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             instance.AddEntry(MyTestInterface.Type, 0, MyTestInterface.Type.GetMethods());
             var aspect = instance.GetAspects().First();
-            aspect.SortOrder.Should().Be(0);
-            aspect.GetMethodsToIntercept().Count.Should()
-                .Be(MyTestInterface.Type.GetMethods().Length);
+            Assert.Equal(0, aspect.SortOrder);
+            Assert.Equal(MyTestInterface.Type.GetMethods().Length, aspect.GetMethodsToIntercept().Count);
         }
 
         [Fact]
         public void AddEntryNullSortOrderWithNoEntriesShouldBeOne()
         {
             instance.AddEntry(MyTestInterface.Type, null,
-                MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First().SortOrder.Should().Be(1);
+                MyTestInterface.Type.GetMethods().Concat(new[] { default(MethodInfo)! }).ToArray());
+            Assert.Equal(1, instance.GetAspects().First().SortOrder);
         }
 
         [Fact]
         public void AddEntryNullSortOrderWithNoEntriesShouldBeTheMaxSortOrderPlus1()
         {
             instance.AddEntry(MyTestInterface.Type, 3,
-                MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
+                MyTestInterface.Type.GetMethods().Concat(new[] { default(MethodInfo)! }).ToArray());
             instance.AddEntry(MyUnitTestClass.Type, null,
-                MyTestInterface.Type.GetMethods().Concat(new[] {default(MethodInfo)}).ToArray());
-            instance.GetAspects().First(x => x.AspectType == MyUnitTestClass.Type).SortOrder.Should().Be(4);
+                MyTestInterface.Type.GetMethods().Concat(new[] { default(MethodInfo)! }).ToArray());
+            Assert.Equal(4, instance.GetAspects().First(x => x.AspectType == MyUnitTestClass.Type).SortOrder);
         }
 
         [Fact]
         public void AddEntryThrowsArgumentNullExceptionWhenAspectFactoryTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>("aspectFactoryType", () => instance.AddEntry(null));
+            Assert.Throws<ArgumentNullException>("aspectFactoryType", () => instance.AddEntry(null!));
         }
 
-        /// <summary>
-        ///     The constructor contract type is not interface throws argument exception.
-        /// </summary>
         [Fact]
         public void ConstructorContractTypeIsNotInterfaceThrowsArgumentException()
         {
@@ -111,23 +93,17 @@ namespace AspectCentral.Abstractions.Tests.Configuration
                 new AspectConfiguration(new ServiceDescriptor(GetType(), GetType(), ServiceLifetime.Transient)));
         }
 
-        /// <summary>
-        ///     The constructor contract type null throws argument null exception.
-        /// </summary>
         [Fact]
         public void ConstructorContractTypeNullThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(null, null)));
+            Assert.Throws<ArgumentNullException>(() => new AspectConfiguration(new ServiceDescriptor(null!, null!)));
         }
 
-        /// <summary>
-        ///     The constructor implementation type null throws argument null exception.
-        /// </summary>
         [Fact]
         public void ConstructorImplementationTypeNullThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new AspectConfiguration(new ServiceDescriptor(GetType(), default(Type), ServiceLifetime.Transient)));
+                new AspectConfiguration(new ServiceDescriptor(GetType(), default(Type)!, ServiceLifetime.Transient)));
         }
 
         [Fact]
@@ -140,19 +116,19 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenServiceDescriptorIsNull()
         {
-            Assert.Throws<ArgumentNullException>("serviceDescriptor", () => new AspectConfiguration(default));
+            Assert.Throws<ArgumentNullException>("serviceDescriptor", () => new AspectConfiguration(default!));
         }
 
         [Fact]
         public void EqualsOtherIsNullShouldBeFalse()
         {
-            instance.Equals(null).Should().BeFalse();
+            Assert.False(instance.Equals(null));
         }
 
         [Fact]
         public void EqualsOtherReferencesSameObjectShouldBeTrue()
         {
-            instance.Equals(instance).Should().BeTrue();
+            Assert.True(instance.Equals(instance));
         }
 
         [Fact]
@@ -160,52 +136,40 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         {
             var serviceDescriptor = new ServiceDescriptor(TypeOfITestInterface,
                 MyTestInterface.Type, ServiceLifetime.Transient);
-            new AspectConfiguration(serviceDescriptor).GetHashCode().Should().Be(
-                serviceDescriptor.GetHashCode() * 397);
+            Assert.Equal(serviceDescriptor.GetHashCode() * 397,
+                new AspectConfiguration(serviceDescriptor).GetHashCode());
         }
 
-        /// <summary>
-        ///     The operator should be equal.
-        /// </summary>
         [Fact]
         public void OperatorShouldBeEqual()
         {
             var config2 = new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface, MyTestInterface.Type,
                 ServiceLifetime.Transient));
             var result = instance == config2;
-            result.Should().BeTrue();
+            Assert.True(result);
         }
 
-        /// <summary>
-        ///     The operator should not be equal.
-        /// </summary>
         [Fact]
         public void OperatorShouldNotBeEqual()
         {
             var config2 = new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface, MyTestInterface2.Type,
                 ServiceLifetime.Transient));
             var result = instance != config2;
-            result.Should().BeTrue();
+            Assert.True(result);
         }
 
-        /// <summary>
-        ///     The should be equal.
-        /// </summary>
         [Fact]
         public void ShouldBeEqual()
         {
-            instance.Equals(new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface, MyTestInterface.Type,
-                ServiceLifetime.Transient))).Should().BeTrue();
+            Assert.True(instance.Equals(new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface,
+                MyTestInterface.Type, ServiceLifetime.Transient))));
         }
 
-        /// <summary>
-        ///     The should not be equal.
-        /// </summary>
         [Fact]
         public void ShouldNotBeEqual()
         {
-            instance.Equals(new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface, MyTestInterface2.Type,
-                ServiceLifetime.Transient))).Should().BeFalse();
+            Assert.False(instance.Equals(new AspectConfiguration(new ServiceDescriptor(TypeOfITestInterface,
+                MyTestInterface2.Type, ServiceLifetime.Transient))));
         }
     }
 }

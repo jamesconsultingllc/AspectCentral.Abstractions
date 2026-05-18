@@ -1,16 +1,6 @@
-//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="IAspectRegistrationBuilderExtensionsTests.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
@@ -20,144 +10,142 @@ namespace AspectCentral.Abstractions.Tests
     {
         public IAspectRegistrationBuilderExtensionsTests()
         {
-            mockIAspectRegistrationBuilder = new Mock<IAspectRegistrationBuilder>();
+            aspectRegistrationBuilder = Substitute.For<IAspectRegistrationBuilder>();
         }
 
-        private readonly Mock<IAspectRegistrationBuilder> mockIAspectRegistrationBuilder;
+        private readonly IAspectRegistrationBuilder aspectRegistrationBuilder;
 
         [Fact]
         public void AddAspectRegistersAspect()
         {
-            mockIAspectRegistrationBuilder.Object.AddAspect<TestAspect>();
-            mockIAspectRegistrationBuilder.Verify(x => x.AddAspect(typeof(TestAspect), null), Times.Once);
+            aspectRegistrationBuilder.AddAspect<TestAspect>();
+            aspectRegistrationBuilder.Received(1).AddAspect(typeof(TestAspect), null);
         }
 
         [Fact]
         public void AddAspectThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => default(IAspectRegistrationBuilder).AddAspect<TestAspect>());
+            Assert.Throws<ArgumentNullException>(() => default(IAspectRegistrationBuilder)!.AddAspect<TestAspect>());
         }
 
         [Fact]
         public void AddScopedCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Scoped), Times.Once);
+            aspectRegistrationBuilder.AddScoped<ITestInterface, MyTestInterface>();
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Scoped);
         }
 
         [Fact]
         public void AddScopedThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                default(IAspectRegistrationBuilder).AddScoped<ITestInterface, MyTestInterface>());
+                default(IAspectRegistrationBuilder)!.AddScoped<ITestInterface, MyTestInterface>());
         }
 
         [Fact]
         public void AddScopedWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface>(_ => new MyTestInterface());
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),
-                    ServiceLifetime.Scoped), Times.Once);
+            aspectRegistrationBuilder.AddScoped<ITestInterface>(_ => new MyTestInterface());
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), Arg.Any<Func<IServiceProvider, object>>(),
+                    ServiceLifetime.Scoped);
         }
 
         [Fact]
         public void AddScopedWithFactoryThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>("aspectRegistrationBuilder",
-                () => default(IAspectRegistrationBuilder).AddScoped<ITestInterface>(null));
+                () => default(IAspectRegistrationBuilder)!.AddScoped<ITestInterface>(null!));
         }
 
         [Fact]
         public void AddScopedWithFactoryThrowsArgumentNullExceptionWhenFactoryIsNull()
         {
             Assert.Throws<ArgumentNullException>("factory",
-                () => mockIAspectRegistrationBuilder.Object.AddScoped<ITestInterface>(null));
+                () => aspectRegistrationBuilder.AddScoped<ITestInterface>(null!));
         }
 
         [Fact]
         public void AddSingletonCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Singleton), Times.Once);
+            aspectRegistrationBuilder.AddSingleton<ITestInterface, MyTestInterface>();
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Singleton);
         }
 
         [Fact]
         public void AddSingletonThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                default(IAspectRegistrationBuilder).AddSingleton<ITestInterface, MyTestInterface>());
+                default(IAspectRegistrationBuilder)!.AddSingleton<ITestInterface, MyTestInterface>());
         }
 
         [Fact]
         public void AddSingletonWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface>(_ =>
-                new MyTestInterface());
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),
-                    ServiceLifetime.Singleton), Times.Once);
+            aspectRegistrationBuilder.AddSingleton<ITestInterface>(_ => new MyTestInterface());
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), Arg.Any<Func<IServiceProvider, object>>(),
+                    ServiceLifetime.Singleton);
         }
 
         [Fact]
         public void AddSingletonWithFactoryThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>("aspectRegistrationBuilder",
-                () => default(IAspectRegistrationBuilder).AddSingleton<ITestInterface>(null));
+                () => default(IAspectRegistrationBuilder)!.AddSingleton<ITestInterface>(null!));
         }
 
         [Fact]
         public void AddSingletonWithFactoryThrowsArgumentNullExceptionWhenFactoryIsNull()
         {
             Assert.Throws<ArgumentNullException>("factory",
-                () => mockIAspectRegistrationBuilder.Object.AddSingleton<ITestInterface>(null));
+                () => aspectRegistrationBuilder.AddSingleton<ITestInterface>(null!));
         }
 
         [Fact]
         public void AddTransientCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface, MyTestInterface>();
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Transient), Times.Once);
+            aspectRegistrationBuilder.AddTransient<ITestInterface, MyTestInterface>();
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Transient);
         }
 
         [Fact]
         public void AddTransientThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                default(IAspectRegistrationBuilder).AddTransient<ITestInterface, MyTestInterface>());
+                default(IAspectRegistrationBuilder)!.AddTransient<ITestInterface, MyTestInterface>());
         }
 
         [Fact]
         public void AddTransientWithFactoryCallsAddServiceWhenArgumentsAreValid()
         {
-            mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(_ =>
-                new MyTestInterface());
-            mockIAspectRegistrationBuilder.Verify(
-                x => x.AddService(typeof(ITestInterface), It.IsAny<Func<IServiceProvider, object>>(),
-                    ServiceLifetime.Transient), Times.Once);
+            aspectRegistrationBuilder.AddTransient<ITestInterface>(_ => new MyTestInterface());
+            aspectRegistrationBuilder.Received(1)
+                .AddService(typeof(ITestInterface), Arg.Any<Func<IServiceProvider, object>>(),
+                    ServiceLifetime.Transient);
         }
 
         [Fact]
         public void AddTransientWithFactoryThrowsArgumentExceptionWhenTypeDoesNotHaveAspectAttribute()
         {
-            Assert.Throws<ArgumentException>(() => mockIAspectRegistrationBuilder.Object.AddAspect<MyTestInterface>());
+            Assert.Throws<ArgumentException>(() => aspectRegistrationBuilder.AddAspect<MyTestInterface>());
         }
 
         [Fact]
         public void AddTransientWithFactoryThrowsArgumentNullExceptionWhenAFactoryIsNull()
         {
             Assert.Throws<ArgumentNullException>("factory",
-                () => mockIAspectRegistrationBuilder.Object.AddTransient<ITestInterface>(null));
+                () => aspectRegistrationBuilder.AddTransient<ITestInterface>(null!));
         }
 
         [Fact]
         public void AddTransientWithFactoryThrowsArgumentNullExceptionWhenAspectRegistrationBuilderIsNull()
         {
             Assert.Throws<ArgumentNullException>("aspectRegistrationBuilder",
-                () => default(IAspectRegistrationBuilder).AddTransient<ITestInterface>(null));
+                () => default(IAspectRegistrationBuilder)!.AddTransient<ITestInterface>(null!));
         }
     }
 }

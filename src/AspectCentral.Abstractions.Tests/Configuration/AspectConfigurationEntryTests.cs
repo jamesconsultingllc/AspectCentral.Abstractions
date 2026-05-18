@@ -1,25 +1,11 @@
-﻿//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectConfigurationEntryTests.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
-using FluentAssertions;
 using Xunit;
 
 namespace AspectCentral.Abstractions.Tests.Configuration
 {
-    /// <summary>
-    ///     The aspect configuration tests.
-    /// </summary>
     public class AspectConfigurationEntryTests
     {
         public AspectConfigurationEntryTests()
@@ -27,16 +13,12 @@ namespace AspectCentral.Abstractions.Tests.Configuration
             instance = new AspectConfigurationEntry(GetType(), 1, Methods);
         }
 
-        /// <summary>
-        ///     The methods.
-        /// </summary>
         private static readonly MethodInfo[] Methods = typeof(ITestInterface).GetMethods();
 
         private readonly AspectConfigurationEntry instance;
 
         private class TestConfigurationEntry : AspectConfigurationEntry
         {
-            /// <inheritdoc />
             internal TestConfigurationEntry(Type aspectType, int sortOrder, params MethodInfo[] methodsToIntercept) :
                 base(aspectType, sortOrder, methodsToIntercept)
             {
@@ -52,22 +34,16 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void AddMethodsToInterceptNullArgumentThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept(null));
+            Assert.Throws<ArgumentNullException>("newMethodsToIntercept", () => instance.AddMethodsToIntercept(null!));
         }
 
-        /// <summary>
-        ///     The constructor creates object successfully when type is concrete class that implements i aspect factory.
-        /// </summary>
         [Fact]
         public void ConstructorCreatesObjectSuccessfullyWhenTypeIsConcreteClassThatImplementsIAspectFactory()
         {
             var aspectConfiguration = new AspectConfigurationEntry(GetType(), 1, Methods);
-            aspectConfiguration.Should().NotBeNull();
+            Assert.NotNull(aspectConfiguration);
         }
 
-        /// <summary>
-        ///     The constructor throws argument exception when type is not concrete class.
-        /// </summary>
         [Fact]
         public void ConstructorThrowsArgumentExceptionWhenTypeIsNotConcreteClass()
         {
@@ -75,124 +51,108 @@ namespace AspectCentral.Abstractions.Tests.Configuration
                 () => new AspectConfigurationEntry(typeof(ITestInterface), 1));
         }
 
-        /// <summary>
-        ///     The constructor throws argument null exception when type is null.
-        /// </summary>
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenTypeIsNull()
         {
-            Assert.Throws<ArgumentNullException>("aspectType", () => new AspectConfigurationEntry(null, 1));
+            Assert.Throws<ArgumentNullException>("aspectType", () => new AspectConfigurationEntry(null!, 1));
         }
 
         [Fact]
         public void EqualityComparerEqualsReferenceEqualsShouldBeTrue()
         {
-            instance.Equals(instance, instance).Should().BeTrue();
+            Assert.True(instance.Equals(instance, instance));
         }
 
         [Fact]
         public void EqualityComparerEqualsReturnsFalseWhenObjectsAreNotOfTheSameType()
         {
-            instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
-                new TestConfigurationEntry(GetType(), 1, Methods)).Should().BeFalse();
+            Assert.False(instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
+                new TestConfigurationEntry(GetType(), 1, Methods)));
         }
 
         [Fact]
         public void EqualityComparerEqualsShouldBeFalseWhenNotEqual()
         {
-            instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
-                new AspectConfigurationEntry(MyUnitTestClass.Type, 1, Methods)).Should().BeFalse();
+            Assert.False(instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
+                new AspectConfigurationEntry(MyUnitTestClass.Type, 1, Methods)));
         }
 
         [Fact]
         public void EqualityComparerEqualsShouldBeTrue()
         {
-            instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
-                new AspectConfigurationEntry(GetType(), 1, Methods)).Should().BeTrue();
+            Assert.True(instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods),
+                new AspectConfigurationEntry(GetType(), 1, Methods)));
         }
 
         [Fact]
         public void EqualityComparerEqualsXEqualsNullShouldBeFalse()
         {
-            instance.Equals(null, instance).Should().BeFalse();
+            Assert.False(instance.Equals(null, instance));
         }
 
         [Fact]
         public void EqualityComparerEqualsYEqualsNullShouldBeFalse()
         {
-            instance.Equals(instance, null).Should().BeFalse();
+            Assert.False(instance.Equals(instance, null));
         }
 
         [Fact]
         public void EqualsOtherObjectIsNullShouldBeFalse()
         {
-            instance.Equals(null).Should().BeFalse();
+            Assert.False(instance.Equals(null));
         }
 
         [Fact]
         public void EqualsReferencesSameObjectShouldBeTrue()
         {
-            instance.Equals(instance).Should().BeTrue();
+            Assert.True(instance.Equals(instance));
         }
 
         [Fact]
         public void GetHashCodeValueShouldBeHashCodeOfFactoryType()
         {
-            instance.GetHashCode()
-                .Should().Be(GetType().GetHashCode());
+            Assert.Equal(GetType().GetHashCode(), instance.GetHashCode());
         }
 
-        /// <summary>
-        ///     The operator should be equal.
-        /// </summary>
         [Fact]
         public void OperatorShouldBeEqual()
         {
             var result = instance == new AspectConfigurationEntry(GetType(), 1, Methods);
-            result.Should().BeTrue();
+            Assert.True(result);
         }
 
-        /// <summary>
-        ///     The operator should not be equal.
-        /// </summary>
         [Fact]
         public void OperatorShouldNotBeEqual()
         {
             var result = instance != new AspectConfigurationEntry(MyUnitTestClass.Type, 1, Methods);
-            result.Should().BeTrue();
+            Assert.True(result);
         }
 
         [Fact]
         public void RemoveMethodsToInterceptMethodsToBeRemovedIsNullReturns()
         {
-            instance.RemoveMethodsToIntercept(null);
+            instance.RemoveMethodsToIntercept(null!);
         }
 
         [Fact]
         public void RemoveMethodsToInterceptRemovesGivenMethods()
         {
             instance.RemoveMethodsToIntercept(Methods.Skip(2).ToArray());
-            instance.GetMethodsToIntercept().SequenceEqual(Methods.Take(2)).Should().BeTrue();
+            Assert.True(instance.GetMethodsToIntercept().SequenceEqual(Methods.Take(2)));
         }
 
-        /// <summary>
-        ///     The should be equal.
-        /// </summary>
         [Fact]
         public void ShouldBeEqual()
         {
-            instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods)).Should().BeTrue();
+            Assert.True(instance.Equals(new AspectConfigurationEntry(GetType(), 1, Methods)));
         }
 
         [Fact]
         public void ShouldBeTrueWhenReferencingSameObject()
         {
-            instance.Equals(instance).Should().BeTrue();
+            Assert.True(instance.Equals(instance));
         }
 
-        /// <summary>
-        ///     The should not be equal.
-        /// </summary>
         [Fact]
         public void ShouldNotBeEqual()
         {
@@ -204,8 +164,7 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         [Fact]
         public void ShouldNotBeEqualWhenOtherIsNullShouldBeFalse()
         {
-            new AspectConfigurationEntry(GetType(), 1, Methods).Equals(null)
-                .Should().BeFalse();
+            Assert.False(new AspectConfigurationEntry(GetType(), 1, Methods).Equals(null));
         }
     }
 }

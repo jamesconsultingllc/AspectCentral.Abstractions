@@ -1,17 +1,6 @@
-//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectRegistrationBuilderTests.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Linq;
 using AspectCentral.Abstractions.Configuration;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -27,18 +16,12 @@ namespace AspectCentral.Abstractions.Tests
 
         private readonly TestAspectRegistrationBuilder aspectRegistrationBuilder;
 
-        /// <summary>
-        ///     The add aspect throws argument null exception when aspect factory is null.
-        /// </summary>
         [Fact]
         public void AddAspectThrowsArgumentNullExceptionWhenAspectFactoryIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddAspect(default));
+            Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddAspect(default!));
         }
 
-        /// <summary>
-        ///     The add aspect throws invalid operation exception when services have been registered.
-        /// </summary>
         [Fact]
         public void AddAspectThrowsInvalidOperationExceptionWhenServicesHaveBeenRegistered()
         {
@@ -46,9 +29,6 @@ namespace AspectCentral.Abstractions.Tests
                 () => aspectRegistrationBuilder.AddAspect(TestAspect.Type));
         }
 
-        /// <summary>
-        ///     The add aspect with factory success.
-        /// </summary>
         [Fact]
         public void AddAspectWithFactorySuccess()
         {
@@ -56,25 +36,19 @@ namespace AspectCentral.Abstractions.Tests
                     ServiceLifetime.Scoped)
                 .AddAspect(TestAspect.Type, null, typeof(MyTestInterface).GetMethods());
             var aspects = aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].GetAspects();
-            aspects.Count().Should().Be(1);
+            Assert.Single(aspects);
         }
 
-        /// <summary>
-        ///     The add service success.
-        /// </summary>
         [Fact]
         public void AddServiceSuccess()
         {
             aspectRegistrationBuilder.AddService(typeof(ITestInterface), MyTestInterface.Type, ServiceLifetime.Scoped);
-            aspectRegistrationBuilder.Services.Count.Should().Be(2);
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries.Count.Should().Be(1);
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor
-                .ImplementationType.Should().Be(MyTestInterface.Type);
+            Assert.Equal(2, aspectRegistrationBuilder.Services.Count);
+            Assert.Single(aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries);
+            Assert.Equal(MyTestInterface.Type,
+                aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType);
         }
 
-        /// <summary>
-        ///     The add service throws argument null exception when implementation does not implement service.
-        /// </summary>
         [Fact]
         public void AddServiceThrowsArgumentNullExceptionWhenImplementationDoesNotImplementService()
         {
@@ -83,30 +57,21 @@ namespace AspectCentral.Abstractions.Tests
                     ServiceLifetime.Scoped));
         }
 
-        /// <summary>
-        ///     The add service throws argument null exception when implementation is null.
-        /// </summary>
         [Fact]
         public void AddServiceThrowsArgumentNullExceptionWhenImplementationIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                aspectRegistrationBuilder.AddService(typeof(IAspectConfigurationProvider), default(Type),
+                aspectRegistrationBuilder.AddService(typeof(IAspectConfigurationProvider), default(Type)!,
                     ServiceLifetime.Scoped));
         }
 
-        /// <summary>
-        ///     The add service throws argument null exception when service is null.
-        /// </summary>
         [Fact]
         public void AddServiceThrowsArgumentNullExceptionWhenServiceIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                aspectRegistrationBuilder.AddService(null, default(Type), ServiceLifetime.Scoped));
+                aspectRegistrationBuilder.AddService(null!, default(Type)!, ServiceLifetime.Scoped));
         }
 
-        /// <summary>
-        ///     The add service with factory success.
-        /// </summary>
         [Fact]
         public void AddServiceWithFactorySuccess()
         {
@@ -114,61 +79,44 @@ namespace AspectCentral.Abstractions.Tests
                 typeof(ITestInterface),
                 _ => new MyTestInterface(),
                 ServiceLifetime.Scoped);
-            aspectRegistrationBuilder.Services.Count.Should().Be(1);
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries.Count.Should().Be(1);
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor
-                .ImplementationFactory.Should().NotBeNull();
-            aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor
-                .ImplementationType.Should().BeNull();
+            Assert.Single(aspectRegistrationBuilder.Services);
+            Assert.Single(aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries);
+            Assert.NotNull(aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationFactory);
+            Assert.Null(aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].ServiceDescriptor.ImplementationType);
         }
 
-        /// <summary>
-        ///     The add service with factory throws argument null exception when implementation is null.
-        /// </summary>
         [Fact]
         public void AddServiceWithFactoryThrowsArgumentNullExceptionWhenImplementationIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => aspectRegistrationBuilder.AddService(typeof(ITestInterface),
-                default(Func<IServiceProvider, object>), ServiceLifetime.Scoped));
+                default(Func<IServiceProvider, object>)!, ServiceLifetime.Scoped));
         }
 
-        /// <summary>
-        ///     The add service with factory throws argument null exception when service is null.
-        /// </summary>
         [Fact]
         public void AddServiceWithFactoryThrowsArgumentNullExceptionWhenServiceIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                aspectRegistrationBuilder.AddService(null, default(Func<IServiceProvider, object>),
+                aspectRegistrationBuilder.AddService(null!, default(Func<IServiceProvider, object>)!,
                     ServiceLifetime.Scoped));
         }
 
-        /// <summary>
-        ///     The constructor creates new object.
-        /// </summary>
         [Fact]
         public void ConstructorCreatesNewObject()
         {
-            aspectRegistrationBuilder.Should().NotBeNull();
+            Assert.NotNull(aspectRegistrationBuilder);
         }
 
-        /// <summary>
-        ///     The constructor throws argument null exception when aspect configuration provider is null.
-        /// </summary>
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenAspectConfigurationProviderIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new TestAspectRegistrationBuilder(new ServiceCollection(), null));
+                new TestAspectRegistrationBuilder(new ServiceCollection(), null!));
         }
 
-        /// <summary>
-        ///     The constructor throws argument null exception when services is null.
-        /// </summary>
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionWhenServicesIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new TestAspectRegistrationBuilder(null, null));
+            Assert.Throws<ArgumentNullException>(() => new TestAspectRegistrationBuilder(null!, null!));
         }
 
         [Fact]
