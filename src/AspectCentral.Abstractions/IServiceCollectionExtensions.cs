@@ -79,7 +79,7 @@ namespace AspectCentral.Abstractions
             }
             catch (ReflectionTypeLoadException reflectionTypeLoadException)
             {
-                return reflectionTypeLoadException.Types.Where(x => x is not null);
+                return reflectionTypeLoadException.Types.Where(x => x is not null).Select(x => x!);
             }
         }
     }

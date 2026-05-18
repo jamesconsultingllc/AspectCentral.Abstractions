@@ -140,7 +140,7 @@ namespace AspectCentral.Abstractions.Configuration
             if (methodsToIntercept == null || methodsToIntercept.Length == 0)
                 resolvedMethodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
             else
-                resolvedMethodsToIntercept = methodsToIntercept.Where(x => x is not null).ToArray();
+                resolvedMethodsToIntercept = methodsToIntercept.Where(x => x is not null).Select(x => x!).ToArray();
 
             if (aspectConfigurationEntry is null)
                 aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
