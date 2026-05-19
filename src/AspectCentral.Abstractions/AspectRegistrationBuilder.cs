@@ -90,6 +90,10 @@ public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
         Guard.NotNull(service);
         Guard.NotNull(implementation);
 
+        if (!service.IsInterface)
+            throw new AspectException(AspectErrorCodes.InvalidServiceRegistration,
+                $"The {nameof(service)} ({service.FullName}) must be an interface.");
+
         if (!implementation.IsConcreteClass() || !service.IsAssignableFrom(implementation))
             throw new AspectException(AspectErrorCodes.InvalidServiceRegistration,
                 $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");

@@ -36,9 +36,11 @@ public static class AspectCentralServiceCollectionExtensions
         Guard.NotNull(serviceCollection);
         Guard.NotNull(aspectRegistrationBuilderType);
 
-        if (!typeof(IAspectRegistrationBuilder).IsAssignableFrom(aspectRegistrationBuilderType))
+        if (!typeof(IAspectRegistrationBuilder).IsAssignableFrom(aspectRegistrationBuilderType)
+            || aspectRegistrationBuilderType.IsAbstract
+            || aspectRegistrationBuilderType.IsInterface)
             throw new AspectException(AspectErrorCodes.InvalidRegistrationBuilderType,
-                $"Parameter {nameof(aspectRegistrationBuilderType)} must implement {typeof(IAspectRegistrationBuilder)}");
+                $"Parameter {nameof(aspectRegistrationBuilderType)} must be a concrete (non-abstract) class that implements {typeof(IAspectRegistrationBuilder)}");
 
         aspectConfigurationProvider ??= new InMemoryAspectConfigurationProvider();
 

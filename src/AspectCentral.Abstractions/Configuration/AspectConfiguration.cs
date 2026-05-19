@@ -75,6 +75,16 @@ public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
             ? ServiceDescriptor.ServiceType.GetMethods()
             : methodsToIntercept.Where(static x => x is not null).Select(static x => x!).ToArray();
 
+        // Methods must belong to the service interface — interception matches by MethodInfo identity
+        // and DispatchProxy dispatches off the interface, so an implementation MethodInfo would never
+        // match at runtime and the aspect would silently never apply.
+        foreach (var m in resolvedMethodsToIntercept)
+        {
+            if (m.DeclaringType is null || !m.DeclaringType.IsAssignableFrom(ServiceDescriptor.ServiceType))
+                throw new AspectException(AspectErrorCodes.InvalidServiceRegistration,
+                    $"Method '{m.Name}' is declared on '{m.DeclaringType?.FullName ?? "<unknown>"}', which is not assignable from the service type '{ServiceDescriptor.ServiceType.FullName}'. Pass interface MethodInfo values (e.g. typeof(IFoo).GetMethod(\"Bar\")).");
+        }
+
         if (aspectConfigurationEntry is null)
             aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
                 resolvedMethodsToIntercept));

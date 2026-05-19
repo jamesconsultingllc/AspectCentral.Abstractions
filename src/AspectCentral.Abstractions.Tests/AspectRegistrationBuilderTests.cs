@@ -35,7 +35,7 @@ namespace AspectCentral.Abstractions.Tests
         {
             aspectRegistrationBuilder.AddService(typeof(ITestInterface), _ => new MyTestInterface(),
                     ServiceLifetime.Scoped)
-                .AddAspect(TestAspect.Type, null, typeof(MyTestInterface).GetMethods());
+                .AddAspect(TestAspect.Type, null, typeof(ITestInterface).GetMethods());
             var aspects = aspectRegistrationBuilder.AspectConfigurationProvider.ConfigurationEntries[0].GetAspects();
             Assert.Single(aspects);
         }
