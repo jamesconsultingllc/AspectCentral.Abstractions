@@ -69,8 +69,14 @@ var greeter  = provider.GetRequiredService<IGreeter>(); // returns a proxy
 ## Versioning
 
 Built with [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning). Version flows from `src/version.json`
-plus git height. Pre-release builds publish as `2.0.0-alpha.{height}` on feature branches and
-`2.0.0-rc.{height}` on `release/*` branches; the final tag publishes as `2.0.0`.
+plus git height. Feature/`develop` builds publish as `2.0.0-alpha.{height}`; `release/*` branches publish as
+`2.0.0-rc.{height}`; the final tag on `master` publishes as `2.0.0`.
+
+> **Release-branch checklist.** When cutting `release/X.Y.Z`, the first commit on the release branch must
+> bump `src/version.json`'s `version` field from `X.Y.Z-alpha.{height}` to `X.Y.Z-rc.{height}` and promote
+> `PublicAPI.Unshipped.txt` content into `PublicAPI.Shipped.txt`. The `publish-rc` job in
+> `.github/workflows/ci.yml` will refuse to publish a release-branch build that does not match
+> `*-rc.*`.
 
 ## Breaking changes in 2.0.0
 

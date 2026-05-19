@@ -19,8 +19,15 @@ public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
     {
         Guard.NotNull(aspectConfiguration);
 
-        if (ConfigurationEntries.Contains(aspectConfiguration))
-            ConfigurationEntries.Remove(aspectConfiguration);
+        // Dedup by the ServiceDescriptor's ServiceType (and ImplementationType when present) rather
+        // than by AspectConfiguration.Equals, because Equals compares ImplementationFactory by
+        // delegate-reference identity. Two factory-based registrations for the same service with
+        // different Func instances would otherwise accumulate instead of replacing.
+        var serviceType = aspectConfiguration.ServiceDescriptor.ServiceType;
+        var implementationType = aspectConfiguration.ServiceDescriptor.ImplementationType;
+        ConfigurationEntries.RemoveAll(existing =>
+            existing.ServiceDescriptor.ServiceType == serviceType
+            && existing.ServiceDescriptor.ImplementationType == implementationType);
 
         ConfigurationEntries.Add(aspectConfiguration);
     }
@@ -30,11 +37,15 @@ public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
     {
         Guard.NotNull(contractType);
         Guard.NotNull(implementationType);
-        return ConfigurationEntries.Find(
-            x => x.ServiceDescriptor.ServiceType == contractType &&
-                 x.ServiceDescriptor.ImplementationType == implementationType
-                 || x.ServiceDescriptor.ServiceType == contractType &&
-                 x.ServiceDescriptor.ImplementationFactory != null);
+
+        // Prefer an exact (service, implementation) match; fall back to a factory-based registration
+        // for the same service type. Parentheses make the precedence explicit and avoid the prior
+        // unparenthesized && / || mix that mis-suggested a tighter contract than this method enforces.
+        return ConfigurationEntries.Find(x =>
+            (x.ServiceDescriptor.ServiceType == contractType
+             && x.ServiceDescriptor.ImplementationType == implementationType)
+            || (x.ServiceDescriptor.ServiceType == contractType
+                && x.ServiceDescriptor.ImplementationFactory != null));
     }
 
     /// <summary>

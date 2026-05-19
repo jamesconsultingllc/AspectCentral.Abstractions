@@ -16,7 +16,7 @@ public class AspectContext
     /// <param name="targetMethod">The method being intercepted. Required.</param>
     /// <param name="parameterValues">The argument values supplied to the invocation. May be <c>null</c> for parameterless methods.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="targetMethod" /> is <c>null</c>.</exception>
-    public AspectContext(MethodInfo? targetMethod, object[]? parameterValues)
+    public AspectContext(MethodInfo targetMethod, object[]? parameterValues)
     {
         Guard.NotNull(targetMethod);
         TargetMethod = targetMethod;

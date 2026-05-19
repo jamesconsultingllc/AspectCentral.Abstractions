@@ -3,7 +3,7 @@ abstract AspectCentral.Abstractions.AspectRegistrationBuilder.InvokeCreateFactor
 AspectCentral.Abstractions.AspectAttribute
 AspectCentral.Abstractions.AspectAttribute.AspectAttribute() -> void
 AspectCentral.Abstractions.AspectContext
-AspectCentral.Abstractions.AspectContext.AspectContext(System.Reflection.MethodInfo? targetMethod, object![]? parameterValues) -> void
+AspectCentral.Abstractions.AspectContext.AspectContext(System.Reflection.MethodInfo! targetMethod, object![]? parameterValues) -> void
 AspectCentral.Abstractions.AspectContext.InstanceMethod.get -> System.Reflection.MethodInfo?
 AspectCentral.Abstractions.AspectContext.InstanceMethod.set -> void
 AspectCentral.Abstractions.AspectContext.InvocationString.get -> string?
