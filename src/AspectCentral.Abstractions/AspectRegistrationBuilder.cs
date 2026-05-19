@@ -82,6 +82,12 @@ public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
 
         var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(service, factory, serviceLifetime));
         AspectConfigurationProvider.AddEntry(aspectConfiguration);
+        // Replace, don't append: InMemoryAspectConfigurationProvider.AddEntry dedups by
+        // (ServiceType, ImplementationType), so a second AddService for the same service must
+        // not leave the prior ServiceDescriptor behind on the IServiceCollection — that would
+        // surface unexpectedly via IEnumerable<T> resolution and bind a factory closed over a
+        // stale AspectConfiguration.
+        Services.RemoveAll(service);
         Services.Add(new ServiceDescriptor(service,
             serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
         return this;
@@ -98,6 +104,12 @@ public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
                 aspectConfiguration.ServiceDescriptor.ImplementationType,
                 aspectConfiguration.ServiceDescriptor.Lifetime));
 
+        // Replace, don't append: keep IServiceCollection in lock-step with
+        // InMemoryAspectConfigurationProvider.AddEntry, which dedups by (ServiceType,
+        // ImplementationType). Without this RemoveAll, registering the same service twice
+        // would leave a stale ServiceDescriptor on the collection that resolves via a
+        // factory closed over the previous AspectConfiguration.
+        Services.RemoveAll(aspectConfiguration.ServiceDescriptor.ServiceType);
         Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
             serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration),
             aspectConfiguration.ServiceDescriptor.Lifetime));
