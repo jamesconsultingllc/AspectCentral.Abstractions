@@ -15,6 +15,22 @@ namespace AspectCentral.Abstractions;
 /// and configuration-provider integration. Implementors only need to supply
 /// <see cref="InvokeCreateFactory" />.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <b>Registration semantics are <i>replace</i>, not <i>add</i>.</b> Both <see cref="AddService(Type, Type, ServiceLifetime)" />
+/// overloads and the configuration provider key registrations by service type, so calling
+/// <c>AddService</c> twice for the same service interface replaces the previous registration on
+/// <see cref="Services" /> and updates the matching configuration entry. AspectCentral does not
+/// support multi-registration (<c>IEnumerable&lt;TService&gt;</c>) of the same interface with
+/// different aspects; if that pattern is needed, register each implementation under its own
+/// interface and combine at the call site.
+/// </para>
+/// <para>
+/// Because of this, consumers should treat <c>AddAspectSupport</c>/<see cref="AddService(Type, Type, ServiceLifetime)" />
+/// as the canonical registration entry point for services that participate in aspect interception —
+/// not as an addition to a pre-existing manual registration.
+/// </para>
+/// </remarks>
 public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
 {
     /// <summary>Initializes a new instance of the <see cref="AspectRegistrationBuilder" /> class.</summary>

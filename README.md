@@ -68,15 +68,21 @@ var greeter  = provider.GetRequiredService<IGreeter>(); // returns a proxy
 
 ## Versioning
 
-Built with [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning). Version flows from `src/version.json`
-plus git height. Feature/`develop` builds publish as `2.0.0-alpha.{height}`; `release/*` branches publish as
-`2.0.0-rc.{height}`; the final tag on `master` publishes as `2.0.0`.
+Built with [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning). The version flows from
+`src/version.json` plus the git height of the current commit.
+
+Publish flow:
+
+| Trigger | Job | Version | Destination |
+|---------|-----|---------|-------------|
+| Push to `feature/**`, `develop`, `master` | `build-test` | `…-alpha.{height}+ci.{run}` | Workflow artifact only — **not** published to nuget.org |
+| Push to `release/**` | `publish-rc` | `…-rc.{height}` | Signed, published to nuget.org |
+| Tag `v*` on `master` | `publish-stable` | exact match of `version.json` | Signed, published to nuget.org |
 
 > **Release-branch checklist.** When cutting `release/X.Y.Z`, the first commit on the release branch must
 > bump `src/version.json`'s `version` field from `X.Y.Z-alpha.{height}` to `X.Y.Z-rc.{height}` and promote
-> `PublicAPI.Unshipped.txt` content into `PublicAPI.Shipped.txt`. The `publish-rc` job in
-> `.github/workflows/ci.yml` will refuse to publish a release-branch build that does not match
-> `*-rc.*`.
+> `PublicAPI.Unshipped.txt` content into `PublicAPI.Shipped.txt`. The `publish-rc` job refuses to publish a
+> release-branch build that does not match `*-rc.*`.
 
 ## Breaking changes in 2.0.0
 
