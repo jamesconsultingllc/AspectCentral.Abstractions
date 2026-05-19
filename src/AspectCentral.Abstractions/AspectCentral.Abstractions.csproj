@@ -4,10 +4,12 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1;net9.0;net10.0</TargetFrameworks>
     <PackageTags>AOP;aspect-oriented-programming;interceptors;dependency-injection</PackageTags>
     <Description>Common AOP abstractions for the AspectCentral family. Defines the IAspectRegistrationBuilder, aspect attribute, and IServiceCollection extensions that concrete implementations (DispatchProxy, Castle DynamicProxy, etc.) plug into.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="AspectCentral.Abstractions.Tests" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
