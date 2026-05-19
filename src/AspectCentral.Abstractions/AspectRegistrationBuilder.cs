@@ -18,13 +18,14 @@ namespace AspectCentral.Abstractions;
 /// <remarks>
 /// <para>
 /// <b>Registration on <see cref="Services" /> is <i>replace</i>, not <i>add</i>.</b> Both
-/// <see cref="AddService(Type, Type, ServiceLifetime)" /> overloads remove any prior descriptor
-/// for the same service type from <see cref="Services" /> before adding the aspect-wrapped one,
-/// so a second <c>AddService</c> call for the same service interface fully supersedes the first
-/// at resolve time. AspectCentral does not support multi-registration
-/// (<c>IEnumerable&lt;TService&gt;</c>) of the same interface with different aspects; if that
-/// pattern is needed, register each implementation under its own interface and combine at the
-/// call site.
+/// <see cref="AddService(Type, Type, ServiceLifetime)" /> and
+/// <see cref="AddService(Type, System.Func{System.IServiceProvider, object}, ServiceLifetime)" />
+/// remove any prior descriptor for the same service type from <see cref="Services" /> before
+/// adding the aspect-wrapped one, so a second <c>AddService</c> call for the same service
+/// interface fully supersedes the first at resolve time. AspectCentral does not support
+/// multi-registration (<c>IEnumerable&lt;TService&gt;</c>) of the same interface with different
+/// aspects; if that pattern is needed, register each implementation under its own interface and
+/// combine at the call site.
 /// </para>
 /// <para>
 /// The <see cref="AspectConfigurationProvider" /> uses a narrower key —
