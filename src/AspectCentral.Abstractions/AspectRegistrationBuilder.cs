@@ -28,12 +28,13 @@ namespace AspectCentral.Abstractions;
 /// </para>
 /// <para>
 /// The <see cref="AspectConfigurationProvider" /> uses a narrower key —
-/// <c>(ServiceType, ImplementationType)</c> for type-based registrations and
-/// <c>(ServiceType, ImplementationFactory)</c> for factory-based ones — so entries for prior
-/// <c>(service, impl)</c> pairs may remain in the provider after a replace. Those provider
-/// entries are inert: only the latest descriptor on <see cref="Services" /> is resolved at
-/// runtime, and the latest call's <see cref="AspectConfiguration" /> is the one the factory
-/// closes over.
+/// <c>(ServiceType, ImplementationType)</c>. For factory-based registrations
+/// <see cref="Microsoft.Extensions.DependencyInjection.ServiceDescriptor.ImplementationType" />
+/// is <c>null</c>, so factory entries are effectively keyed by <c>(ServiceType, null)</c> —
+/// at most one factory entry per service type. Type-based and factory-based entries for the
+/// same service type can therefore coexist in the provider; only the latest descriptor on
+/// <see cref="Services" /> is resolved at runtime, and the latest call's
+/// <see cref="AspectConfiguration" /> is the one the factory closes over.
 /// </para>
 /// <para>
 /// Because of this, consumers should treat <c>AddAspectSupport</c>/<see cref="AddService(Type, Type, ServiceLifetime)" />
