@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace AspectCentral.Abstractions;
 
@@ -9,7 +8,6 @@ namespace AspectCentral.Abstractions;
 /// <see cref="AspectErrorCodes" /> identifier so callers can react programmatically without parsing
 /// the message.
 /// </summary>
-[Serializable]
 public class AspectException : Exception
 {
     /// <summary>Initializes a new instance of the <see cref="AspectException" /> class.</summary>
@@ -31,24 +29,6 @@ public class AspectException : Exception
         ErrorCode = errorCode;
     }
 
-#if !NET8_0_OR_GREATER
-    /// <summary>Serialization constructor.</summary>
-    protected AspectException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-        ErrorCode = info.GetString(nameof(ErrorCode)) ?? string.Empty;
-    }
-#endif
-
     /// <summary>Gets the stable error code that identifies the failure category.</summary>
     public string ErrorCode { get; } = string.Empty;
-
-#if !NET8_0_OR_GREATER
-    /// <inheritdoc />
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        base.GetObjectData(info, context);
-        info.AddValue(nameof(ErrorCode), ErrorCode);
-    }
-#endif
 }
