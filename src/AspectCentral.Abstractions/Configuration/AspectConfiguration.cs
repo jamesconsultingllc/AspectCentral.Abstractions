@@ -39,7 +39,9 @@ public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
         if (ReferenceEquals(this, other)) return true;
         return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType
                && ServiceDescriptor.ImplementationType == other.ServiceDescriptor.ImplementationType
-               && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory;
+               && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory
+               && ServiceDescriptor.ImplementationInstance == other.ServiceDescriptor.ImplementationInstance
+               && ServiceDescriptor.Lifetime == other.ServiceDescriptor.Lifetime;
     }
 
     /// <inheritdoc />
@@ -93,6 +95,8 @@ public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
             hash = hash * 31 + (ServiceDescriptor.ServiceType?.GetHashCode() ?? 0);
             hash = hash * 31 + (ServiceDescriptor.ImplementationType?.GetHashCode() ?? 0);
             hash = hash * 31 + (ServiceDescriptor.ImplementationFactory?.GetHashCode() ?? 0);
+            hash = hash * 31 + (ServiceDescriptor.ImplementationInstance?.GetHashCode() ?? 0);
+            hash = hash * 31 + (int)ServiceDescriptor.Lifetime;
             return hash;
         }
     }
