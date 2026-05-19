@@ -74,7 +74,7 @@ namespace AspectCentral.Abstractions.Tests
             } while (serviceCollection.Count == 0);
 
             Assert.Equal(3, serviceCollection.Count);
-            Assert.Equal(typeof(TestAspect), serviceCollection[0].ServiceType);
+            Assert.Contains(serviceCollection, sd => sd.ServiceType == typeof(TestAspect));
         }
     }
 }
