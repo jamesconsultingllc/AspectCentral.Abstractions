@@ -52,7 +52,7 @@ The consuming application owns all configuration. The library provides the build
 | Package | Purpose |
 |---------|---------|
 | `Microsoft.CodeAnalysis.PublicApiAnalyzers` | Track public API surface changes |
-| `MinVer` or `GitVersion` | SemVer from git tags |
+| `Nerdbank.GitVersioning` | SemVer from `version.json` + git height (used by this repo; `MinVer`/`GitVersion` are acceptable alternatives) |
 | `Microsoft.SourceLink.GitHub` | Source link for debugging NuGet consumers |
 
 ---
