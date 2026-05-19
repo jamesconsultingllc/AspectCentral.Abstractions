@@ -63,17 +63,28 @@ public static class AspectCentralServiceCollectionExtensions
 
     private static IEnumerable<Type> LoadedTypes()
     {
-        try
+        // Per-assembly try/catch: a single ReflectionTypeLoadException in one assembly used to
+        // discard every type discovered so far via SelectMany's lazy enumeration. Iterate
+        // assemblies explicitly, collect what we can get, and on a partial-load failure salvage
+        // the non-null Types reported by the exception.
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var loaded = new List<Type>();
+        foreach (var assembly in assemblies)
         {
-            return AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes());
+            Type?[] assemblyTypes;
+            try
+            {
+                assemblyTypes = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                assemblyTypes = ex.Types;
+            }
+
+            foreach (var t in assemblyTypes)
+                if (t is not null) loaded.Add(t);
         }
-        catch (ReflectionTypeLoadException reflectionTypeLoadException)
-        {
-            return reflectionTypeLoadException.Types
-                .Where(static x => x is not null)
-                .Select(static x => x!);
-        }
+
+        return loaded;
     }
 }

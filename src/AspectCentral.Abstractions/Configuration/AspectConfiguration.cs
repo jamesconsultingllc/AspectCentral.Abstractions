@@ -100,6 +100,6 @@ public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
     public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
     {
         return aspectConfigurationEntries.Any(x =>
-            x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
+            x.AspectType == factoryType && x.ContainsMethod(methodInfo));
     }
 }

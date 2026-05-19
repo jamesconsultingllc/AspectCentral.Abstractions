@@ -14,10 +14,12 @@
     <!-- SPDX expression. -->
     <PackageLicenseExpression Condition="'$(PackageLicenseExpression)' == ''">MIT</PackageLicenseExpression>
 
-    <!-- Copyright year range. Computed at build time so the notice auto-rolls each January.
-         Original repo created 2019; range collapses to a single year if start == current. -->
+    <!-- Copyright year range. Pinned so identical sources produce byte-identical assembly/package
+         metadata regardless of when they're built ($([System.DateTime]::UtcNow.Year) at build time
+         would flow into [AssemblyCopyright], breaking reproducible builds across calendar years).
+         Bump _CopyrightCurrentYear intentionally as part of an annual housekeeping commit. -->
     <_CopyrightStartYear>2019</_CopyrightStartYear>
-    <_CopyrightCurrentYear>$([System.DateTime]::UtcNow.Year)</_CopyrightCurrentYear>
+    <_CopyrightCurrentYear>2026</_CopyrightCurrentYear>
     <_CopyrightYears Condition="'$(_CopyrightStartYear)' == '$(_CopyrightCurrentYear)'">$(_CopyrightStartYear)</_CopyrightYears>
     <_CopyrightYears Condition="'$(_CopyrightYears)' == ''">$(_CopyrightStartYear) - $(_CopyrightCurrentYear)</_CopyrightYears>
     <!-- <Copyright> is composed in Directory.Build.targets so consumer $(Company) overrides flow through. -->

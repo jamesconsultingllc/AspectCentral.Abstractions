@@ -98,6 +98,13 @@ public class AspectConfigurationEntry : IEqualityComparer<AspectConfigurationEnt
     /// <summary>Returns a snapshot of the methods this entry intercepts.</summary>
     public List<MethodInfo> GetMethodsToIntercept() => methodsToIntercept.ToList();
 
+    /// <summary>
+    /// Indicates whether <paramref name="methodInfo" /> is in this entry's intercept set, without
+    /// allocating a defensive copy. Used by <see cref="AspectConfiguration.ShouldIntercept" /> on
+    /// the per-invocation interception decision path.
+    /// </summary>
+    internal bool ContainsMethod(MethodInfo methodInfo) => methodsToIntercept.Contains(methodInfo);
+
     /// <summary>Removes the supplied methods from this entry's intercept set. Missing entries are silently ignored.</summary>
     /// <param name="methodsToBeRemoved">The methods to remove. A null/empty argument is a no-op.</param>
     public void RemoveMethodsToIntercept(params MethodInfo[]? methodsToBeRemoved)
