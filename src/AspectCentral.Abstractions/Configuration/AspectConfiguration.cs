@@ -85,10 +85,17 @@ public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
         aspectConfigurationEntries.OrderByDescending(x => x.SortOrder);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(
-        ServiceDescriptor.ServiceType,
-        ServiceDescriptor.ImplementationType,
-        ServiceDescriptor.ImplementationFactory);
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hash = 17;
+            hash = hash * 31 + (ServiceDescriptor.ServiceType?.GetHashCode() ?? 0);
+            hash = hash * 31 + (ServiceDescriptor.ImplementationType?.GetHashCode() ?? 0);
+            hash = hash * 31 + (ServiceDescriptor.ImplementationFactory?.GetHashCode() ?? 0);
+            return hash;
+        }
+    }
 
     /// <summary>Indicates whether <paramref name="methodInfo" /> should be intercepted by aspect <paramref name="factoryType" />.</summary>
     /// <param name="factoryType">The aspect type.</param>
