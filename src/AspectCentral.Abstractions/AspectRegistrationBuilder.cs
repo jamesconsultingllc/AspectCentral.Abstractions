@@ -63,7 +63,7 @@ public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
         Guard.NotNull(implementation);
 
         if (!implementation.IsConcreteClass() || !service.IsAssignableFrom(implementation))
-            throw new ArgumentException(
+            throw new AspectException(AspectErrorCodes.InvalidServiceRegistration,
                 $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");
 
         var aspectConfiguration =
@@ -106,14 +106,13 @@ public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
     /// <summary>Validates that <paramref name="aspectType" /> is non-null and a concrete class.</summary>
     /// <param name="aspectType">The aspect type to validate.</param>
     /// <exception cref="ArgumentNullException"><paramref name="aspectType" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="aspectType" /> is not a concrete class.</exception>
+    /// <exception cref="AspectException"><paramref name="aspectType" /> is not a concrete class (<see cref="AspectErrorCodes.InvalidAspectType" />).</exception>
     // ReSharper disable once VirtualMemberNeverOverridden.Global
     protected virtual void ValidateAddAspect(Type aspectType)
     {
         Guard.NotNull(aspectType);
         if (!aspectType.IsConcreteClass())
-            throw new ArgumentException(
-                $"The {nameof(aspectType)} must be a concrete class",
-                nameof(aspectType));
+            throw new AspectException(AspectErrorCodes.InvalidAspectType,
+                $"The {nameof(aspectType)} ({aspectType.FullName}) must be a concrete class.");
     }
 }

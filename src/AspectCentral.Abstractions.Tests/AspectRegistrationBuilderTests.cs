@@ -51,11 +51,12 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         [Fact]
-        public void AddServiceThrowsArgumentNullExceptionWhenImplementationDoesNotImplementService()
+        public void AddServiceThrowsAspectExceptionWhenImplementationDoesNotImplementService()
         {
-            Assert.Throws<ArgumentException>(() =>
+            var ex = Assert.Throws<AspectException>(() =>
                 aspectRegistrationBuilder.AddService(typeof(IAspectConfigurationProvider), GetType(),
                     ServiceLifetime.Scoped));
+            Assert.Equal(AspectErrorCodes.InvalidServiceRegistration, ex.ErrorCode);
         }
 
         [Fact]
@@ -121,10 +122,11 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         [Fact]
-        public void ValidateAddAspectThrowsExceptionWhenTypeIsNotAConcreteClass()
+        public void ValidateAddAspectThrowsAspectExceptionWhenTypeIsNotAConcreteClass()
         {
-            Assert.Throws<ArgumentException>("aspectType",
+            var ex = Assert.Throws<AspectException>(
                 () => aspectRegistrationBuilder.AddAspect(typeof(ITestInterface)));
+            Assert.Equal(AspectErrorCodes.InvalidAspectType, ex.ErrorCode);
         }
     }
 }

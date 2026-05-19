@@ -128,9 +128,10 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         [Fact]
-        public void AddTransientWithFactoryThrowsArgumentExceptionWhenTypeDoesNotHaveAspectAttribute()
+        public void AddTransientWithFactoryThrowsAspectExceptionWhenTypeDoesNotHaveAspectAttribute()
         {
-            Assert.Throws<ArgumentException>(() => aspectRegistrationBuilder.AddAspect<MyTestInterface>());
+            var ex = Assert.Throws<AspectException>(() => aspectRegistrationBuilder.AddAspect<MyTestInterface>());
+            Assert.Equal(AspectErrorCodes.InvalidAspectType, ex.ErrorCode);
         }
 
         [Fact]

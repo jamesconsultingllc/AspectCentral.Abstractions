@@ -15,15 +15,15 @@ public static class AspectRegistrationBuilderExtensions
     /// <typeparam name="T">An aspect type decorated with <see cref="AspectAttribute" /> (directly or via a base type).</typeparam>
     /// <returns>The builder to support chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="aspectRegistrationBuilder" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException"><typeparamref name="T" /> is not decorated with <see cref="AspectAttribute" />.</exception>
+    /// <exception cref="AspectException"><typeparamref name="T" /> is not decorated with <see cref="AspectAttribute" /> (<see cref="AspectErrorCodes.InvalidAspectType" />).</exception>
     public static IAspectRegistrationBuilder AddAspect<T>(this IAspectRegistrationBuilder aspectRegistrationBuilder,
         int? sortOrder = null, params MethodInfo[] methodsToIntercept)
     {
         Guard.NotNull(aspectRegistrationBuilder);
         var type = typeof(T);
         if (type.GetCustomAttribute(typeof(AspectAttribute), true) == null)
-            throw new ArgumentException(
-                "The given type T must be decorated with the AspectAttribute or inherit from a type decorated with it");
+            throw new AspectException(AspectErrorCodes.InvalidAspectType,
+                $"Type {type.FullName} must be decorated with [Aspect] (or inherit from a type that is).");
         return aspectRegistrationBuilder.AddAspect(type, sortOrder, methodsToIntercept);
     }
 

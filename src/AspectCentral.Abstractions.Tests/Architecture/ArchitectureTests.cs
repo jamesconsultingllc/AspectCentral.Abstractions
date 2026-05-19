@@ -41,20 +41,20 @@ public class ArchitectureTests
     }
 
     [Fact]
-    public void ConfigurationNamespace_DoesNotDependOnDependencyInjectionNamespace()
+    public void ConfigurationNamespace_DoesNotDependOnServiceCollection()
     {
-        // Configuration types describe what to wrap, not how to wire DI; they must stay free
+        // Configuration types describe what to wrap, not how to wire DI. They must stay free
         // of the IServiceCollection registration entry point so consumers can use Configuration
         // types without pulling in MEDI extension wiring.
         var result = Types.InAssembly(TargetAssembly)
             .That()
             .ResideInNamespace("AspectCentral.Abstractions.Configuration")
             .ShouldNot()
-            .HaveDependencyOn("AspectCentral.Abstractions.DependencyInjection")
+            .HaveDependencyOn("Microsoft.Extensions.DependencyInjection.IServiceCollection")
             .GetResult();
 
         Assert.True(result.IsSuccessful,
-            "Configuration types must not depend on DependencyInjection namespace: " + Join(result.FailingTypeNames));
+            "Configuration types must not depend on IServiceCollection: " + Join(result.FailingTypeNames));
     }
 
     [Fact]
