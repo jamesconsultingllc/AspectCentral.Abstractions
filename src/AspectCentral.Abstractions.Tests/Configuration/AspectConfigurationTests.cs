@@ -132,12 +132,14 @@ namespace AspectCentral.Abstractions.Tests.Configuration
         }
 
         [Fact]
-        public void GetHashCodeShouldEqualServiceDescriptorHashCode()
+        public void GetHashCodeShouldBeConsistentWithEquals()
         {
-            var serviceDescriptor = new ServiceDescriptor(TypeOfITestInterface,
-                MyTestInterface.Type, ServiceLifetime.Transient);
-            Assert.Equal(serviceDescriptor.GetHashCode() * 397,
-                new AspectConfiguration(serviceDescriptor).GetHashCode());
+            var sd1 = new ServiceDescriptor(TypeOfITestInterface, MyTestInterface.Type, ServiceLifetime.Transient);
+            var sd2 = new ServiceDescriptor(TypeOfITestInterface, MyTestInterface.Type, ServiceLifetime.Transient);
+            var a = new AspectConfiguration(sd1);
+            var b = new AspectConfiguration(sd2);
+            Assert.Equal(a, b);
+            Assert.Equal(a.GetHashCode(), b.GetHashCode());
         }
 
         [Fact]
