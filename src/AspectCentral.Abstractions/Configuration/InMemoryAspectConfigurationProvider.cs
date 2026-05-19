@@ -38,14 +38,20 @@ public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
         Guard.NotNull(contractType);
         Guard.NotNull(implementationType);
 
-        // Prefer an exact (service, implementation) match; fall back to a factory-based registration
-        // for the same service type. Parentheses make the precedence explicit and avoid the prior
-        // unparenthesized && / || mix that mis-suggested a tighter contract than this method enforces.
+        // Prefer an exact (service, implementation) match. Only when no exact match exists do we
+        // fall back to a factory-based registration for the same service type. A single Find with
+        // an "OR" predicate would otherwise return whichever entry appears first in the list, not
+        // the more specific one.
+        var exactMatch = ConfigurationEntries.Find(x =>
+            x.ServiceDescriptor.ServiceType == contractType
+            && x.ServiceDescriptor.ImplementationType == implementationType);
+
+        if (exactMatch is not null)
+            return exactMatch;
+
         return ConfigurationEntries.Find(x =>
-            (x.ServiceDescriptor.ServiceType == contractType
-             && x.ServiceDescriptor.ImplementationType == implementationType)
-            || (x.ServiceDescriptor.ServiceType == contractType
-                && x.ServiceDescriptor.ImplementationFactory != null));
+            x.ServiceDescriptor.ServiceType == contractType
+            && x.ServiceDescriptor.ImplementationFactory != null);
     }
 
     /// <summary>
