@@ -38,8 +38,7 @@ The consuming application owns all configuration. The library provides the build
 
 | Package | Purpose |
 |---------|---------|
-| `xUnit` | Unit test framework |
-| `FluentAssertions` | Readable assertion syntax |
+| `xUnit` | Unit test framework (uses built-in `Assert` API — we deliberately avoid `FluentAssertions` because v8+ is commercially licensed) |
 | `NSubstitute` | Mocking framework |
 | `Bogus` | Realistic test data generation |
 | `Reqnroll` + `Reqnroll.xUnit` | BDD / Gherkin `.feature` file runner |
