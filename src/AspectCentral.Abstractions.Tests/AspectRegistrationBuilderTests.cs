@@ -23,10 +23,11 @@ namespace AspectCentral.Abstractions.Tests
         }
 
         [Fact]
-        public void AddAspectThrowsInvalidOperationExceptionWhenServicesHaveBeenRegistered()
+        public void AddAspectThrowsAspectExceptionWhenNoServiceHasBeenRegistered()
         {
-            Assert.Throws<InvalidOperationException>(
+            var ex = Assert.Throws<AspectException>(
                 () => aspectRegistrationBuilder.AddAspect(TestAspect.Type));
+            Assert.Equal(AspectErrorCodes.NoServiceRegisteredForAspect, ex.ErrorCode);
         }
 
         [Fact]

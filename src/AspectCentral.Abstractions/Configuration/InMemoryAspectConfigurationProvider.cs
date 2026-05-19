@@ -1,69 +1,59 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InMemoryAspectConfigurationProvider.cs" company="James Consulting LLC">
-//   
-// </copyright>
-// // <summary>
-//   The in memory aspect configuration.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using AspectCentral.Abstractions.Internal;
 
-namespace AspectCentral.Abstractions.Configuration
+namespace AspectCentral.Abstractions.Configuration;
+
+/// <summary>
+/// In-memory implementation of <see cref="IAspectConfigurationProvider" />. Intended for tests and for
+/// simple host configurations where aspect wiring is expressed in code rather than persisted.
+/// </summary>
+public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
 {
-    /// <summary>
-    ///     The in memory aspect configuration.
-    /// </summary>
-    public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
+    /// <inheritdoc />
+    public List<AspectConfiguration> ConfigurationEntries { get; } = new();
+
+    /// <inheritdoc />
+    public void AddEntry(AspectConfiguration aspectConfiguration)
     {
-        /// <inheritdoc />
-        public List<AspectConfiguration> ConfigurationEntries { get; } = new();
+        Guard.NotNull(aspectConfiguration);
 
-        /// <inheritdoc />
-        public void AddEntry(AspectConfiguration aspectConfiguration)
-        {
-            if (aspectConfiguration is null) throw new ArgumentNullException(nameof(aspectConfiguration));
+        if (ConfigurationEntries.Contains(aspectConfiguration))
+            ConfigurationEntries.Remove(aspectConfiguration);
 
-            if (ConfigurationEntries.Contains(aspectConfiguration))
-                ConfigurationEntries.Remove(aspectConfiguration);
+        ConfigurationEntries.Add(aspectConfiguration);
+    }
 
-            ConfigurationEntries.Add(aspectConfiguration);
-        }
+    /// <inheritdoc />
+    public AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType)
+    {
+        Guard.NotNull(contractType);
+        Guard.NotNull(implementationType);
+        return ConfigurationEntries.Find(
+            x => x.ServiceDescriptor.ServiceType == contractType &&
+                 x.ServiceDescriptor.ImplementationType == implementationType
+                 || x.ServiceDescriptor.ServiceType == contractType &&
+                 x.ServiceDescriptor.ImplementationFactory != null);
+    }
 
-        /// <inheritdoc />
-        public AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType)
-        {
-            if (contractType == null) throw new ArgumentNullException(nameof(contractType));
-            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
-            return ConfigurationEntries.Find(
-                x => x.ServiceDescriptor.ServiceType == contractType &&
-                     x.ServiceDescriptor.ImplementationType == implementationType
-                     || x.ServiceDescriptor.ServiceType == contractType &&
-                     x.ServiceDescriptor.ImplementationFactory != null);
-        }
+    /// <summary>
+    /// The in-memory provider has no backing store and therefore does not support loading. Always throws
+    /// <see cref="NotImplementedException" />.
+    /// </summary>
+    /// <exception cref="NotImplementedException">Always.</exception>
+    public void LoadConfiguration() => throw new NotImplementedException();
 
-        /// <summary>
-        ///     Throws <exception cref="NotImplementedException"></exception>
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        public void LoadConfiguration()
-        {
-            throw new NotImplementedException();
-        }
+    /// <inheritdoc />
+    public bool ShouldIntercept(Type factoryType, Type serviceType, Type implementationType, MethodInfo methodInfo)
+    {
+        Guard.NotNull(factoryType);
+        Guard.NotNull(serviceType);
+        Guard.NotNull(implementationType);
+        Guard.NotNull(methodInfo);
 
-        /// <inheritdoc />
-        public bool ShouldIntercept(Type factoryType, Type serviceType, Type implementationType, MethodInfo methodInfo)
-        {
-            if (factoryType == null) throw new ArgumentNullException(nameof(factoryType));
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
-            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
-            if (methodInfo == null) throw new ArgumentNullException(nameof(methodInfo));
+        var aspectConfiguration = GetTypeAspectConfiguration(serviceType, implementationType);
 
-            var aspectConfiguration = GetTypeAspectConfiguration(serviceType, implementationType);
-
-            return aspectConfiguration != null && aspectConfiguration.ShouldIntercept(factoryType, methodInfo);
-        }
+        return aspectConfiguration != null && aspectConfiguration.ShouldIntercept(factoryType, methodInfo);
     }
 }

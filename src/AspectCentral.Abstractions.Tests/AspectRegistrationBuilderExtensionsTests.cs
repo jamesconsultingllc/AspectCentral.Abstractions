@@ -5,10 +5,9 @@ using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
 {
-    // ReSharper disable once InconsistentNaming
-    public class IAspectRegistrationBuilderExtensionsTests
+    public class AspectRegistrationBuilderExtensionsTests
     {
-        public IAspectRegistrationBuilderExtensionsTests()
+        public AspectRegistrationBuilderExtensionsTests()
         {
             aspectRegistrationBuilder = Substitute.For<IAspectRegistrationBuilder>();
         }

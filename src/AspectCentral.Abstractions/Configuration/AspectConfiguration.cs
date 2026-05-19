@@ -1,184 +1,105 @@
-﻿//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectConfiguration.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AspectCentral.Abstractions.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AspectCentral.Abstractions.Configuration
+namespace AspectCentral.Abstractions.Configuration;
+
+/// <summary>
+/// Aggregates a single service registration together with the ordered set of aspects that should wrap
+/// it. Built up by <see cref="IAspectRegistrationBuilder" /> implementations and queried by the runtime
+/// proxy factories.
+/// </summary>
+public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
 {
-    /// <summary>
-    ///     The aspect configuration entry.
-    /// </summary>
-    public sealed class AspectConfiguration : IEquatable<AspectConfiguration?>
+    private readonly List<AspectConfigurationEntry> aspectConfigurationEntries = new();
+
+    /// <summary>Initializes a new instance of the <see cref="AspectConfiguration" /> class.</summary>
+    /// <param name="serviceDescriptor">The service descriptor being configured. The service type must be an interface.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serviceDescriptor" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="serviceDescriptor" /> is registered against a non-interface service type.</exception>
+    public AspectConfiguration(ServiceDescriptor serviceDescriptor)
     {
-        /// <summary>
-        ///     Gets or sets the factory type with methods to intercept.
-        /// </summary>
-        private readonly List<AspectConfigurationEntry> aspectConfigurationEntries = new();
+        Guard.NotNull(serviceDescriptor);
+        if (!serviceDescriptor.ServiceType.IsInterface)
+            throw new ArgumentException("The ServiceType property must be an interface", nameof(serviceDescriptor));
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AspectConfiguration" /> class.
-        /// </summary>
-        /// <param name="serviceDescriptor">
-        ///     The service Descriptor.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// </exception>
-        public AspectConfiguration(ServiceDescriptor serviceDescriptor)
+        ServiceDescriptor = serviceDescriptor;
+    }
+
+    /// <summary>Gets the underlying service descriptor that this configuration extends.</summary>
+    public ServiceDescriptor ServiceDescriptor { get; }
+
+    /// <inheritdoc />
+    public bool Equals(AspectConfiguration? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType
+               && ServiceDescriptor.ImplementationType == other.ServiceDescriptor.ImplementationType
+               && ServiceDescriptor.ImplementationFactory == other.ServiceDescriptor.ImplementationFactory;
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) => Equals(obj as AspectConfiguration);
+
+    /// <summary>Equality operator.</summary>
+    public static bool operator ==(AspectConfiguration? left, AspectConfiguration? right) => Equals(left, right);
+
+    /// <summary>Inequality operator.</summary>
+    public static bool operator !=(AspectConfiguration? left, AspectConfiguration? right) => !Equals(left, right);
+
+    /// <summary>Adds or extends an aspect entry on this configuration.</summary>
+    /// <param name="aspectFactoryType">The concrete aspect type.</param>
+    /// <param name="sortOrder">Optional sort order. When omitted, computed as max + 1 over existing entries (or 1 if none).</param>
+    /// <param name="methodsToIntercept">Methods to intercept. When null/empty, every method on the service interface is intercepted.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="aspectFactoryType" /> is <c>null</c>.</exception>
+    public void AddEntry(Type aspectFactoryType, int? sortOrder = null, params MethodInfo?[]? methodsToIntercept)
+    {
+        Guard.NotNull(aspectFactoryType);
+
+        if (!sortOrder.HasValue)
         {
-            if (serviceDescriptor == null) throw new ArgumentNullException(nameof(serviceDescriptor));
-            if (!serviceDescriptor.ServiceType.IsInterface)
-                throw new ArgumentException("The ServiceType property must be an interface", nameof(serviceDescriptor));
-
-            ServiceDescriptor = serviceDescriptor;
+            sortOrder = aspectConfigurationEntries.Count == 0
+                ? 1
+                : aspectConfigurationEntries.Max(x => x.SortOrder) + 1;
         }
 
-        /// <summary>
-        ///     Gets the service descriptor.
-        /// </summary>
-        public ServiceDescriptor ServiceDescriptor { get; }
+        var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectType == aspectFactoryType);
 
-        /// <inheritdoc />
-        public bool Equals(AspectConfiguration? other)
+        var resolvedMethodsToIntercept = methodsToIntercept is null || methodsToIntercept.Length == 0
+            ? ServiceDescriptor.ServiceType.GetMethods()
+            : methodsToIntercept.Where(static x => x is not null).Select(static x => x!).ToArray();
+
+        if (aspectConfigurationEntry is null)
+            aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
+                resolvedMethodsToIntercept));
+        else
+            aspectConfigurationEntry.AddMethodsToIntercept(resolvedMethodsToIntercept);
+    }
+
+    /// <summary>Returns aspects attached to this configuration ordered by descending <see cref="AspectConfigurationEntry.SortOrder" />.</summary>
+    public IOrderedEnumerable<AspectConfigurationEntry> GetAspects() =>
+        aspectConfigurationEntries.OrderByDescending(x => x.SortOrder);
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return ServiceDescriptor.ServiceType == other.ServiceDescriptor.ServiceType && ServiceDescriptor
-                                                                                            .ImplementationType ==
-                                                                                        other.ServiceDescriptor
-                                                                                            .ImplementationType
-                                                                                        && ServiceDescriptor
-                                                                                            .ImplementationFactory ==
-                                                                                        other.ServiceDescriptor
-                                                                                            .ImplementationFactory;
+            return ServiceDescriptor.GetHashCode() * 397;
         }
-        
-        /// <summary>
-        ///     The equals.
-        /// </summary>
-        /// <param name="obj">
-        ///     The obj.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as AspectConfiguration);
-        }
+    }
 
-        /// <summary>
-        ///     The ==.
-        /// </summary>
-        /// <param name="left">
-        ///     The left.
-        /// </param>
-        /// <param name="right">
-        ///     The right.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static bool operator ==(AspectConfiguration left, AspectConfiguration right)
-        {
-            return Equals(left, right);
-        }
-
-        /// <summary>
-        ///     The !=.
-        /// </summary>
-        /// <param name="left">
-        ///     The left.
-        /// </param>
-        /// <param name="right">
-        ///     The right.
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static bool operator !=(AspectConfiguration? left, AspectConfiguration? right)
-        {
-            return !Equals(left, right);
-        }
-
-        /// <summary>
-        ///     The add entry.
-        /// </summary>
-        /// <param name="aspectFactoryType">
-        ///     The aspect factory type.
-        /// </param>
-        /// <param name="sortOrder">
-        ///     The sort Order.
-        /// </param>
-        /// <param name="methodsToIntercept">
-        ///     The methods to intercept. Defaults to all methods in interface if none specified
-        /// </param>
-        public void AddEntry(Type aspectFactoryType, int? sortOrder = null, params MethodInfo?[]? methodsToIntercept)
-        {
-            if (aspectFactoryType == null) throw new ArgumentNullException(nameof(aspectFactoryType));
-
-            if (!sortOrder.HasValue)
-            {
-                if (aspectConfigurationEntries.Count == 0)
-                    sortOrder = 1;
-                else
-                    sortOrder = aspectConfigurationEntries.Max(x => x.SortOrder) + 1;
-            }
-
-            var aspectConfigurationEntry = aspectConfigurationEntries.Find(x => x.AspectType == aspectFactoryType);
-
-            MethodInfo[] resolvedMethodsToIntercept;
-            
-            if (methodsToIntercept == null || methodsToIntercept.Length == 0)
-                resolvedMethodsToIntercept = ServiceDescriptor.ServiceType.GetMethods();
-            else
-                resolvedMethodsToIntercept = methodsToIntercept.Where(x => x is not null).Select(x => x!).ToArray();
-
-            if (aspectConfigurationEntry is null)
-                aspectConfigurationEntries.Add(new AspectConfigurationEntry(aspectFactoryType, sortOrder.Value,
-                    resolvedMethodsToIntercept));
-            else
-                aspectConfigurationEntry.AddMethodsToIntercept(resolvedMethodsToIntercept);
-        }
-
-        /// <summary>
-        ///     The get aspects.
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="IOrderedEnumerable{AspectConfigurationEntry}" />.
-        /// </returns>
-        public IOrderedEnumerable<AspectConfigurationEntry> GetAspects()
-        {
-            return aspectConfigurationEntries.OrderByDescending(x => x.SortOrder);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ServiceDescriptor.GetHashCode() * 397;
-            }
-        }
-
-        /// <summary>
-        ///     Determines if the given method should be intercepted by the aspect
-        /// </summary>
-        /// <param name="factoryType"></param>
-        /// <param name="methodInfo"></param>
-        /// <returns></returns>
-        public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
-        {
-            return aspectConfigurationEntries.Any(x =>
-                x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
-        }
+    /// <summary>Indicates whether <paramref name="methodInfo" /> should be intercepted by aspect <paramref name="factoryType" />.</summary>
+    /// <param name="factoryType">The aspect type.</param>
+    /// <param name="methodInfo">The method being invoked.</param>
+    /// <returns><c>true</c> when an entry matching both exists; otherwise <c>false</c>.</returns>
+    public bool ShouldIntercept(Type factoryType, MethodInfo methodInfo)
+    {
+        return aspectConfigurationEntries.Any(x =>
+            x.AspectType == factoryType && x.GetMethodsToIntercept().Contains(methodInfo));
     }
 }

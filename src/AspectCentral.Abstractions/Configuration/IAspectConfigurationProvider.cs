@@ -1,72 +1,36 @@
-﻿//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="IAspectConfigurationProvider.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-// ReSharper disable UnusedMemberInSuper.Global
+namespace AspectCentral.Abstractions.Configuration;
 
-namespace AspectCentral.Abstractions.Configuration
+/// <summary>
+/// Storage abstraction for aspect configuration. Implementations may persist entries to disk, query
+/// them from a config source, or hold them in memory (see <see cref="InMemoryAspectConfigurationProvider" />).
+/// </summary>
+public interface IAspectConfigurationProvider
 {
-    /// <summary>
-    ///     The AspectConfigurationEntry interface.
-    /// </summary>
-    public interface IAspectConfigurationProvider
-    {
-        /// <summary>
-        ///     Gets the configuration entries.
-        /// </summary>
-        List<AspectConfiguration> ConfigurationEntries { get; }
+    /// <summary>Gets the configuration entries known to this provider.</summary>
+    List<AspectConfiguration> ConfigurationEntries { get; }
 
-        /// <summary>
-        ///     The add entry.
-        /// </summary>
-        /// <param name="aspectConfiguration">
-        ///     The aspect configuration entry.
-        /// </param>
-        void AddEntry(AspectConfiguration aspectConfiguration);
+    /// <summary>Adds (or replaces) a configuration entry.</summary>
+    /// <param name="aspectConfiguration">The configuration to add.</param>
+    void AddEntry(AspectConfiguration aspectConfiguration);
 
-        /// <summary>
-        ///     The get type aspect configuration.
-        /// </summary>
-        /// <param name="contractType">
-        ///     The contract type.
-        /// </param>
-        /// <param name="implementationType">
-        ///     The implementation type.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="AspectConfiguration" />.
-        /// </returns>
-        AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType);
+    /// <summary>Looks up the configuration matching a service / implementation pair.</summary>
+    /// <param name="contractType">The service interface type.</param>
+    /// <param name="implementationType">The concrete implementation type.</param>
+    /// <returns>The matching configuration, or <c>null</c> if none exists.</returns>
+    AspectConfiguration? GetTypeAspectConfiguration(Type contractType, Type implementationType);
 
-        /// <summary>
-        ///     The load configuration.
-        /// </summary>
-        void LoadConfiguration();
+    /// <summary>Loads configuration from the provider's backing store. In-memory implementations may throw.</summary>
+    void LoadConfiguration();
 
-        /// <summary>
-        ///     Determines if the given method should be intercepted by the aspect
-        /// </summary>
-        /// <param name="factoryType">
-        /// </param>
-        /// <param name="serviceType">
-        /// </param>
-        /// <param name="implementationType">
-        /// </param>
-        /// <param name="methodInfo">
-        /// </param>
-        /// <returns>
-        ///     The <see cref="bool" />.
-        /// </returns>
-        bool ShouldIntercept(Type factoryType, Type serviceType, Type implementationType, MethodInfo methodInfo);
-    }
+    /// <summary>Indicates whether an invocation should be intercepted by the given aspect.</summary>
+    /// <param name="factoryType">The aspect type.</param>
+    /// <param name="serviceType">The service interface being invoked.</param>
+    /// <param name="implementationType">The concrete implementation.</param>
+    /// <param name="methodInfo">The method being invoked.</param>
+    /// <returns><c>true</c> when interception applies; otherwise <c>false</c>.</returns>
+    bool ShouldIntercept(Type factoryType, Type serviceType, Type implementationType, MethodInfo methodInfo);
 }

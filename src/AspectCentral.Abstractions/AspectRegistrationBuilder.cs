@@ -1,125 +1,119 @@
-//  ----------------------------------------------------------------------------------------------------------------------
-//  <copyright file="AspectRegistrationBuilder.cs" company="James Consulting LLC">
-//    Copyright (c) 2019 All Rights Reserved
-//  </copyright>
-//  <author>Rudy James</author>
-//  <summary>
-// 
-//  </summary>
-//  ----------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Linq;
 using System.Reflection;
 using AspectCentral.Abstractions.Configuration;
+using AspectCentral.Abstractions.Internal;
 using JamesConsulting.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace AspectCentral.Abstractions
+namespace AspectCentral.Abstractions;
+
+/// <summary>
+/// Base class for concrete <see cref="IAspectRegistrationBuilder" /> implementations (DispatchProxy,
+/// Castle DynamicProxy, etc.). Provides shared book-keeping: service registration, aspect attachment,
+/// and configuration-provider integration. Implementors only need to supply
+/// <see cref="InvokeCreateFactory" />.
+/// </summary>
+public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
 {
-    public abstract class AspectRegistrationBuilder : IAspectRegistrationBuilder
+    /// <summary>Initializes a new instance of the <see cref="AspectRegistrationBuilder" /> class.</summary>
+    /// <param name="services">The underlying <see cref="IServiceCollection" /> being populated.</param>
+    /// <param name="aspectConfigurationProvider">Storage for the aspect configuration this builder produces.</param>
+    /// <exception cref="ArgumentNullException">Either argument is <c>null</c>.</exception>
+    protected AspectRegistrationBuilder(IServiceCollection services,
+        IAspectConfigurationProvider aspectConfigurationProvider)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AspectRegistrationBuilder" /> class.
-        /// </summary>
-        /// <param name="services">
-        ///     The services.
-        /// </param>
-        /// <param name="aspectConfigurationProvider">
-        ///     The aspect configuration provider.
-        /// </param>
-        protected AspectRegistrationBuilder(IServiceCollection services,
-            IAspectConfigurationProvider aspectConfigurationProvider)
-        {
-            Services = services ?? throw new ArgumentNullException(nameof(services));
-            AspectConfigurationProvider = aspectConfigurationProvider ??
-                                          throw new ArgumentNullException(nameof(aspectConfigurationProvider));
+        Guard.NotNull(services);
+        Guard.NotNull(aspectConfigurationProvider);
 
-            aspectConfigurationProvider.ConfigurationEntries.ForEach(RegisterAspectConfiguration);
-        }
+        Services = services;
+        AspectConfigurationProvider = aspectConfigurationProvider;
 
-        /// <inheritdoc />
-        public IAspectConfigurationProvider AspectConfigurationProvider { get; }
+        aspectConfigurationProvider.ConfigurationEntries.ForEach(RegisterAspectConfiguration);
+    }
 
-        /// <inheritdoc />
-        public IServiceCollection Services { get; }
+    /// <inheritdoc />
+    public IAspectConfigurationProvider AspectConfigurationProvider { get; }
 
-        /// <inheritdoc />
-        public IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null,
-            params MethodInfo[] methodsToIntercept)
-        {
-            ValidateAddAspect(aspectType);
+    /// <inheritdoc />
+    public IServiceCollection Services { get; }
 
-            if (AspectConfigurationProvider.ConfigurationEntries.Count == 0)
-                throw new InvalidOperationException("A service must be registered to apply an aspect to.");
-            AspectConfigurationProvider.ConfigurationEntries.Last()
-                .AddEntry(aspectType, sortOrder, methodsToIntercept);
-            return this;
-        }
+    /// <inheritdoc />
+    public IAspectRegistrationBuilder AddAspect(Type aspectType, int? sortOrder = null,
+        params MethodInfo[] methodsToIntercept)
+    {
+        ValidateAddAspect(aspectType);
 
-        public IAspectRegistrationBuilder AddService(Type service, Type implementation,
-            ServiceLifetime serviceLifetime)
-        {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (implementation == null) throw new ArgumentNullException(nameof(implementation));
-            if (!implementation.IsConcreteClass() || !service.IsAssignableFrom(implementation))
-                throw new ArgumentException(
-                    $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");
+        if (AspectConfigurationProvider.ConfigurationEntries.Count == 0)
+            throw new AspectException(AspectErrorCodes.NoServiceRegisteredForAspect,
+                "A service must be registered before an aspect can be attached. " +
+                "Call AddScoped/AddTransient/AddSingleton before AddAspect.");
 
-            var aspectConfiguration =
-                new AspectConfiguration(ServiceDescriptor.Describe(service, implementation, serviceLifetime));
-            RegisterAspectConfiguration(aspectConfiguration);
-            AspectConfigurationProvider.AddEntry(aspectConfiguration);
-            return this;
-        }
+        AspectConfigurationProvider.ConfigurationEntries.Last()
+            .AddEntry(aspectType, sortOrder, methodsToIntercept);
+        return this;
+    }
 
-        /// <inheritdoc />
-        public IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory,
-            ServiceLifetime serviceLifetime)
-        {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (factory == null) throw new ArgumentNullException(nameof(factory));
-            var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(service, factory, serviceLifetime));
-            AspectConfigurationProvider.AddEntry(aspectConfiguration);
-            Services.Add(new ServiceDescriptor(service,
-                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
-            return this;
-        }
+    /// <inheritdoc />
+    public IAspectRegistrationBuilder AddService(Type service, Type implementation,
+        ServiceLifetime serviceLifetime)
+    {
+        Guard.NotNull(service);
+        Guard.NotNull(implementation);
 
-        /// <inheritdoc />
-        public abstract object InvokeCreateFactory(IServiceProvider serviceProvider,
-            AspectConfiguration aspectConfiguration);
+        if (!implementation.IsConcreteClass() || !service.IsAssignableFrom(implementation))
+            throw new ArgumentException(
+                $"The {nameof(implementation)} ({implementation.FullName}) must be a concrete class that implements the {nameof(service)} ({service.Name})");
 
-        private void RegisterAspectConfiguration(AspectConfiguration aspectConfiguration)
-        {
-            if (aspectConfiguration.ServiceDescriptor.ImplementationType != null)
-                Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType,
-                    aspectConfiguration.ServiceDescriptor.ImplementationType,
-                    aspectConfiguration.ServiceDescriptor.Lifetime));
+        var aspectConfiguration =
+            new AspectConfiguration(ServiceDescriptor.Describe(service, implementation, serviceLifetime));
+        RegisterAspectConfiguration(aspectConfiguration);
+        AspectConfigurationProvider.AddEntry(aspectConfiguration);
+        return this;
+    }
 
-            Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
-                serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration),
+    /// <inheritdoc />
+    public IAspectRegistrationBuilder AddService(Type service, Func<IServiceProvider, object> factory,
+        ServiceLifetime serviceLifetime)
+    {
+        Guard.NotNull(service);
+        Guard.NotNull(factory);
+
+        var aspectConfiguration = new AspectConfiguration(new ServiceDescriptor(service, factory, serviceLifetime));
+        AspectConfigurationProvider.AddEntry(aspectConfiguration);
+        Services.Add(new ServiceDescriptor(service,
+            serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration), serviceLifetime));
+        return this;
+    }
+
+    /// <inheritdoc />
+    public abstract object InvokeCreateFactory(IServiceProvider serviceProvider,
+        AspectConfiguration aspectConfiguration);
+
+    private void RegisterAspectConfiguration(AspectConfiguration aspectConfiguration)
+    {
+        if (aspectConfiguration.ServiceDescriptor.ImplementationType != null)
+            Services.TryAdd(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ImplementationType,
+                aspectConfiguration.ServiceDescriptor.ImplementationType,
                 aspectConfiguration.ServiceDescriptor.Lifetime));
-        }
 
-        /// <summary>
-        ///     Validates that the type given is not null and is a concrete class
-        /// </summary>
-        /// <param name="aspectType">The aspect type</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="aspectType" /> is null</exception>
-        /// <exception cref="ArgumentException">
-        ///     Thrown when <paramref name="aspectType" /> represents and interface or abstract
-        ///     class
-        /// </exception>
-        // ReSharper disable once VirtualMemberNeverOverridden.Global
-        protected virtual void ValidateAddAspect(Type aspectType)
-        {
-            if (aspectType == null) throw new ArgumentNullException(nameof(aspectType));
-            if (!aspectType.IsConcreteClass())
-                throw new ArgumentException(
-                    $"The {nameof(aspectType)} must be a concrete class",
-                    nameof(aspectType));
-        }
+        Services.Add(ServiceDescriptor.Describe(aspectConfiguration.ServiceDescriptor.ServiceType,
+            serviceProvider => InvokeCreateFactory(serviceProvider, aspectConfiguration),
+            aspectConfiguration.ServiceDescriptor.Lifetime));
+    }
+
+    /// <summary>Validates that <paramref name="aspectType" /> is non-null and a concrete class.</summary>
+    /// <param name="aspectType">The aspect type to validate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="aspectType" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="aspectType" /> is not a concrete class.</exception>
+    // ReSharper disable once VirtualMemberNeverOverridden.Global
+    protected virtual void ValidateAddAspect(Type aspectType)
+    {
+        Guard.NotNull(aspectType);
+        if (!aspectType.IsConcreteClass())
+            throw new ArgumentException(
+                $"The {nameof(aspectType)} must be a concrete class",
+                nameof(aspectType));
     }
 }

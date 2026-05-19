@@ -7,10 +7,9 @@ using Xunit;
 
 namespace AspectCentral.Abstractions.Tests
 {
-    // ReSharper disable once InconsistentNaming
-    public class IServiceCollectionExtensionsTests
+    public class AspectCentralServiceCollectionExtensionsTests
     {
-        public IServiceCollectionExtensionsTests()
+        public AspectCentralServiceCollectionExtensionsTests()
         {
             serviceCollection = new ServiceCollection();
         }
@@ -30,10 +29,10 @@ namespace AspectCentral.Abstractions.Tests
 
         [Fact]
         public void
-            AddAspectSupportThrowsArgumentExceptionWhenAspectRegistrationBuilderTypeDoesNotImplementIAspectRegistrationBuilder()
+            AddAspectSupportThrowsAspectExceptionWhenAspectRegistrationBuilderTypeDoesNotImplementIAspectRegistrationBuilder()
         {
-            Assert.Throws<ArgumentException>("aspectRegistrationBuilderType",
-                () => serviceCollection.AddAspectSupport(GetType()));
+            var ex = Assert.Throws<AspectException>(() => serviceCollection.AddAspectSupport(GetType()));
+            Assert.Equal(AspectErrorCodes.InvalidRegistrationBuilderType, ex.ErrorCode);
         }
 
         [Fact]
