@@ -112,7 +112,7 @@ jobs:
 
       - name: Install Sonar scanner
         if: ${{ vars.SONAR_PROJECT_KEY != '' && env.SONAR_TOKEN_SET == 'true' }}
-        run: dotnet tool install --global dotnet-sonarscanner
+        run: dotnet tool install --global dotnet-sonarscanner --version 10.4.0
 
       - name: Begin Sonar analysis
         if: ${{ vars.SONAR_PROJECT_KEY != '' && env.SONAR_TOKEN_SET == 'true' }}
