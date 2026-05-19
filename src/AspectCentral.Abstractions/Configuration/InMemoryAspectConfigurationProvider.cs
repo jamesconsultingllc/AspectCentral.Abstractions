@@ -20,9 +20,10 @@ public class InMemoryAspectConfigurationProvider : IAspectConfigurationProvider
         Guard.NotNull(aspectConfiguration);
 
         // Dedup by the ServiceDescriptor's ServiceType (and ImplementationType when present) rather
-        // than by AspectConfiguration.Equals, because Equals compares ImplementationFactory by
-        // delegate-reference identity. Two factory-based registrations for the same service with
-        // different Func instances would otherwise accumulate instead of replacing.
+        // than by AspectConfiguration.Equals, because Equals compares ImplementationFactory with
+        // delegate equality (which is invocation-list-based, not value-based) — two distinct Func
+        // instances for the same service would never compare equal in practice, so factory-based
+        // registrations would otherwise accumulate instead of replacing.
         var serviceType = aspectConfiguration.ServiceDescriptor.ServiceType;
         var implementationType = aspectConfiguration.ServiceDescriptor.ImplementationType;
         ConfigurationEntries.RemoveAll(existing =>
