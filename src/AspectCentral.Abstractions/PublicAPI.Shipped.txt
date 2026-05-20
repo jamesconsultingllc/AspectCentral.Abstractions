@@ -1,1 +1,96 @@
 #nullable enable
+abstract AspectCentral.Abstractions.AspectRegistrationBuilder.InvokeCreateFactory(System.IServiceProvider! serviceProvider, AspectCentral.Abstractions.Configuration.AspectConfiguration! aspectConfiguration) -> object!
+AspectCentral.Abstractions.AspectAttribute
+AspectCentral.Abstractions.AspectAttribute.AspectAttribute() -> void
+AspectCentral.Abstractions.AspectContext
+AspectCentral.Abstractions.AspectContext.AspectContext(System.Reflection.MethodInfo! targetMethod, object![]? parameterValues) -> void
+AspectCentral.Abstractions.AspectContext.InstanceMethod.get -> System.Reflection.MethodInfo?
+AspectCentral.Abstractions.AspectContext.InstanceMethod.set -> void
+AspectCentral.Abstractions.AspectContext.InvocationString.get -> string?
+AspectCentral.Abstractions.AspectContext.InvocationString.set -> void
+AspectCentral.Abstractions.AspectContext.InvokeMethod.get -> bool
+AspectCentral.Abstractions.AspectContext.InvokeMethod.set -> void
+AspectCentral.Abstractions.AspectContext.MethodType.get -> AspectCentral.Abstractions.MethodTypeOptions
+AspectCentral.Abstractions.AspectContext.ParameterValues.get -> object![]?
+AspectCentral.Abstractions.AspectContext.ReturnValue.get -> object?
+AspectCentral.Abstractions.AspectContext.ReturnValue.set -> void
+AspectCentral.Abstractions.AspectContext.TargetMethod.get -> System.Reflection.MethodInfo!
+AspectCentral.Abstractions.AspectErrorCodes
+AspectCentral.Abstractions.AspectException
+AspectCentral.Abstractions.AspectException.AspectException(string! errorCode, string! message, System.Exception! innerException) -> void
+AspectCentral.Abstractions.AspectException.AspectException(string! errorCode, string! message) -> void
+AspectCentral.Abstractions.AspectException.ErrorCode.get -> string!
+AspectCentral.Abstractions.AspectRegistrationBuilder
+AspectCentral.Abstractions.AspectRegistrationBuilder.AddAspect(System.Type! aspectType, int? sortOrder = null, params System.Reflection.MethodInfo![]! methodsToIntercept) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.AspectRegistrationBuilder.AddService(System.Type! service, System.Func<System.IServiceProvider!, object!>! factory, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.AspectRegistrationBuilder.AddService(System.Type! service, System.Type! implementation, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.AspectRegistrationBuilder.AspectConfigurationProvider.get -> AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider!
+AspectCentral.Abstractions.AspectRegistrationBuilder.AspectRegistrationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection! services, AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider! aspectConfigurationProvider) -> void
+AspectCentral.Abstractions.AspectRegistrationBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+AspectCentral.Abstractions.AspectRegistrationBuilderExtensions
+AspectCentral.Abstractions.Configuration.AspectConfiguration
+AspectCentral.Abstractions.Configuration.AspectConfiguration.AddEntry(System.Type! aspectFactoryType, int? sortOrder = null, params System.Reflection.MethodInfo?[]? methodsToIntercept) -> void
+AspectCentral.Abstractions.Configuration.AspectConfiguration.AspectConfiguration(Microsoft.Extensions.DependencyInjection.ServiceDescriptor! serviceDescriptor) -> void
+AspectCentral.Abstractions.Configuration.AspectConfiguration.Equals(AspectCentral.Abstractions.Configuration.AspectConfiguration? other) -> bool
+AspectCentral.Abstractions.Configuration.AspectConfiguration.GetAspects() -> System.Linq.IOrderedEnumerable<AspectCentral.Abstractions.Configuration.AspectConfigurationEntry!>!
+AspectCentral.Abstractions.Configuration.AspectConfiguration.ServiceDescriptor.get -> Microsoft.Extensions.DependencyInjection.ServiceDescriptor!
+AspectCentral.Abstractions.Configuration.AspectConfiguration.ShouldIntercept(System.Type! factoryType, System.Reflection.MethodInfo! methodInfo) -> bool
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.AddMethodsToIntercept(params System.Reflection.MethodInfo![]! newMethodsToIntercept) -> void
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.AspectType.get -> System.Type!
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.Equals(AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? other) -> bool
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.GetMethodsToIntercept() -> System.Collections.Generic.List<System.Reflection.MethodInfo!>!
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.RemoveMethodsToIntercept(params System.Reflection.MethodInfo![]? methodsToBeRemoved) -> void
+AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.SortOrder.get -> int
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider.AddEntry(AspectCentral.Abstractions.Configuration.AspectConfiguration! aspectConfiguration) -> void
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider.ConfigurationEntries.get -> System.Collections.Generic.List<AspectCentral.Abstractions.Configuration.AspectConfiguration!>!
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider.GetTypeAspectConfiguration(System.Type! contractType, System.Type! implementationType) -> AspectCentral.Abstractions.Configuration.AspectConfiguration?
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider.LoadConfiguration() -> void
+AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider.ShouldIntercept(System.Type! factoryType, System.Type! serviceType, System.Type! implementationType, System.Reflection.MethodInfo! methodInfo) -> bool
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.AddEntry(AspectCentral.Abstractions.Configuration.AspectConfiguration! aspectConfiguration) -> void
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.ConfigurationEntries.get -> System.Collections.Generic.List<AspectCentral.Abstractions.Configuration.AspectConfiguration!>!
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.GetTypeAspectConfiguration(System.Type! contractType, System.Type! implementationType) -> AspectCentral.Abstractions.Configuration.AspectConfiguration?
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.InMemoryAspectConfigurationProvider() -> void
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.LoadConfiguration() -> void
+AspectCentral.Abstractions.Configuration.InMemoryAspectConfigurationProvider.ShouldIntercept(System.Type! factoryType, System.Type! serviceType, System.Type! implementationType, System.Reflection.MethodInfo! methodInfo) -> bool
+AspectCentral.Abstractions.Diagnostics.AspectCentralDiagnostics
+AspectCentral.Abstractions.IAspectRegistrationBuilder
+AspectCentral.Abstractions.IAspectRegistrationBuilder.AddAspect(System.Type! aspectType, int? sortOrder = null, params System.Reflection.MethodInfo![]! methodsToIntercept) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.IAspectRegistrationBuilder.AddService(System.Type! service, System.Func<System.IServiceProvider!, object!>! factory, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.IAspectRegistrationBuilder.AddService(System.Type! service, System.Type! implementation, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+AspectCentral.Abstractions.IAspectRegistrationBuilder.AspectConfigurationProvider.get -> AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider!
+AspectCentral.Abstractions.IAspectRegistrationBuilder.InvokeCreateFactory(System.IServiceProvider! serviceProvider, AspectCentral.Abstractions.Configuration.AspectConfiguration! aspectConfiguration) -> object!
+AspectCentral.Abstractions.IAspectRegistrationBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+AspectCentral.Abstractions.MethodTypeOptions
+AspectCentral.Abstractions.MethodTypeOptions.AsyncAction = 3 -> AspectCentral.Abstractions.MethodTypeOptions
+AspectCentral.Abstractions.MethodTypeOptions.AsyncFunction = 2 -> AspectCentral.Abstractions.MethodTypeOptions
+AspectCentral.Abstractions.MethodTypeOptions.SyncAction = 0 -> AspectCentral.Abstractions.MethodTypeOptions
+AspectCentral.Abstractions.MethodTypeOptions.SyncFunction = 1 -> AspectCentral.Abstractions.MethodTypeOptions
+const AspectCentral.Abstractions.AspectErrorCodes.InvalidAspectType = "AC002" -> string!
+const AspectCentral.Abstractions.AspectErrorCodes.InvalidRegistrationBuilderType = "AC004" -> string!
+const AspectCentral.Abstractions.AspectErrorCodes.InvalidServiceRegistration = "AC003" -> string!
+const AspectCentral.Abstractions.AspectErrorCodes.NoServiceRegisteredForAspect = "AC001" -> string!
+const AspectCentral.Abstractions.Diagnostics.AspectCentralDiagnostics.ActivitySourceName = "AspectCentral" -> string!
+const AspectCentral.Abstractions.Diagnostics.AspectCentralDiagnostics.MeterName = "AspectCentral" -> string!
+Microsoft.Extensions.DependencyInjection.AspectCentralServiceCollectionExtensions
+override AspectCentral.Abstractions.Configuration.AspectConfiguration.Equals(object? obj) -> bool
+override AspectCentral.Abstractions.Configuration.AspectConfiguration.GetHashCode() -> int
+override AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.Equals(object? obj) -> bool
+override AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.GetHashCode() -> int
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddAspect<T>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder, int? sortOrder = null, params System.Reflection.MethodInfo![]! methodsToIntercept) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddScoped<TService, TImplementation>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddScoped<TService>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder, System.Func<System.IServiceProvider!, object!>! factory) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddSingleton<TService, TImplementation>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddSingleton<TService>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder, System.Func<System.IServiceProvider!, object!>! factory) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddTransient<TService, TImplementation>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.AspectRegistrationBuilderExtensions.AddTransient<TService>(this AspectCentral.Abstractions.IAspectRegistrationBuilder! aspectRegistrationBuilder, System.Func<System.IServiceProvider!, object!>! factory) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+static AspectCentral.Abstractions.Configuration.AspectConfiguration.operator !=(AspectCentral.Abstractions.Configuration.AspectConfiguration? left, AspectCentral.Abstractions.Configuration.AspectConfiguration? right) -> bool
+static AspectCentral.Abstractions.Configuration.AspectConfiguration.operator ==(AspectCentral.Abstractions.Configuration.AspectConfiguration? left, AspectCentral.Abstractions.Configuration.AspectConfiguration? right) -> bool
+static AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.operator !=(AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? left, AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? right) -> bool
+static AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.operator ==(AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? left, AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? right) -> bool
+static Microsoft.Extensions.DependencyInjection.AspectCentralServiceCollectionExtensions.AddAspectSupport(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection, System.Type! aspectRegistrationBuilderType, AspectCentral.Abstractions.Configuration.IAspectConfigurationProvider? aspectConfigurationProvider = null) -> AspectCentral.Abstractions.IAspectRegistrationBuilder!
+virtual AspectCentral.Abstractions.AspectRegistrationBuilder.ValidateAddAspect(System.Type! aspectType) -> void
+virtual AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.Equals(AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? x, AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? y) -> bool
+virtual AspectCentral.Abstractions.Configuration.AspectConfigurationEntry.GetHashCode(AspectCentral.Abstractions.Configuration.AspectConfigurationEntry? obj) -> int
