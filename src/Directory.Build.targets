@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <!-- Composed here (Directory.Build.targets is imported after the .csproj) so a consumer
+         overriding <Company> in their project file is reflected in <Copyright>. The helper
+         <_CopyrightYears> property is set in Directory.Build.props. -->
+    <Copyright Condition="'$(Copyright)' == ''">Copyright (c) $(_CopyrightYears) $(Company). All Rights Reserved.</Copyright>
+  </PropertyGroup>
+</Project>

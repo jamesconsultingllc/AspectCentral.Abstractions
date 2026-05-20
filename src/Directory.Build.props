@@ -1,0 +1,50 @@
+<Project>
+  <PropertyGroup>
+    <!-- Identity -->
+    <Authors Condition="'$(Authors)' == ''">James Consulting LLC</Authors>
+    <Company Condition="'$(Company)' == ''">James Consulting LLC</Company>
+
+    <!-- Repository / package metadata. -->
+    <RepositoryOwner Condition="'$(RepositoryOwner)' == ''">jamesconsultingllc</RepositoryOwner>
+    <RepositoryName  Condition="'$(RepositoryName)'  == ''">AspectCentral.Abstractions</RepositoryName>
+    <RepositoryType  Condition="'$(RepositoryType)'  == ''">git</RepositoryType>
+    <RepositoryUrl   Condition="'$(RepositoryUrl)'   == ''">https://github.com/$(RepositoryOwner)/$(RepositoryName)</RepositoryUrl>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">$(RepositoryUrl)</PackageProjectUrl>
+
+    <!-- SPDX expression. -->
+    <PackageLicenseExpression Condition="'$(PackageLicenseExpression)' == ''">MIT</PackageLicenseExpression>
+
+    <!-- Copyright year range. Pinned so identical sources produce byte-identical assembly/package
+         metadata regardless of when they're built ($([System.DateTime]::UtcNow.Year) at build time
+         would flow into [AssemblyCopyright], breaking reproducible builds across calendar years).
+         Bump _CopyrightCurrentYear intentionally as part of an annual housekeeping commit. -->
+    <_CopyrightStartYear>2019</_CopyrightStartYear>
+    <_CopyrightCurrentYear>2026</_CopyrightCurrentYear>
+    <_CopyrightYears Condition="'$(_CopyrightStartYear)' == '$(_CopyrightCurrentYear)'">$(_CopyrightStartYear)</_CopyrightYears>
+    <_CopyrightYears Condition="'$(_CopyrightYears)' == ''">$(_CopyrightStartYear) - $(_CopyrightCurrentYear)</_CopyrightYears>
+    <!-- <Copyright> is composed in Directory.Build.targets so consumer $(Company) overrides flow through. -->
+
+    <!-- Compiler defaults -->
+    <LangVersion>latestMajor</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Build determinism -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true' or '$(TF_BUILD)' == 'True'">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+
+    <!-- Symbols / SourceLink -->
+    <DebugType>embedded</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Auto-versioning from git height. version.json sits next to this file. -->
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" PrivateAssets="all"
+                      Condition="Exists('$(MSBuildThisFileDirectory)version.json')" />
+    <!-- SourceLink for "View source" / step-into-from-symbols on packed binaries. -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
